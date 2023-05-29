@@ -2,6 +2,7 @@ from rest_framework import viewsets, permissions, status,views, response, authen
 from django.contrib.auth.models import User
 from django.contrib.auth import logout ,authenticate, login 
 from rest_framework.authtoken.models import Token
+from rest_framework.decorators import authentication_classes, permission_classes
 
 from api.models import  User, Transport, Trip, Booking, Refund, Payment
 from api.serializers import  UserSerializer, TransportSerializer, TripSerializer, BookingSerializer, RefundSerializer, PaymentSerializer
@@ -49,7 +50,9 @@ def authenticate_user(email, password):
                 return user
         except User.DoesNotExist:
             return None
-        
+
+@authentication_classes([authentication.TokenAuthentication])
+@permission_classes([permissions.AllowAny])     
 class LoginView(views.APIView):
     permission_classes = [permissions.AllowAny]
     
@@ -68,11 +71,14 @@ class LoginView(views.APIView):
 
         token, _ = Token.objects.get_or_create(user=user)
 
+        login(request,user)
+        print(request.user)
         # Si la autenticación es correcta, puedes realizar cualquier otra lógica que necesites
 
         return response.Response({'message': 'Inicio de sesión exitoso', 'token': token.key}, status=status.HTTP_200_OK)
       
-
+@authentication_classes([authentication.TokenAuthentication])
+#Soo permitira usarse si esta logueado
 class LogoutView(views.APIView):
     authentication_classes = [authentication.TokenAuthentication]
 

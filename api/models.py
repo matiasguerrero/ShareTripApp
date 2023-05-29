@@ -62,7 +62,8 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    dni = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
+    dni = models.IntegerField(unique=True)
     username=models.CharField(max_length=50,unique=True)
     email = models.EmailField(unique=True)
     name = models.CharField(max_length=20)
