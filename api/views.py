@@ -18,6 +18,17 @@ class TransportViewSet(viewsets.ModelViewSet):
     serializer_class = TransportSerializer
     permission_classes = [permissions.AllowAny]
 
+    def create(self, request, *args, **kwargs):
+        # Obtener los datos de la solicitud
+        data = request.data
+
+        # Realizar la verificación de existencia
+        if Transport.objects.filter(patent=data['patent']).exists():
+            return response.Response({'error': 'El transporte ya existe.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Llamar a la creación super().create()
+        return super().create(request, *args, **kwargs)
+
 class TripViewSet(viewsets.ModelViewSet):
     queryset = Trip.objects.all()
     serializer_class = TripSerializer
@@ -38,18 +49,6 @@ class PaymentViewSet(viewsets.ModelViewSet):
     serializer_class = PaymentSerializer
     permission_classes = [permissions.AllowAny]
 
-from django.contrib.auth import get_user_model
-
-def authenticate_user(email, password):
-        User = get_user_model()
-        try:
-            user = User.objects.get(email=email)
-            print("imprime"+str(user))
-            if user.check_password(password):
-                print("va a retornar")
-                return user
-        except User.DoesNotExist:
-            return None
 
 @authentication_classes([authentication.TokenAuthentication])
 @permission_classes([permissions.AllowAny])     
@@ -62,10 +61,9 @@ class LoginView(views.APIView):
         password = request.data.get('password', None)
 
         if email is None or password is None:
-            return response.Response({'message': 'Please provide both email and password'}, status=status.HTTP_400_BAD_REQUEST)
+            return response.Response({'message': 'Por favor provea email y contraseña'}, status=status.HTTP_400_BAD_REQUEST)
 
         user = authenticate(request=request, email=email, password=password)
-        print(user)
         if not user:
             return response.Response({'message': 'Email o contraseña incorrectos'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -73,9 +71,14 @@ class LoginView(views.APIView):
 
         login(request,user)
         print(request.user)
-        # Si la autenticación es correcta, puedes realizar cualquier otra lógica que necesites
+        user_data = {
+            'id': user.id,
+            'email': user.email,
+            'name': user.name,
+            'last_name': user.last_name,
+        }
 
-        return response.Response({'message': 'Inicio de sesión exitoso', 'token': token.key}, status=status.HTTP_200_OK)
+        return response.Response({'message': 'Inicio de sesión exitoso', 'token': token.key,'user': user_data }, status=status.HTTP_200_OK)
       
 @authentication_classes([authentication.TokenAuthentication])
 #Soo permitira usarse si esta logueado

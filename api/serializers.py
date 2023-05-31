@@ -22,7 +22,7 @@ class UserSerializer(serializers.ModelSerializer):
 class TransportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transport
-        fields = ['id_transporte', 'user', 'patent', 'model']
+        fields = ['patent', 'user','model']
 
 
 class TripSerializer(serializers.ModelSerializer):

@@ -96,9 +96,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Transport(models.Model):
-    id_transporte = models.IntegerField(primary_key=True)
+    patent = models.CharField(max_length=25, primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    patent = models.CharField(max_length=25)
     model = models.CharField(max_length=30)
 
 class Trip(models.Model):
@@ -108,7 +107,7 @@ class Trip(models.Model):
     state = models.CharField(max_length=20)
     user_driver = models.ForeignKey(User, on_delete=models.CASCADE)
     fee_passenger = models.DecimalField(max_digits=15, decimal_places=4)
-    transport = models.ForeignKey(Transport, on_delete=models.CASCADE)
+    transport = models.ForeignKey(Transport, on_delete=models.RESTRICT)
     total_passengers = models.IntegerField()
 
 class Booking(models.Model):

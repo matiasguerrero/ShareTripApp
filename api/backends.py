@@ -3,7 +3,6 @@ from api.models import User
 
 class EmailBackend(ModelBackend):
     def authenticate(self, request, email=None, password=None, **kwargs):
-        print("esta usando esta funcion")
         try:
             user = User.objects.get(email=email)
             print(user)
