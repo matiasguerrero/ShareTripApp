@@ -16,7 +16,9 @@ class UserViewSet(viewsets.ModelViewSet):
 class TransportViewSet(viewsets.ModelViewSet):
     queryset = Transport.objects.all()
     serializer_class = TransportSerializer
-    permission_classes = [permissions.AllowAny]
+    #Solo podra usarse estando autenticado
+    authentication_classes = [authentication.TokenAuthentication, authentication.SessionAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
         # Obtener los datos de la solicitud
@@ -81,13 +83,13 @@ class LoginView(views.APIView):
         return response.Response({'message': 'Inicio de sesión exitoso', 'token': token.key,'user': user_data }, status=status.HTTP_200_OK)
       
 @authentication_classes([authentication.TokenAuthentication])
-#Soo permitira usarse si esta logueado
+#Solo permitira usarse si esta logueado
 class LogoutView(views.APIView):
     authentication_classes = [authentication.TokenAuthentication]
 
     def post(self, request):
         # Eliminamos el token de autenticación del usuario
         request.user.auth_token.delete()
-
+        logout(request)
         # Devolvemos la respuesta al cliente
         return response.Response({'message': 'Sesión cerrada y token eliminado'}, status=status.HTTP_200_OK)
