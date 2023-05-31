@@ -5,8 +5,8 @@ base_url = 'http://192.168.0.3:80/api/'  # Actualiza con la URL base de tu API
 
 # Datos de inicio de sesión
 login_data = {
-    'username': 'test',
-    'password': 'test'
+    'email': 'asd@gmail.com',
+    'password': 'asd'
 }
 
 # Realizar solicitud de inicio de sesión

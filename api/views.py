@@ -58,16 +58,16 @@ class LoginView(views.APIView):
     
     def post(self, request):
         # Recuperamos las credenciales y autenticamos al usuario
-        username = request.data.get('username', None)
+        email = request.data.get('email', None)
         password = request.data.get('password', None)
 
-        if username is None or password is None:
+        if email is None or password is None:
             return response.Response({'message': 'Please provide both email and password'}, status=status.HTTP_400_BAD_REQUEST)
 
-        user = authenticate(username=username, password=password)
+        user = authenticate(request=request, email=email, password=password)
         print(user)
         if not user:
-            return response.Response({'message': 'Usuario o contraseña incorrectos'}, status=status.HTTP_404_NOT_FOUND)
+            return response.Response({'message': 'Email o contraseña incorrectos'}, status=status.HTTP_404_NOT_FOUND)
 
         token, _ = Token.objects.get_or_create(user=user)
 

@@ -105,6 +105,14 @@ DATABASES = {
 #model auth
 AUTH_USER_MODEL = 'api.User'
 
+#Email authentication
+AUTHENTICATION_BACKENDS = [
+    'api.backends.EmailBackend', #for user
+    "django.contrib.auth.backends.ModelBackend" #for admin
+    # Agrega otros backends de autenticación si es necesario
+]
+
+
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 

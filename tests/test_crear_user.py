@@ -6,9 +6,8 @@ base_url = 'http://192.168.0.3:80/api/'  # Actualiza con la URL base de tu API
 # Datos del nuevo usuario
 new_user_data = {
     "dni": 1,
-    "email": "pe32p12@gmai.com",
-    "username": "test_2",
-    "password": "test",
+    "email": "asd@gmail.com",
+    "password": "asd",
     "name": "pepe",
     "last_name": "gonzalez",
     "date_of_birth": "1999-02-02"

@@ -8,7 +8,7 @@ from api.models import  User, Transport, Trip, Booking, Refund, Payment
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['dni', 'username', 'email', 'password', 'name', 'last_name', 'date_of_birth', 'path_license', 'saldo']
+        fields = ['dni', 'email', 'password', 'name', 'last_name', 'date_of_birth', 'path_license', 'saldo']
          #esconder password
         extra_kwargs = {
             'password': {'write_only': True, 'required': True}

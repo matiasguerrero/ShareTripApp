@@ -7,12 +7,10 @@ from django.db import models
 
 from datetime import date
 class UserManager(BaseUserManager):
-    def create_user(self, dni, username, email, name, last_name, date_of_birth, password=None, **extra_fields):
+    def create_user(self, dni, email, name, last_name, date_of_birth, password=None, **extra_fields):
         # Valida los campos requeridos
         if not dni:
             raise ValueError('El DNI debe ser proporcionado')
-        if not username:
-            raise ValueError('El username debe ser proporcionado')
         if not email:
             raise ValueError('El email debe ser proporcionado')
         if not name:
@@ -25,7 +23,6 @@ class UserManager(BaseUserManager):
         # Crea una instancia del usuario
         user = self.model(
             dni=dni,
-            username=username,
             email=email,
             name=name,
             last_name=last_name,
@@ -39,7 +36,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, username, dni, email, name, last_name, date_of_birth, password=None, **extra_fields):
+    def create_superuser(self, dni, email, name, last_name, date_of_birth, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         
@@ -50,7 +47,6 @@ class UserManager(BaseUserManager):
 
         return self.create_user(
             dni=dni,
-            username=username,
             email=email,
             name=name,
             last_name=last_name,
@@ -64,7 +60,6 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     id = models.AutoField(primary_key=True)
     dni = models.IntegerField(unique=True)
-    username=models.CharField(max_length=50,unique=True)
     email = models.EmailField(unique=True)
     name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=30)
@@ -78,8 +73,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['dni', 'email', 'name', 'last_name', 'date_of_birth']
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['dni', 'name', 'last_name', 'date_of_birth']
     
     # Otros campos requeridos como contraseña, email, etc.
 
