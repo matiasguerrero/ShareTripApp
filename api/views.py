@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import logout ,authenticate, login 
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import authentication_classes, permission_classes
-
+from django.db.models import Q
 from api.models import  User, Transport, Trip, Booking, Refund, Payment
 from api.serializers import  UserSerializer, TransportSerializer, TripSerializer, BookingSerializer, RefundSerializer, PaymentSerializer
 
@@ -34,12 +34,51 @@ class TransportViewSet(viewsets.ModelViewSet):
 class TripViewSet(viewsets.ModelViewSet):
     queryset = Trip.objects.all()
     serializer_class = TripSerializer
-    permission_classes = [permissions.AllowAny]
+    #Solo podra usarse estando autenticado
+    authentication_classes = [authentication.TokenAuthentication, authentication.SessionAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        # Obtener los datos de la solicitud
+        data = request.data
+
+        # Realizar la verificación de existencia
+        start_datetime = data.get('start_datetime')
+        end_datetime = data.get('end_datetime')
+        user_driver = request.user  # Obtener el usuario actualmente autenticado
+
+        if start_datetime and end_datetime:
+            if Trip.objects.filter(Q(start_datetime=start_datetime) | Q(end_datetime=end_datetime), user_driver=user_driver).exists():
+                return response.Response({'error': 'El viaje ya existe.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Llamar a la creación super().create()
+        return super().create(request, *args, **kwargs)
 
 class BookingViewSet(viewsets.ModelViewSet):
     queryset = Booking.objects.all()
     serializer_class = BookingSerializer
     permission_classes = [permissions.AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        # Obtener los datos de la solicitud
+        data = request.data
+
+        # Realizar la verificación de existencia
+        if Booking.objects.filter(user=data['user'],trip=data['trip']).exists():
+            return response.Response({'error': 'Ya tienes una reserva para este viaje.'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            try:
+                #Control de asientos disponibles
+                trip = Trip.objects.get(id=data['trip'])
+                total_passengers = trip.total_passengers
+                if ((total_passengers - int(data["passengers_amount"]))<0):
+                    return response.Response({'error': 'El viaje no dispone de suficientes asientos disponibles'}, status=status.HTTP_400_BAD_REQUEST)
+            except Trip.DoesNotExist:
+                # Manejar el caso cuando no se encuentra ningún objeto Trip con el id especificado
+                return response.Response({'error': 'No se puede realizar la reserva porque el viaje no existe.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Llamar a la creación super().create()
+        return super().create(request, *args, **kwargs)
 
 class RefundViewSet(viewsets.ModelViewSet):
     queryset = Refund.objects.all()

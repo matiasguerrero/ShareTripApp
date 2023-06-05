@@ -101,7 +101,7 @@ class Transport(models.Model):
     model = models.CharField(max_length=30)
 
 class Trip(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     start_datetime = models.DateTimeField()
     end_datetime = models.DateTimeField()
     state = models.CharField(max_length=20)

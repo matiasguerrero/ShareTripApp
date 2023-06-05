@@ -52,7 +52,7 @@ const Home = () => (
         } else if (route.name === 'Profile') {
           iconName = 'user';
           return <FontAwesome name={iconName} size={size} color={color} />;
-        } else if (route.name === 'MyTrips') {
+        } else if (route.name === 'Mis viajes') {
           iconName = 'car';
           return <FontAwesome name={iconName} size={size} color={color} />;
         } else if (route.name === 'Chat') {
@@ -74,7 +74,7 @@ const Home = () => (
     })}
   >
     <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-    <Tab.Screen name="MyTrips" component={MyTripsScreen} options={{ headerShown: false }} />
+    <Tab.Screen name="Mis viajes" component={MyTripsScreen} options={{ headerShown: false }} />
     <Tab.Screen name="Chat" component={ChatScreen} options={{ headerShown: false }} />
     <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
   </Tab.Navigator>
