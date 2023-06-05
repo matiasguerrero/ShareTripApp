@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseUrl = 'http://192.168.0.3:80/api/'; // Actualiza con la URL base de tu API
+const baseUrl = 'http://192.168.0.4:80/api/'; // Actualiza con la URL base de tu API
 
 // Función para iniciar sesión
 export const login = async (email, password) => {

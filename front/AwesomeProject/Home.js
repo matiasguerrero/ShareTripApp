@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AntDesign, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 
 import SearchContainer from './SearchContainer';
+import HomeButton from './HomeButton';
 
 const colorDorado = 'rgb(218, 165, 32)';
 const colorDoradoselecc= 'rgb(255, 215, 0)';
@@ -11,11 +12,17 @@ const screenWidth = Dimensions.get('window').width;
 
 // Pantallas
 const HomeScreen = () => (
+  //<View style={styles.container}>
+  //  <View style={styles.centerContainer}>
+   //  <SearchContainer />
+    //</View>
+  //</View>
   <View style={styles.container}>
     <View style={styles.centerContainer}>
-     <SearchContainer />
-    </View>
+        <HomeButton/>
+        </View>
   </View>
+
 );
 
 const ProfileScreen = () => (
