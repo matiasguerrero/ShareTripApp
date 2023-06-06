@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View, Modal, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { AuthContext } from './AuthProvider';
 import SearchContainer from './SearchContainer';
 import Register from './Register';
@@ -14,42 +14,63 @@ const CustomButton = ({ title, onPress, style }) => {
 };
 
 const HomeButton = () => {
-  const { loggedIn, login } = useContext(AuthContext);
-  const [selectedButton, setSelectedButton] = useState('buscar');
-
-  const handleButtonClick = async (button) => {
-    setSelectedButton(button);
-  };
-
-  const handleLogin = async () => {
-    await login();
-    setSelectedButton('registrar');
-  };
-
-  return (
-    <View style={styles.container}>
-      <View style={styles.mainContainer}>
-        <View style={styles.buttonContainer}>
-          <CustomButton
-            title="Buscar Viaje"
-            onPress={() => handleButtonClick('buscar')}
-            style={selectedButton === 'buscar' ? styles.selectedButton : null}
-          />
-          <CustomButton
+    const { loggedIn, login } = useContext(AuthContext);
+    const [selectedButton, setSelectedButton] = useState('buscar');
+    const [showLoginModal, setShowLoginModal] = useState(false);
+  
+    const handleButtonClick = async (button) => {
+      setSelectedButton(button);
+    };
+  
+    const handleLogin = async () => {
+        await login();
+        closeLoginModal(); // Cerrar el modal después de iniciar sesión
+    };
+  
+    const openLoginModal = () => {
+      //Abril UI Login
+      setShowLoginModal(true);
+    };
+  
+    const closeLoginModal = () => {
+      //Cerrar UI Login
+      setShowLoginModal(false);
+    };
+  
+    return (
+      <View style={styles.container}>
+        <View style={styles.mainContainer}>
+          <View style={styles.buttonContainer}>
+            <CustomButton
+              title="Buscar Viaje"
+              onPress={() => handleButtonClick('buscar')}
+              style={selectedButton === 'buscar' ? styles.selectedButton : null}
+            />
+            <CustomButton
               title="Registrar Viaje"
-              onPress={() => handleButtonClick('registrar')}
+              onPress={() => {
+                handleButtonClick('registrar');
+                if (!loggedIn) {
+                    openLoginModal(); //Si no esta logueado, habilito para abrir el modelo de login
+                 }
+              }}
               style={selectedButton === 'registrar' ? styles.selectedButton : null}
             />
+          </View>
+  
+          {selectedButton === 'buscar' && <SearchContainer />}
+          {selectedButton === 'registrar' && !loggedIn && (
+            <Modal visible={showLoginModal} animationType="slide">
+              <LoginScreen onLogin={handleLogin} onClose={closeLoginModal} />
+            </Modal>
+          )}
+          {selectedButton === 'registrar' && loggedIn && (
+            <Register />
+          )}
         </View>
-
-        {selectedButton === 'buscar' && <SearchContainer />}
-        {selectedButton === 'registrar' && (
-          loggedIn ? <Register /> : <LoginScreen onLogin={handleLogin} />
-        )}
       </View>
-    </View>
-  );
-};
+    );
+  };
 
 const styles = StyleSheet.create({
   container: {
