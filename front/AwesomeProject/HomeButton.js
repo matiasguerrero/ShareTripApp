@@ -61,7 +61,9 @@ const HomeButton = () => {
           {selectedButton === 'buscar' && <SearchContainer />}
           {selectedButton === 'registrar' && !loggedIn && (
             <Modal visible={showLoginModal} animationType="slide">
-              <LoginScreen onLogin={handleLogin} onClose={closeLoginModal} />
+               <View style={styles.modalContainer}>
+                <LoginScreen onLogin={handleLogin} onClose={closeLoginModal} />
+              </View>
             </Modal>
           )}
           {selectedButton === 'registrar' && loggedIn && (
@@ -84,6 +86,11 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     marginBottom: 20,
+  },
+  modalContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   button: {
     backgroundColor: 'blue',

@@ -38,8 +38,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 16,
-    backgroundColor: 'white',
-    width: screenWidth * 0.9,
+    backgroundColor: 'black',
+    width: screenWidth,
   },
   input: {
     height: 40,
