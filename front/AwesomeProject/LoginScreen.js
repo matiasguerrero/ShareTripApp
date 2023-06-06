@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { View, TextInput, Button, StyleSheet } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Dimensions } from 'react-native';
 import { AuthContext } from './AuthProvider';
 
 const LoginScreen = ({ onLogin }) => {
@@ -32,12 +32,14 @@ const LoginScreen = ({ onLogin }) => {
   );
 };
 
+const screenWidth = Dimensions.get('window').width;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     padding: 16,
     backgroundColor: 'white',
+    width: screenWidth * 0.9,
   },
   input: {
     height: 40,
