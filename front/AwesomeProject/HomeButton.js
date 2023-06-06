@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { AuthContext } from './AuthProvider';
 import SearchContainer from './SearchContainer';
 import Register from './Register';
+import LoginScreen from './LoginScreen';
 
 const CustomButton = ({ title, onPress, style }) => {
   return (
@@ -12,35 +14,48 @@ const CustomButton = ({ title, onPress, style }) => {
 };
 
 const HomeButton = () => {
+  const { loggedIn, login } = useContext(AuthContext);
   const [selectedButton, setSelectedButton] = useState('buscar');
 
-  const handleButtonClick = (button) => {
+  const handleButtonClick = async (button) => {
     setSelectedButton(button);
+  };
+
+  const handleLogin = async () => {
+    await login();
+    setSelectedButton('registrar');
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.buttonContainer}>
-        <CustomButton
-          title="Buscar Viaje"
-          onPress={() => handleButtonClick('buscar')}
-          style={selectedButton === 'buscar' ? styles.selectedButton : null}
-        />
-        <CustomButton
-          title="Registrar Viaje"
-          onPress={() => handleButtonClick('registrar')}
-          style={selectedButton === 'registrar' ? styles.selectedButton : null}
-        />
-      </View>
+      <View style={styles.mainContainer}>
+        <View style={styles.buttonContainer}>
+          <CustomButton
+            title="Buscar Viaje"
+            onPress={() => handleButtonClick('buscar')}
+            style={selectedButton === 'buscar' ? styles.selectedButton : null}
+          />
+          <CustomButton
+              title="Registrar Viaje"
+              onPress={() => handleButtonClick('registrar')}
+              style={selectedButton === 'registrar' ? styles.selectedButton : null}
+            />
+        </View>
 
-      {selectedButton === 'buscar' && <SearchContainer />}
-      {selectedButton === 'registrar' && <Register />}
+        {selectedButton === 'buscar' && <SearchContainer />}
+        {selectedButton === 'registrar' && (
+          loggedIn ? <Register /> : <LoginScreen onLogin={handleLogin} />
+        )}
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  mainContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',

@@ -1,21 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, TextInput, Button, StyleSheet } from 'react-native';
-import { login } from './api'; 
+import { AuthContext } from './AuthProvider';
 
-
-const LoginScreen = () => {
+const LoginScreen = ({ onLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { login } = useContext(AuthContext);
 
   const handleLogin = async () => {
-    const response = await login(email, password);
-    if (response.success) {
-      // Inicio de sesión exitoso, puedes realizar acciones adicionales aquí
-      console.log('Inicio de sesión exitoso');
-      console.log('Token:', response.token);
-    } else {
-      // Error de inicio de sesión, muestra un mensaje de error o realiza acciones adicionales según tus necesidades
-      console.log('Error de inicio de sesión:', response.error);
+    const success = await login(email, password);
+    if (success) {
+      onLogin(); // Ejecuta la función onLogin si el inicio de sesión fue exitoso
     }
   };
 
@@ -55,3 +50,4 @@ const styles = StyleSheet.create({
 });
 
 export default LoginScreen;
+
