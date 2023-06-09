@@ -5,7 +5,7 @@ import { AntDesign, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 
 import SearchContainer from './SearchContainer';
 import HomeButton from './HomeButton';
-
+import Profile from './Profile';
 const colorDorado = 'rgb(218, 165, 32)';
 const colorDoradoselecc= 'rgb(255, 215, 0)';
 const screenWidth = Dimensions.get('window').width;
@@ -28,6 +28,7 @@ const HomeScreen = () => (
 const ProfileScreen = () => (
   <View style={styles.container}>
     <Text>Profile Screen</Text>
+    <Profile/>
   </View>
 );
 

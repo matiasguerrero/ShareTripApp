@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseUrl = 'http://192.168.0.4:80/api/'; // Actualiza con la URL base de tu API
+const baseUrl = 'http://192.168.0.3:80/api/'; // Actualiza con la URL base de tu API
 
 // Función para iniciar sesión
 export const login = async (email, password) => {
@@ -22,6 +22,25 @@ export const login = async (email, password) => {
   }
 };
 
+
+export const logout = async (token) => {
+  try {
+    const logoutUrl = baseUrl + 'logout/';
+    const headers = { Authorization: 'Token ' + token };
+    const response = await axios.post(logoutUrl, null, { headers });
+
+    if (response.status === 200) {
+      // Cierre de sesión exitoso
+      return { success: true };
+    } else {
+      // Error en la respuesta del servidor
+      return { success: false, error: 'Error de cierre de sesión' };
+    }
+  } catch (error) {
+    // Error de conexión o de la solicitud
+    return { success: false, error: 'Error en la solicitud de cierre de sesión' };
+  }
+};
 // Otras funciones para llamar a otros puntos finales de tu backend
 
 // ...
