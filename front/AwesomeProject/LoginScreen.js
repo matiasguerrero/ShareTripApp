@@ -1,7 +1,9 @@
-import React, { useState, useContext } from 'react';
-import { View, Modal, TextInput, Button, StyleSheet, Text, TouchableOpacity, Dimensions } from 'react-native';
+import React, { useState, useContext, useEffect, useFocusEffect } from 'react';
+import { View, Modal, TextInput, Button, StyleSheet, Text, TouchableOpacity, Dimensions, BackHandler} from 'react-native';
 import { AuthContext } from './AuthProvider';
 import RegisterUser from './RegisterUser';
+import { useNavigation } from '@react-navigation/native';
+
 
 const CustomButton = ({ title, onPress, style }) => {
   return (
@@ -11,38 +13,37 @@ const CustomButton = ({ title, onPress, style }) => {
   );
 };
 
-const LoginScreen = ({ onLogin }) => {
+const LoginScreen = ({}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { login } = useContext(AuthContext);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [showLogin, setShowLogin] = useState(true);
 
+  const navigation = useNavigation();
+
+
   const handleLogin = async () => {
-    const success = await login(email, password);
-    if (success) {
-      onLogin(); // Ejecuta la función onLogin si el inicio de sesión fue exitoso
+    const response = await login(email, password);
+    console.log(response);
+    if (response) {
+      console.log("Logueo exitoso");
+      //const previousRoute = navigation?.dangerouslyGetState()?.routes?.[navigation?.dangerouslyGetState().index - 1];
+      navigation.navigate('HomeMain');
+    } else {
+      console.log("success dio otro valor");
     }
   };
 
   
   const openRegister = () => {
     //Abril UI Login
-    setShowLogin(false);
+    navigation.navigate('Register');
   };
 
   const closeRegister = () => {
     //Abril UI Login
     setShowLogin(true);
-  };
-
-
-  const register = () => {
-    openRegisterModal();
-    console.log("entra");
-    if (showRegisterModal == true){
-      console.log("es true");
-    }
   };
 
   return (
@@ -71,7 +72,7 @@ const LoginScreen = ({ onLogin }) => {
           />
         </View>
       ) : (
-        <RegisterUser onRegister={closeRegister} />
+        <RegisterUser onRegister={closeRegister} onBack={closeRegister} />
       )}
     </View>
   );

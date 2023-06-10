@@ -13,8 +13,11 @@ const AuthProvider = ({ children }) => {
       setToken(response.token);
       setLoggedIn(true);
       console.log(response.token);
+      console.log("Logueado");
+      return { success: true}
     } else {
       console.log('Error de inicio de sesión:', response.error);
+      return { success: false}
     }
   };
 
