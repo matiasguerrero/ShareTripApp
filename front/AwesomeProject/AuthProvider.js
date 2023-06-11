@@ -8,6 +8,9 @@ const AuthProvider = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(false);
 
   const handleLogin = async (email, password) => {
+    if (!email || !password) {
+      throw new Error("Por favor ingrese el correo electrónico y la contraseña.");
+    }
     const response = await login(email, password);
     if (response.success) {
       setToken(response.token);
@@ -17,6 +20,7 @@ const AuthProvider = ({ children }) => {
       return { success: true}
     } else {
       console.log('Error de inicio de sesión:', response.error);
+      throw new Error("Usuario o contraseña incorrectos");
       return { success: false}
     }
   };

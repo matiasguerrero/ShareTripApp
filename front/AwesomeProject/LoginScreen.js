@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { View, TextInput, StyleSheet, Text, TouchableOpacity, Dimensions, BackHandler} from 'react-native';
 import { AuthContext } from './AuthProvider';
 import { useNavigation } from '@react-navigation/native';
-
+import ErrorModal from './ErrorModal';
 
 const CustomButton = ({ title, onPress, style }) => {
   return (
@@ -16,19 +16,31 @@ const LoginScreen = ({}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { login } = useContext(AuthContext);
+  const [errorModalVisible, setErrorModalVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
 
   const navigation = useNavigation();
 
+  const closeErrorModal = () => {
+    setErrorModalVisible(false);
+  };
 
   const handleLogin = async () => {
-    const response = await login(email, password);
-    console.log(response);
-    if (response) {
-      console.log("Logueo exitoso");
-      //const previousRoute = navigation?.dangerouslyGetState()?.routes?.[navigation?.dangerouslyGetState().index - 1];
-      navigation.navigate('HomeMain');
-    } else {
-      console.log("success dio otro valor");
+    try{
+      const success = await login(email, password);
+      console.log(success);
+      if (success) {
+        console.log("Logueo exitoso");
+        //const previousRoute = navigation?.dangerouslyGetState()?.routes?.[navigation?.dangerouslyGetState().index - 1];
+        navigation.navigate('HomeMain');
+      } else {
+        console.log("success dio otro valor");
+      }
+    } catch (error) {
+      console.log(error.message);
+      setErrorMessage(error.message);
+      setErrorModalVisible(true);
     }
   };
 
@@ -61,6 +73,8 @@ const LoginScreen = ({}) => {
                 title="Register"
                 onPress={() => openRegister()}
           />
+          <ErrorModal visible={errorModalVisible} message={errorMessage} onClose={closeErrorModal} />
+   
         </View>
     </View>
   );
