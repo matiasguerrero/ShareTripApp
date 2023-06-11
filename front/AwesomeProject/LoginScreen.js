@@ -1,7 +1,6 @@
-import React, { useState, useContext, useEffect, useFocusEffect } from 'react';
-import { View, Modal, TextInput, Button, StyleSheet, Text, TouchableOpacity, Dimensions, BackHandler} from 'react-native';
+import React, { useState, useContext } from 'react';
+import { View, TextInput, StyleSheet, Text, TouchableOpacity, Dimensions, BackHandler} from 'react-native';
 import { AuthContext } from './AuthProvider';
-import RegisterUser from './RegisterUser';
 import { useNavigation } from '@react-navigation/native';
 
 
@@ -17,8 +16,6 @@ const LoginScreen = ({}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { login } = useContext(AuthContext);
-  const [showRegisterModal, setShowRegisterModal] = useState(false);
-  const [showLogin, setShowLogin] = useState(true);
 
   const navigation = useNavigation();
 
@@ -41,14 +38,8 @@ const LoginScreen = ({}) => {
     navigation.navigate('Register');
   };
 
-  const closeRegister = () => {
-    //Abril UI Login
-    setShowLogin(true);
-  };
-
   return (
     <View style={styles.container}>
-      {showLogin ? (
         <View style={styles.loginContainer}>
           <TextInput
             style={styles.input}
@@ -71,9 +62,6 @@ const LoginScreen = ({}) => {
                 onPress={() => openRegister()}
           />
         </View>
-      ) : (
-        <RegisterUser onRegister={closeRegister} onBack={closeRegister} />
-      )}
     </View>
   );
 };
