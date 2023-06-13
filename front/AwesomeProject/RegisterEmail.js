@@ -34,7 +34,7 @@ const Email = ({email, setEmail}) => {
       return;
     }
   
-    // Lógica adicional si ambos nombres y apellidos son válidos
+    navigation.navigate('Register_Password')
   };
   
   return (

@@ -7,6 +7,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Dni from './RegisterDni';
 import Name from './RegisterName';
 import Email from './RegisterEmail';
+import Password from './RegisterPassword';
 const CustomButton = ({ title, onPress, style }) => {
   return (
     <TouchableOpacity style={[styles.button, style]} onPress={onPress}>
@@ -118,6 +119,9 @@ const RegisterUser = ({}) => {
       </RegisterStack.Screen>
       <RegisterStack.Screen name="Register_Email" options={{ headerShown: false }}>
         {props => <Email {...props} email={email} setEmail={setEmail} />}
+      </RegisterStack.Screen>
+      <RegisterStack.Screen name="Register_Password" options={{ headerShown: false }}>
+        {props => <Password {...props} password={password} setPassword={setPassword} />}
       </RegisterStack.Screen>
     </RegisterStack.Navigator>
 

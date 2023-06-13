@@ -10,7 +10,9 @@ const CustomButton = ({ title, onPress, style }) => {
     );
   };
 
-const Dni = React.memo(({dni, setDni}) => {
+const Password = ({password, setPassword}) => {
+
+  const [confirm_password, setConfirmPassword] = useState('');
 
   const navigation = useNavigation();
 
@@ -25,41 +27,61 @@ const Dni = React.memo(({dni, setDni}) => {
     setErrorModalVisible(false);
   };
 
-  const handleSaveDni = () => {
-    const inputDni = dni;
+  const handleSavePassword = () => {
+    const passwordRegex= /^(?=.*[A-Z])(?=.*\d).{8,}$/; //Al menos 1 mayuscula, un numero y minimo 8 carac
 
-  // Verificar que tenga exactamente 8 dígitos numéricos
-    const regex = /^\d{7,8}$/;
-    if (!regex.test(inputDni)) {
-      setErrorMessage('Su DNI no es válido');
+  
+    if (!passwordRegex.test(password)) {
+      setErrorMessage('Su contraseña debe contener un número, una mayúscula y al menos 8 caracteres');
       openErrorModal();
       return;
     }
-    navigation.navigate('Register_Names');
+  
+    if (!passwordRegex.test(confirm_password)) {
+      setErrorMessage('Su contraseña debe contener un número, una maýuscula y al menos 8 caracteres');
+      openErrorModal();
+      return;
+    }
+
+    if (password !== confirm_password) {
+      setErrorMessage('Sus contraseñas no coinciden');
+      openErrorModal();
+      return;
+    }
+    //navigation.navigate('Register_Email');
+  
+    // Lógica adicional si ambos nombres y apellidos son válidos
   };
   
   return (
     <View style={styles.container}>
       <View style={styles.registerContainer}>
         <Text style={styles.heading}>Registrate</Text>
-        <Text style={styles.subHeading}>Ingrese tu numero de DNI</Text>
+        <Text style={styles.subHeading}>Ingrese su contraseña</Text>
         <TextInput
           style={styles.input}
-          placeholder="Dni"
-          keyboardType="numeric"
-          maxLength={8}
-          onChangeText={text => setDni(text)}
+          placeholder="Password"
+          onChangeText={text => setPassword(text)}
           blurOnSubmit={false}
+          secureTextEntry
+        />
+         <Text style={styles.subHeading}>Re ingrese su contraseña</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          onChangeText={text => setConfirmPassword(text)}
+          blurOnSubmit={false}
+          secureTextEntry
         />
         <CustomButton
                 title="Siguiente"
-                onPress={() => handleSaveDni()}
+                onPress={() => handleSavePassword()}
           />
         <ErrorModal visible={errorModalVisible} message={errorMessage} onClose={closeErrorModal} />
       </View>
     </View>
   );
-});
+};
 
 const screenWidth = Dimensions.get('window').width;
 const styles = StyleSheet.create({
@@ -114,4 +136,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Dni;
+export default Password;
