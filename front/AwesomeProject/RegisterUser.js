@@ -24,13 +24,31 @@ const RegisterUser = ({}) => {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [date_of_birth, setDate] = useState('');
+  const [date_of_birth, setDate] = useState(new Date());
   const dniTextInput = useRef(null);
 
   const [showButton, setShowButton] = useState(false); // Estado para controlar la visibilidad del botón
 
+  
 
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      setDate(null);
+    });
+  
+    // Función de limpieza adicional para restablecer el valor de date_of_birth
+    const cleanup = () => {
+      setDate(null); // Restablece el valor de date_of_birth a null o cualquier otro valor inicial
+    };
+  
+    // Devuelve una función de limpieza que se ejecutará antes de que el componente se desmonte
+    return () => {
+      unsubscribe();
+      cleanup();
+    };
+  }, [navigation]);
 
   const [errorModalVisible, setErrorModalVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -112,7 +130,7 @@ const RegisterUser = ({}) => {
   return (
     <RegisterStack.Navigator initialRouteName="Register_Dni">
       <RegisterStack.Screen name="Register_Dni" options={{ headerShown: false }}>
-        {props => <Dni {...props} dni={dni} setDni={setDni} />}
+        {props => <Dni {...props} dni={dni} setDni={setDni} date_of_birth={date_of_birth} setDate={setDate}/>}
       </RegisterStack.Screen>
       <RegisterStack.Screen name="Register_Names" options={{ headerShown: false }}>
         {props => <Name {...props} name={name} setName={setName} lastName={lastName} setLastName={setLastName} />}
