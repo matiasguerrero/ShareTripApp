@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Dimensions, TouchableOpacity} from 'react-native';
 import ErrorModal from './ErrorModal';
 import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
 const CustomButton = ({ title, onPress, style }) => {
     return (
       <TouchableOpacity style={[styles.button, style]} onPress={onPress}>
@@ -18,6 +21,12 @@ const Password = ({password, setPassword}) => {
 
   const [errorModalVisible, setErrorModalVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
+
+  const togglePasswordVisibility = () => {
+    setSecureTextEntry(!secureTextEntry);
+  };
 
   const openErrorModal = () => {
     setErrorModalVisible(true);
@@ -59,11 +68,11 @@ const Password = ({password, setPassword}) => {
         <Text style={styles.heading}>Registrate</Text>
         <Text style={styles.subHeading}>Ingrese su contraseña</Text>
         <TextInput
-          style={styles.input}
-          placeholder="Password"
-          onChangeText={text => setPassword(text)}
-          blurOnSubmit={false}
-          secureTextEntry
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={secureTextEntry}
+            placeholder="Password"
+            style={styles.input}
         />
          <Text style={styles.subHeading}>Re ingrese su contraseña</Text>
         <TextInput
@@ -71,8 +80,16 @@ const Password = ({password, setPassword}) => {
           placeholder="Password"
           onChangeText={text => setConfirmPassword(text)}
           blurOnSubmit={false}
-          secureTextEntry
+          secureTextEntry={secureTextEntry}
         />
+        <TouchableOpacity onPress={togglePasswordVisibility} style={styles.row}>
+            <Text style={styles.buttonText}>Mostrar </Text>
+            <MaterialCommunityIcons
+              name={secureTextEntry ? 'eye-off' : 'eye'}
+              size={24}
+              color={secureTextEntry ? 'gold' : 'gold'}
+            />
+        </TouchableOpacity>
         <CustomButton
                 title="Siguiente"
                 onPress={() => handleSavePassword()}
@@ -103,6 +120,12 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     paddingHorizontal: 10,
     color: 'gold',
+  },
+  row:{
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
   },
   button: {
     backgroundColor: 'green',
