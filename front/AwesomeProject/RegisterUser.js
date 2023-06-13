@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { View, TextInput, BackHandler, StyleSheet, Text, Dimensions, TouchableOpacity } from 'react-native';
-import { AuthContext } from './AuthProvider';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { View, TextInput, ScrollView, StyleSheet, Text, Dimensions, TouchableOpacity } from 'react-native';
 import { register } from './api';
 import { useNavigation } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
+import Dni from './RegisterDni';
+import Name from './RegisterName';
+import Email from './RegisterEmail';
 const CustomButton = ({ title, onPress, style }) => {
   return (
     <TouchableOpacity style={[styles.button, style]} onPress={onPress}>
@@ -11,24 +15,32 @@ const CustomButton = ({ title, onPress, style }) => {
   );
 };
 
-const RegisterUser = ({ onRegister}) => {
+const RegisterStack = createStackNavigator();
+
+const RegisterUser = ({}) => {
   const [dni, setDni] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [lastName, setLastName] = useState('');
   const [date_of_birth, setDate] = useState('');
-  const [errors, setErrors] = useState({
-    dni: '',
-    email: '',
-    password: '',
-    name: '',
-    lastName: '',
-    date_of_birth: '',
-    cant:0,
-  });
+  const dniTextInput = useRef(null);
+
+  const [showButton, setShowButton] = useState(false); // Estado para controlar la visibilidad del botón
+
 
   const navigation = useNavigation();
+
+  const [errorModalVisible, setErrorModalVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const openErrorModal = () => {
+    setErrorModalVisible(true);
+  };
+
+  const closeErrorModal = () => {
+    setErrorModalVisible(false);
+  };
 
   const handleRegister = async () => {
     setErrors(prevErrors => ({cant:0})); // Vaciar los errores antes de ejecutar validateFields
@@ -44,7 +56,6 @@ const RegisterUser = ({ onRegister}) => {
         // Registro exitoso
         console.log('Usuario registrado exitosamente');
         console.log('Datos del usuario:', result.data);
-        onRegister();
       } else {
         // Error en el registro
         console.log('Error en el registro:', result.error);
@@ -92,55 +103,24 @@ const RegisterUser = ({ onRegister}) => {
     return errors;
   };
 
+  const inputRef = useRef(null);
+
+   const dniRef = useRef('');
+
+
   return (
-    <View style={styles.container}>
-      <View style={styles.registerContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Dni"
-          onChangeText={text => setDni(text)}
-        />
-        {errors.dni && <Text style={styles.errorText}>{errors.dni}</Text>}
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          onChangeText={text => setEmail(text)}
-        />
-        {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          secureTextEntry
-          onChangeText={text => setPassword(text)}
-        />
-        {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
-        <TextInput
-          style={styles.input}
-          placeholder="Name"
-          secureTextEntry
-          onChangeText={text => setName(text)}
-        />
-        {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
-        <TextInput
-          style={styles.input}
-          placeholder="Last name"
-          secureTextEntry
-          onChangeText={text => setLastName(text)}
-        />
-        {errors.lastName && <Text style={styles.errorText}>{errors.lastName}</Text>}
-        <TextInput
-          style={styles.input}
-          placeholder="Date of birth"
-          secureTextEntry
-          onChangeText={text => setDate(text)}
-        />
-        {errors.date_of_birth && <Text style={styles.errorText}>{errors.date_of_birth}</Text>}
-        <CustomButton
-                title="Registrar"
-                onPress={() => handleRegister()}
-        />
-      </View>
-    </View>
+    <RegisterStack.Navigator initialRouteName="Register_Dni">
+      <RegisterStack.Screen name="Register_Dni" options={{ headerShown: false }}>
+        {props => <Dni {...props} dni={dni} setDni={setDni} />}
+      </RegisterStack.Screen>
+      <RegisterStack.Screen name="Register_Names" options={{ headerShown: false }}>
+        {props => <Name {...props} name={name} setName={setName} lastName={lastName} setLastName={setLastName} />}
+      </RegisterStack.Screen>
+      <RegisterStack.Screen name="Register_Email" options={{ headerShown: false }}>
+        {props => <Email {...props} email={email} setEmail={setEmail} />}
+      </RegisterStack.Screen>
+    </RegisterStack.Navigator>
+
   );
 };
 
@@ -168,7 +148,6 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: 'green',
     padding: 10,
-    marginHorizontal: 5,
     borderRadius: 5,
   },
   buttonText: {
@@ -180,6 +159,21 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'red',
     marginBottom: 8,
+  },
+  heading: {
+    color: 'yellow',
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 16,
+    width: '100%',
+  },
+  subHeading: {
+    color: 'yellow',
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 16,
+    width: '100%',
   },
 });
 
