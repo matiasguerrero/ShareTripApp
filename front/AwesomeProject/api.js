@@ -8,6 +8,7 @@ export const login = async (email, password) => {
     const loginUrl = baseUrl + 'login/';
     const response = await axios.post(loginUrl, { email, password });
     const data = response.data;
+    console.log(data);
     if (response.status === 200) {
       // Inicio de sesión exitoso
       const token = data.token;
@@ -44,8 +45,9 @@ export const logout = async (token) => {
 
 export const register = async (dni, email, password, name, lastName, date_of_birth) => {
   try {
-    const usersUrl = base_url + 'users/';
-    const response = await axios.post(usersUrl, {
+    console.log("va a entrar");
+    const usersUrl = baseUrl + 'users/';
+    console.log({
       dni,
       email,
       password,
@@ -53,8 +55,18 @@ export const register = async (dni, email, password, name, lastName, date_of_bir
       lastName,
       date_of_birth,
     });
-
-    if (response.status === 200) {
+    last_name=lastName;
+    const response = await axios.post(usersUrl, {
+      dni,
+      email,
+      password,
+      name,
+      last_name,
+      date_of_birth,
+    });
+    console.log(response);
+    console.log(response.status);
+    if (response.status === 201) {
       // Creación de usuario exitosa
       return { success: true, data: response.data };
     } else {

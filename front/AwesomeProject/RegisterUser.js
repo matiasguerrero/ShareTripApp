@@ -139,7 +139,7 @@ const RegisterUser = ({}) => {
         {props => <Email {...props} email={email} setEmail={setEmail} />}
       </RegisterStack.Screen>
       <RegisterStack.Screen name="Register_Password" options={{ headerShown: false }}>
-        {props => <Password {...props} password={password} setPassword={setPassword} />}
+        {props => <Password {...props} dni={dni} date_of_birth={date_of_birth} email={email} name={name} lastName={lastName} password={password} setPassword={setPassword} />}
       </RegisterStack.Screen>
     </RegisterStack.Navigator>
 

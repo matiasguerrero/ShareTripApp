@@ -1,24 +1,50 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Dimensions, TouchableOpacity} from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { View, Text, TextInput, StyleSheet, Dimensions, TouchableOpacity, ActivityIndicator} from 'react-native';
 import ErrorModal from './ErrorModal';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { register } from './api';
+import { AuthContext } from './AuthProvider';
+import moment from 'moment';
 
 const CustomButton = ({ title, onPress, style }) => {
     return (
       <TouchableOpacity style={[styles.button, style]} onPress={onPress}>
+        {isLoading ? (
+        <ActivityIndicator size="small" color="#ffffff" />
+      ) : (
         <Text style={styles.buttonText}>{title}</Text>
+        )}
       </TouchableOpacity>
     );
   };
 
-const Password = ({password, setPassword}) => {
+const Password = ({dni, date_of_birth, name, lastName, email, password, setPassword}) => {
 
+  const { login } = useContext(AuthContext);
   const [confirm_password, setConfirmPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigation = useNavigation();
 
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      setPassword('');
+    });
+  
+    // Función de limpieza adicional para restablecer el valor de date_of_birth
+    const cleanup = () => {
+      setPassword(''); // Restablece el valor de date_of_birth a null o cualquier otro valor inicial
+    };
+  
+    // Devuelve una función de limpieza que se ejecutará antes de que el componente se desmonte
+    return () => {
+      unsubscribe();
+      cleanup();
+    };
+  }, [navigation]);
   const [errorModalVisible, setErrorModalVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -35,6 +61,40 @@ const Password = ({password, setPassword}) => {
   const closeErrorModal = () => {
     setErrorModalVisible(false);
   };
+
+  const formatDate = (date) => {
+    return moment(date).format('YYYY-MM-DD');
+  };
+
+  const handleLogin = async () => {
+    try{
+      const success = await login(email, password);
+      if (success) {
+        console.log("Logueo exitoso");
+        //const previousRoute = navigation?.dangerouslyGetState()?.routes?.[navigation?.dangerouslyGetState().index - 1];
+        navigation.navigate('HomeMain');
+      }
+    } catch (error) {
+      console.log(error.message);
+      setErrorMessage(error.message);
+      setErrorModalVisible(true);
+    }
+  };
+
+  const handleRegister= async () => {
+    setIsLoading(true);
+    date_format=formatDate(date_of_birth);
+    const response = await register(parseInt(dni), email, password, name, lastName, date_format);
+    console.log(response);
+    if (response.success) {
+      console.log("Registro exitoso");
+      handleLogin();
+    } else {
+      setErrorMessage(response.error);
+      setErrorModalVisible(true);
+  }
+  setIsLoading(false);
+};
 
   const handleSavePassword = () => {
     const passwordRegex= /^(?=.*[A-Z])(?=.*\d).{8,}$/; //Al menos 1 mayuscula, un numero y minimo 8 carac
@@ -58,9 +118,10 @@ const Password = ({password, setPassword}) => {
       return;
     }
     //navigation.navigate('Register_Email');
-  
+    handleRegister();
     // Lógica adicional si ambos nombres y apellidos son válidos
   };
+
   
   return (
     <View style={styles.container}>
@@ -90,10 +151,13 @@ const Password = ({password, setPassword}) => {
               color={secureTextEntry ? 'gold' : 'gold'}
             />
         </TouchableOpacity>
-        <CustomButton
-                title="Siguiente"
-                onPress={() => handleSavePassword()}
-          />
+        <TouchableOpacity style={[styles.button]} onPress={handleSavePassword}>
+                {isLoading ? (
+                <ActivityIndicator size="small" color="#ffffff" />
+              ) : (
+                <Text style={styles.buttonText}>Registrarme</Text>
+                )}
+        </TouchableOpacity>
         <ErrorModal visible={errorModalVisible} message={errorMessage} onClose={closeErrorModal} />
       </View>
     </View>
