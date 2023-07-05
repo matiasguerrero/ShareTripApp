@@ -1,7 +1,8 @@
-import React from 'react';
-import { View, StyleSheet, ImageBackground, Text, TouchableOpacity, Dimensions } from 'react-native';
-
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, ImageBackground, Image, Text, TouchableOpacity, Dimensions } from 'react-native';
+import {LinearGradient} from 'expo-linear-gradient';
 const TestLogin = ({ navigation }) => {
+
   const handleLoginPress = () => {
     // Lógica para el botón "Iniciar sesión"
   };
@@ -15,54 +16,58 @@ const TestLogin = ({ navigation }) => {
       <View style={styles.headerContainer}>
         <ImageBackground
           source={require('./assets/fondo.png')} // Ruta de tu imagen de fondo
-          resizeMode="cover"
           style={styles.backgroundImage}
-        />
+        >
+          <LinearGradient
+            colors={['rgba(0, 0, 0, 0.7)', 'rgba( 244, 178, 5, 0.5)', 'rgba( 244, 178, 5, 1)']} // Colores del degradado: desde negro a amarillo
+            start={{ x: 0, y: 1 }} // Coordenadas de inicio del degradado (esquina inferior izquierda)
+            end={{ x: 0, y: 0 }} // Coordenadas de fin del degradado (esquina superior izquierda)
+            style={styles.gradientOverlay}
+          />
+          <View style={styles.logoContainer}>
+            <Image
+                    source={require('./assets/logo.png')} // Ruta de tu imagen del logo
+                    resizeMode="contain" // Ajusta la imagen al tamaño del contenedor manteniendo la proporción
+                    style={styles.logo}
+            />
+          </View>
+        </ImageBackground>
       </View>
-      <View style={styles.bottomContainer}>
-        <TouchableOpacity onPress={handleLoginPress} style={[styles.button, { backgroundColor: 'rgb(240, 176, 10)' }]}>
-          <Text style={styles.buttonText}>Iniciar sesión</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleRegisterPress} style={[styles.button, { backgroundColor: 'transparent' }]}>
-          <Text style={styles.buttonText}>¿No tienes cuenta? Regístrate</Text>
-        </TouchableOpacity>
-      </View>
+      
     </View>
   );
 };
-
 const windowHeight = Dimensions.get('window').height;
-const imageHeight = windowHeight * 0.5; // 30% del alto de la ventana
+const imageHeight = windowHeight * 0.45; // Altura según el porcentaje deseado
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'rgb(27, 26, 22)',
   },
   headerContainer: {
     height: imageHeight,
-    alignItems: 'flex-end',
-  },
-  bottomContainer: {
-    backgroundColor: '#F7F7F7',
-    paddingHorizontal: 20,
-    paddingVertical: 30,
+
+    alignItems: 'center',
+    overflow: 'hidden', // Evita que la imagen se desborde del contenedor
   },
   backgroundImage: {
-    flex: 1,
     width: '100%',
-  },
-  button: {
-    height: 50,
-    borderRadius: 25,
-    justifyContent: 'center',
+    height: 750,
+    position: 'absolute',
+    bottom: 0, // Ajusta la posición vertical de la imagen
     alignItems: 'center',
-    marginBottom: 10,
   },
-  buttonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
+  gradientOverlay: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  logoContainer: {
+    alignItems: 'center',
+    marginTop: 70,
+    zIndex: 1, // Asegura que el logo se muestre encima de la imagen de fondo
+  },
+  logo:{
+    width: '90%',
   },
 });
 

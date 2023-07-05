@@ -87,7 +87,7 @@ const App = () => {
       </NavigationContainer>
     </AuthProvider>
     */
-    <MainApp/>
+    <TestLogin/>
   );
 }
 

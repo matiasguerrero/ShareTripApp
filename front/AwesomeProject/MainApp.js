@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   backgroundImage: {
-    flex: 1,
+    position: 'absolute',
     width: '100%',
     height: '100%',
   },
