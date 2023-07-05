@@ -24,16 +24,15 @@ const TestLogin = ({ navigation }) => {
             end={{ x: 0, y: 0 }} // Coordenadas de fin del degradado (esquina superior izquierda)
             style={styles.gradientOverlay}
           />
-          <View style={styles.logoContainer}>
+        </ImageBackground>
+        <View style={styles.logoContainer}>
             <Image
                     source={require('./assets/logo.png')} // Ruta de tu imagen del logo
                     resizeMode="contain" // Ajusta la imagen al tamaño del contenedor manteniendo la proporción
                     style={styles.logo}
             />
-          </View>
-        </ImageBackground>
-      </View>
-      
+        </View>
+      </View>      
     </View>
   );
 };
@@ -62,11 +61,15 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
   },
   logoContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
     alignItems: 'center',
-    marginTop: 70,
-    zIndex: 1, // Asegura que el logo se muestre encima de la imagen de fondo
+    justifyContent: 'center',
+    width: '100%',
+    height: '100%',
   },
-  logo:{
+  logo: {
     width: '90%',
   },
 });
