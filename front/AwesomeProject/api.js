@@ -12,7 +12,9 @@ export const login = async (email, password) => {
     if (response.status === 200) {
       // Inicio de sesión exitoso
       const token = data.token;
-      return { success: true, token };
+      const userData=data.user;
+      console.log(userData);
+      return { success: true, token:token, userData:userData};
     } else {
       // Error en la respuesta del servidor
       return { success: false, error: 'Error de inicio de sesión' };

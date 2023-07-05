@@ -5,6 +5,7 @@ const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [token, setToken] = useState('');
+  const [userData, setUserData]= useState('');
   const [loggedIn, setLoggedIn] = useState(false);
 
   const handleLogin = async (email, password) => {
@@ -14,9 +15,8 @@ const AuthProvider = ({ children }) => {
     const response = await login(email, password);
     if (response.success) {
       setToken(response.token);
+      setUserData(response.userData);
       setLoggedIn(true);
-      console.log(response.token);
-      console.log("Logueado");
       return { success: true}
     } else {
       console.log('Error de inicio de sesión:', response.error);
@@ -37,7 +37,7 @@ const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ token, loggedIn, login: handleLogin, logout: handleLogout }}>
+    <AuthContext.Provider value={{ token, userData, loggedIn, login: handleLogin, logout: handleLogout }}>
       {children}
     </AuthContext.Provider>
   );

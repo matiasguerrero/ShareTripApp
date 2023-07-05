@@ -8,6 +8,8 @@ import RegisterUser from './RegisterUser';
 import { AuthProvider } from './AuthProvider';
 import { Animated } from 'react-native';
 import { enableScreens } from 'react-native-screens';
+import MainApp from './MainApp';
+import TestLogin from './TestLogin';
 
 enableScreens();
 
@@ -70,6 +72,7 @@ const AuthNavigator = () => (
 
 const App = () => {
   return (
+    /*
     <AuthProvider>
       <NavigationContainer>
         <StatusBar style="auto" />
@@ -83,6 +86,8 @@ const App = () => {
         </MainStack.Navigator>
       </NavigationContainer>
     </AuthProvider>
+    */
+    <MainApp/>
   );
 }
 
