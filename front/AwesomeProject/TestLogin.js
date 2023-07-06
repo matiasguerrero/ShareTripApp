@@ -1,10 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, TextInput, ImageBackground, Image, Text, TouchableOpacity, Dimensions } from 'react-native';
+import { View, StyleSheet, TextInput, Keyboard, ImageBackground, Image, Text, TouchableOpacity, Dimensions,KeyboardAvoidingView } from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
-const TestLogin = ({ navigation }) => {
+import { useNavigation } from '@react-navigation/native';
+const TestLogin = ({ }) => {
 
     const [isLoginPressed, setIsLoginPressed] = useState(true);
     const [isRegisterPressed, setIsRegisterPressed] = useState(false);
+
+    const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+
+    const navigation = useNavigation();
+    useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+        setIsKeyboardOpen(true);
+        });
+
+        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+        setIsKeyboardOpen(false);
+        });
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
   
     const handleLoginPress = () => {
       setIsLoginPressed(true);
@@ -19,10 +38,10 @@ const TestLogin = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
+      <View style={[styles.headerContainer, isKeyboardOpen ? styles.headerContainerKeyboard : null]}>
         <ImageBackground
           source={require('./assets/fondo.png')} // Ruta de tu imagen de fondo
-          style={styles.backgroundImage}
+          style={[styles.backgroundImage, , isKeyboardOpen ? styles.backgroundImageKeyboard : null]}
         >
           <LinearGradient
             colors={['rgba(0, 0, 0, 0.7)', 'rgba( 244, 178, 5, 0.5)', 'rgba( 244, 178, 5, 1)']} // Colores del degradado: desde negro a amarillo
@@ -40,7 +59,7 @@ const TestLogin = ({ navigation }) => {
         </View>
       </View>
       <View style={styles.overlayContainer}>
-        <View style={styles.blackContainer}>
+        <View style={[styles.blackContainer, isKeyboardOpen ? styles.blackContainer_Keyboard : null]}>
             <View style={styles.columnContainer}>
                 <View style={styles.buttonRowContainer}>
                     <TouchableOpacity
@@ -72,7 +91,7 @@ const TestLogin = ({ navigation }) => {
                 </View>
                 <Text style={styles.welcomeText}>Bienvenido a RUTAPP</Text>
                 <TextInput
-                    style={styles.input}
+                    style={[styles.input, isKeyboardOpen ? styles.email_keyboard : null]}
                     placeholder="Correo electrónico"
                     placeholderTextColor="rgba(204, 204, 204, 0.8)"
                 />
@@ -80,16 +99,22 @@ const TestLogin = ({ navigation }) => {
                     style={styles.input}
                     placeholder="Contraseña"
                     placeholderTextColor="rgba(204, 204, 204, 0.8)"
+                    secureTextEntry={true}
                 />
 
-                <View style={styles.bottomContainer}>
-                    <TouchableOpacity onPress={handleLoginPress} style={[styles.button, { backgroundColor: 'rgb(240, 176, 10)' }]}>
-                    <Text style={[styles.buttonText]}>Iniciar sesión</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={handleRegisterPress} style={[styles.button, { backgroundColor: 'rgba(0, 0, 0, 0)' }]}>
-                        <Text style={[styles.buttonText, { color: 'rgb(255, 255, 255)' }, {fontSize: 14}]}>¿Has olvidado tu contraseña?</Text>
-                    </TouchableOpacity>
-                </View>
+
+                {!isKeyboardOpen && (
+                    <View style={styles.bottomContainer}>
+                        <TouchableOpacity onPress={handleLoginPress} style={[styles.button, { backgroundColor: 'rgb(240, 176, 10)' }]}>
+                            <Text style={styles.buttonText}>Iniciar sesión</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={handleRegisterPress} style={[styles.button, { backgroundColor: 'rgba(0, 0, 0, 0)' }]}>
+                            <Text style={[styles.buttonText, { color: 'rgb(255, 255, 255)' }, { fontSize: 14 }]}>
+                            ¿Has olvidado tu contraseña?
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
            </View>
         </View>
       </View>      
@@ -98,7 +123,8 @@ const TestLogin = ({ navigation }) => {
 };
 const windowHeight = Dimensions.get('window').height;
 const imageHeight = windowHeight * 0.45; // Altura según el porcentaje deseado
-const containerHeight = windowHeight * 0.55; // Altura del contenedor (55% de la altura de la ventana)
+const imageHeightKeyboard = windowHeight * 0.20; // Altura del contenedor (55% de la altura de la ventana)
+
 
 const styles = StyleSheet.create({
   container: {
@@ -110,6 +136,13 @@ const styles = StyleSheet.create({
     zIndex: 0,
     alignItems: 'center',
     overflow: 'hidden', // Evita que la imagen se desborde del contenedor
+    borderBottomLeftRadius: 90,
+    borderBottomRightRadius: 90,
+  },
+  headerContainerKeyboard:{
+    height:imageHeightKeyboard,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
   },
   backgroundImage: {
     width: '100%',
@@ -117,6 +150,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0, // Ajusta la posición vertical de la imagen
     alignItems: 'center',
+  },
+  backgroundImageKeyboard:{
+    height: 500,
   },
   gradientOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -135,7 +171,7 @@ const styles = StyleSheet.create({
   },
   overlayContainer: {
     position: 'absolute',
-    top: '30%',
+    top: '27%',
     left: 0,
     right: 0,
     bottom: 0,
@@ -151,6 +187,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 40,
+  },
+  blackContainer_Keyboard:{
+    width: '100%',
+    height: '100%',
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius:0,
   },
   columnContainer: {
     flexDirection: 'column',
@@ -231,6 +273,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     marginBottom: 20,
     color: 'white',
+  },
+  email_keyboard:{
+    marginBottom: 70,  
   },
   welcomeText: {
     color: 'rgb(255, 255, 255)',

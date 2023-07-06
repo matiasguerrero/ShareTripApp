@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Image, StyleSheet, ImageBackground, Text, TouchableOpacity } from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
-
+import { useNavigation } from '@react-navigation/native';
 const MainApp = () => {
   const handleLoginPress = () => {
     // Lógica para el botón "Iniciar sesión"
@@ -11,6 +11,11 @@ const MainApp = () => {
     // Lógica para el botón "Registrarse"
   };
 
+  const navigation = useNavigation();
+
+  const goLogin =() =>{
+    navigation.navigate("Login");
+  }
   return (
     <ImageBackground
       source={require('./assets/fondo.png')} // Ruta de tu imagen de fondo
@@ -33,7 +38,7 @@ const MainApp = () => {
            />
           </View>
           <View style={styles.bottomContainer}>
-            <TouchableOpacity onPress={handleLoginPress} style={[styles.button, { backgroundColor: 'rgb(240, 176, 10)' }]}>
+            <TouchableOpacity onPress={goLogin} style={[styles.button, { backgroundColor: 'rgb(240, 176, 10)' }]}>
               <Text style={[styles.buttonText, {fontSize: 18}]}>Iniciar sesión</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={handleRegisterPress} style={[styles.button, { backgroundColor: 'rgba(0, 0, 0, 0)' }]}>

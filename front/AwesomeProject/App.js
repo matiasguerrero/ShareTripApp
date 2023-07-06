@@ -87,7 +87,20 @@ const App = () => {
       </NavigationContainer>
     </AuthProvider>
     */
-    <TestLogin/>
+
+    <AuthProvider>
+      <NavigationContainer>
+        <StatusBar style="auto" />
+        <MainStack.Navigator initialRouteName="MainApp"  screenOptions={{
+          headerShown: false,
+          cardStyleInterpolator: forFadeFromBottom,
+            cardStyle: { backgroundColor: 'transparent' },
+        }}>
+          <MainStack.Screen name="MainApp" component={MainApp} options={{ headerShown: false }} />
+          <MainStack.Screen name="Login" component={TestLogin} options={{ headerShown: false }} />
+        </MainStack.Navigator>
+      </NavigationContainer>
+    </AuthProvider>
   );
 }
 
