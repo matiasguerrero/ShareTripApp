@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, TextInput, Keyboard, ImageBackground, Image, Text, TouchableOpacity, Dimensions,KeyboardAvoidingView } from 'react-native';
+import { View, StyleSheet, TextInput, Keyboard, ImageBackground , Image, Text, TouchableOpacity, Dimensions,KeyboardAvoidingView } from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
+import Icon from './Icon';
+
+
 const TestLogin = ({selectedButton}) => {
+   
 
     const [isLoginPressed, setIsLoginPressed] = useState(false);
     const [isRegisterPressed, setIsRegisterPressed] = useState(true);
@@ -36,6 +40,14 @@ const TestLogin = ({selectedButton}) => {
     };
   }, []);
   
+    const [buttonWidth, setButtonWidth] = useState(0);
+
+    const handleButtonLayout = (event) => {
+        const { width } = event.nativeEvent.layout;
+        const { marginLeft } = width * 0.2;
+        setButtonWidth(marginLeft);
+    };
+
     const handleLoginPress = () => {
       setIsLoginPressed(true);
       setIsRegisterPressed(false);
@@ -138,14 +150,16 @@ const TestLogin = ({selectedButton}) => {
                     <View style={styles.bottomContainerRegister}>
                         <TouchableOpacity onPress={handleLoginPress} style={[styles.buttonRegister, { backgroundColor: 'rgb(74,122,246)' }]}>
                             <View style={styles.buttorInputRow}>
-                                <Image source={require('./assets/icons/adaptive-icon.png')} style={styles.icon} />
+                                <Icon style={[styles.icon ,{top: 3}]} name={"email"} color={"#ffffff"} width={20} height={20} marginleft={35}/>
                                 <Text style={styles.buttonText}>Continuar con email</Text>
                             </View>
                         </TouchableOpacity> 	
-                        <TouchableOpacity onPress={handleLoginPress} style={[styles.buttonRegister, { backgroundColor: 'rgb(68,53,165)' }]}>
+                        <TouchableOpacity onPress={handleLoginPress} style={[styles.buttonRegister, { backgroundColor: 'rgb(68,53,165)' }]} onLayout={handleButtonLayout}>
+                            <Icon style={styles.icon} name={"facebook"} color={"#ffffff"} width={20} height={20} marginleft={35}/>
                             <Text style={styles.buttonText}>Continuar con facebook</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={handleLoginPress} style={[styles.buttonRegister, { backgroundColor: 'rgb(255, 255, 255)' }]}>
+                            <Icon style={styles.icon} name={"apple"} color={"#000000"} width={20} height={20} marginleft={35}/>
                             <Text style={styles.buttonTextBlack}>Continuar con Apple</Text>
                         </TouchableOpacity>
                          
@@ -164,7 +178,7 @@ const TestLogin = ({selectedButton}) => {
                         </Text>
                     </View>
 
-                    <TouchableOpacity onPress={handleRegisterPress} style={[styles.button, { backgroundColor: 'rgba(0, 0, 0, 0)' }]}>
+                    <TouchableOpacity onPress={handleLoginPress} style={[styles.button, { backgroundColor: 'rgba(0, 0, 0, 0)' }]}>
                         <Text style={[styles.buttonText, { color: 'rgb(255, 255, 255)', fontSize: 15 }]}>¿Ya tienes cuenta? <Text style={[styles.underlineText, { color: 'rgb(240, 176, 10)', fontSize: 15}]}>Inicia sesión</Text></Text>
                     </TouchableOpacity>
                  
@@ -180,7 +194,6 @@ const TestLogin = ({selectedButton}) => {
 const windowHeight = Dimensions.get('window').height;
 const imageHeight = windowHeight * 0.45; // Altura según el porcentaje deseado
 const imageHeightKeyboard = windowHeight * 0.20; // Altura del contenedor (55% de la altura de la ventana)
-
 
 const styles = StyleSheet.create({
   container: {
@@ -331,17 +344,15 @@ const styles = StyleSheet.create({
   buttonRegister:{
     height: 45,
     borderRadius: 40,
-    justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 15,
+    flexDirection: 'row',
   },
   buttorInputRow:{
     flexDirection: 'row',
   },
   icon: {
-    width: 30,
-    height: 30,
-    marginRight: 10,
+    marginRight: 6,
   },
   underlineText: {
     textDecorationLine: 'underline',
@@ -377,6 +388,7 @@ const styles = StyleSheet.create({
   textTerminos:{
     color: 'rgb(255, 255, 255)', 
     fontSize: 10,
+    textAlign: 'center',
   },
   textTerminosGold:{
     color : 'rgb(240,176,10)',
