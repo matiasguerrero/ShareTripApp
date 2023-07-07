@@ -60,7 +60,7 @@ const TestLogin = ({selectedButton}) => {
       };
 
       const verTerminosYPoliticas =() =>{
-
+        navigation.navigate('Tab_Home');
       }
   return (
     <View style={styles.container}>

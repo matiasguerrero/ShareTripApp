@@ -11,6 +11,7 @@ import { enableScreens } from 'react-native-screens';
 import MainApp from './MainApp';
 import TestLogin from './TestLogin';
 import { useState } from 'react';
+import HomeApp from './HomeApp';
 enableScreens();
 
 const MainStack = createStackNavigator();
@@ -104,6 +105,10 @@ const App = () => {
 
           <MainStack.Screen name="Login" options={{ headerShown: false }}>
             {props => <TestLogin {...props} selectedButton={selectedButton}/>}
+          </MainStack.Screen>
+
+          <MainStack.Screen name="Tab_Home" options={{ headerShown: false }}>
+            {props => <HomeApp {...props} selectedButton={selectedButton}/>}
           </MainStack.Screen>
 
         </MainStack.Navigator>
