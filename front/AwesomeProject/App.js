@@ -10,7 +10,7 @@ import { Animated } from 'react-native';
 import { enableScreens } from 'react-native-screens';
 import MainApp from './MainApp';
 import TestLogin from './TestLogin';
-
+import { useState } from 'react';
 enableScreens();
 
 const MainStack = createStackNavigator();
@@ -71,6 +71,8 @@ const AuthNavigator = () => (
 );
 
 const App = () => {
+  const [selectedButton, setSelectedButton] = useState('login');
+
   return (
     /*
     <AuthProvider>
@@ -96,8 +98,14 @@ const App = () => {
           cardStyleInterpolator: forFadeFromBottom,
             cardStyle: { backgroundColor: 'transparent' },
         }}>
-          <MainStack.Screen name="MainApp" component={MainApp} options={{ headerShown: false }} />
-          <MainStack.Screen name="Login" component={TestLogin} options={{ headerShown: false }} />
+          <MainStack.Screen name="MainApp" options={{ headerShown: false }}>
+            {props => <MainApp {...props} setSelectedButton={setSelectedButton}/>}
+          </MainStack.Screen>
+
+          <MainStack.Screen name="Login" options={{ headerShown: false }}>
+            {props => <TestLogin {...props} selectedButton={selectedButton}/>}
+          </MainStack.Screen>
+
         </MainStack.Navigator>
       </NavigationContainer>
     </AuthProvider>

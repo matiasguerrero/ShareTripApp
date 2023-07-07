@@ -2,14 +2,25 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, TextInput, Keyboard, ImageBackground, Image, Text, TouchableOpacity, Dimensions,KeyboardAvoidingView } from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-const TestLogin = ({ }) => {
+const TestLogin = ({selectedButton}) => {
 
-    const [isLoginPressed, setIsLoginPressed] = useState(true);
-    const [isRegisterPressed, setIsRegisterPressed] = useState(false);
+    const [isLoginPressed, setIsLoginPressed] = useState(false);
+    const [isRegisterPressed, setIsRegisterPressed] = useState(true);
 
     const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
 
     const navigation = useNavigation();
+
+    useEffect(() => {
+        if (selectedButton === 'Login') {
+          setIsLoginPressed(true);
+          setIsRegisterPressed(false);
+        } else if (selectedButton === 'Register') {
+          setIsLoginPressed(false);
+          setIsRegisterPressed(true);
+        }
+      }, [selectedButton]);
+    
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
         setIsKeyboardOpen(true);
@@ -36,6 +47,9 @@ const TestLogin = ({ }) => {
         // Lógica adicional para el botón "Registrarse"
       };
 
+      const verTerminosYPoliticas =() =>{
+
+      }
   return (
     <View style={styles.container}>
       <View style={[styles.headerContainer, isKeyboardOpen ? styles.headerContainerKeyboard : null]}>
@@ -89,32 +103,74 @@ const TestLogin = ({ }) => {
                     </TouchableOpacity>
 
                 </View>
-                <Text style={styles.welcomeText}>Bienvenido a RUTAPP</Text>
-                <TextInput
-                    style={[styles.input, isKeyboardOpen ? styles.email_keyboard : null]}
-                    placeholder="Correo electrónico"
-                    placeholderTextColor="rgba(204, 204, 204, 0.8)"
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Contraseña"
-                    placeholderTextColor="rgba(204, 204, 204, 0.8)"
-                    secureTextEntry={true}
-                />
+                
+                {isLoginPressed && (<> 
+                    <Text style={styles.welcomeText}>Bienvenido a RUTAPP</Text> 
+                    <TextInput
+                        style={[styles.input, isKeyboardOpen ? styles.email_keyboard : null]}
+                        placeholder="Correo electrónico"
+                        placeholderTextColor="rgba(204, 204, 204, 0.8)"
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Contraseña"
+                        placeholderTextColor="rgba(204, 204, 204, 0.8)"
+                        secureTextEntry={true}
+                    />
 
+                    {!isKeyboardOpen && ( 
+                        <View style={styles.bottomContainer}>
+                            <TouchableOpacity onPress={handleLoginPress} style={[styles.button, { backgroundColor: 'rgb(240, 176, 10)' }]}>
+                                <Text style={styles.buttonText}>Iniciar sesión</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={handleRegisterPress} style={[styles.button, { backgroundColor: 'rgba(0, 0, 0, 0)' }]}>
+                                <Text style={[styles.buttonText, { color: 'rgb(255, 255, 255)' }, { fontSize: 14 }]}>
+                                ¿Has olvidado tu contraseña?
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                 </>)}
 
-                {!isKeyboardOpen && (
-                    <View style={styles.bottomContainer}>
-                        <TouchableOpacity onPress={handleLoginPress} style={[styles.button, { backgroundColor: 'rgb(240, 176, 10)' }]}>
-                            <Text style={styles.buttonText}>Iniciar sesión</Text>
+                {isRegisterPressed && (<>
+                    <Text style={styles.welcomeText}>Bienvenido a RUTAPP</Text> 
+                    <Text style={styles.registerText}>¿Como quieres registrarte?</Text> 
+                    <View style={styles.bottomContainerRegister}>
+                        <TouchableOpacity onPress={handleLoginPress} style={[styles.buttonRegister, { backgroundColor: 'rgb(74,122,246)' }]}>
+                            <View style={styles.buttorInputRow}>
+                                <Image source={require('./assets/icons/adaptive-icon.png')} style={styles.icon} />
+                                <Text style={styles.buttonText}>Continuar con email</Text>
+                            </View>
+                        </TouchableOpacity> 	
+                        <TouchableOpacity onPress={handleLoginPress} style={[styles.buttonRegister, { backgroundColor: 'rgb(68,53,165)' }]}>
+                            <Text style={styles.buttonText}>Continuar con facebook</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={handleRegisterPress} style={[styles.button, { backgroundColor: 'rgba(0, 0, 0, 0)' }]}>
-                            <Text style={[styles.buttonText, { color: 'rgb(255, 255, 255)' }, { fontSize: 14 }]}>
-                            ¿Has olvidado tu contraseña?
-                            </Text>
+                        <TouchableOpacity onPress={handleLoginPress} style={[styles.buttonRegister, { backgroundColor: 'rgb(255, 255, 255)' }]}>
+                            <Text style={styles.buttonTextBlack}>Continuar con Apple</Text>
                         </TouchableOpacity>
+                         
                     </View>
-                )}
+
+                    <View style={styles.terminosYPoliticas}>
+                        <Text style={styles.textTerminos}>
+                        Al registrarte, aceptas nuestros {' '} 
+                        <TouchableOpacity onPress={verTerminosYPoliticas}>
+                            <Text style={styles.textTerminosGold}>Términos y Condiciones</Text>
+                        </TouchableOpacity>
+                          y nuestra {' '} 
+                        <TouchableOpacity onPress={verTerminosYPoliticas}>
+                            <Text style={styles.textTerminosGold}>Política de privacidad</Text>
+                        </TouchableOpacity>
+                        </Text>
+                    </View>
+
+                    <TouchableOpacity onPress={handleRegisterPress} style={[styles.button, { backgroundColor: 'rgba(0, 0, 0, 0)' }]}>
+                        <Text style={[styles.buttonText, { color: 'rgb(255, 255, 255)', fontSize: 15 }]}>¿Ya tienes cuenta? <Text style={[styles.underlineText, { color: 'rgb(240, 176, 10)', fontSize: 15}]}>Inicia sesión</Text></Text>
+                    </TouchableOpacity>
+                 
+                 
+                </>)}
+
            </View>
         </View>
       </View>      
@@ -204,7 +260,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 30,
+    marginBottom: 20,
     width: '100%',
   },
   bottomContainer: {
@@ -228,6 +284,10 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#FFFFFF',
+    fontSize: 16,
+  },
+  buttonTextBlack: {
+    color: '#000000',
     fontSize: 16,
   },
   buttonLeft: {
@@ -263,6 +323,26 @@ const styles = StyleSheet.create({
     marginRight: -20,
     zIndex: 0,
   },
+  bottomContainerRegister: {
+    width: '95%',
+    paddingHorizontal: 10,
+    marginTop: 40,
+  },
+  buttonRegister:{
+    height: 45,
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  buttorInputRow:{
+    flexDirection: 'row',
+  },
+  icon: {
+    width: 30,
+    height: 30,
+    marginRight: 10,
+  },
   underlineText: {
     textDecorationLine: 'underline',
   },
@@ -272,6 +352,7 @@ const styles = StyleSheet.create({
     borderBottomColor: 'rgba(204, 204, 204, 0.8)',
     borderBottomWidth: 1,
     marginBottom: 20,
+    marginTop: 20,
     color: 'white',
   },
   email_keyboard:{
@@ -281,8 +362,27 @@ const styles = StyleSheet.create({
     color: 'rgb(255, 255, 255)',
     fontSize: 22,
     fontWeight: 'bold',
-    marginBottom: 25,
   },
+  registerText: {
+    color: 'rgb(255, 255, 255)',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginTop: 10,
+  },
+  terminosYPoliticas:{
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '85%',
+  },
+  textTerminos:{
+    color: 'rgb(255, 255, 255)', 
+    fontSize: 10,
+  },
+  textTerminosGold:{
+    color : 'rgb(240,176,10)',
+    fontSize: 10,
+    marginBottom: -3,
+  }
 });
 
 export default TestLogin;

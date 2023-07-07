@@ -2,18 +2,21 @@ import React from 'react';
 import { View, Image, StyleSheet, ImageBackground, Text, TouchableOpacity } from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-const MainApp = () => {
+const MainApp = ({setSelectedButton} ) => {
   const handleLoginPress = () => {
     // Lógica para el botón "Iniciar sesión"
   };
 
   const handleRegisterPress = () => {
     // Lógica para el botón "Registrarse"
+    setSelectedButton("Register");
+    navigation.navigate("Login");
   };
 
   const navigation = useNavigation();
 
   const goLogin =() =>{
+    setSelectedButton("Login");
     navigation.navigate("Login");
   }
   return (
