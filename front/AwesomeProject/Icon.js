@@ -31,7 +31,7 @@ const Icon = ({ name, color, width, height, style, marginleft }) => {
 
         );
 
-      case 'location':
+      case 'trip':
         return(
         <Svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width={width} height={height} style={[style, {marginLeft: marginleft}]}>
           <Path d="M429.6 92.1c4.9-11.9 2.1-25.6-7-34.7s-22.8-11.9-34.7-7l-352 144c-14.2 5.8-22.2 20.8-19.3 35.8s16.1 25.8 31.4 25.8H224V432c0 15.3 10.8 28.4 25.8 31.4s30-5.1 35.8-19.3l144-352z" fill={color}/>
@@ -51,6 +51,12 @@ const Icon = ({ name, color, width, height, style, marginleft }) => {
             </Svg>
 
       );
+      case 'location':
+        return (
+          <Svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width={width} height={height} style={[style, {marginLeft: marginleft}]}>
+            <Path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"fill={color}/>
+          </Svg>
+        );
       default:
         return null;
     }

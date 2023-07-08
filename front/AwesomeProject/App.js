@@ -12,6 +12,8 @@ import MainApp from './MainApp';
 import TestLogin from './TestLogin';
 import { useState } from 'react';
 import HomeApp from './HomeApp';
+
+
 enableScreens();
 
 const MainStack = createStackNavigator();
@@ -32,19 +34,6 @@ const verticalSlideUpAnimation = (props) => {
   };
 };
 
-const fadeInAnimation = (props) => {
-  const { current } = props;
-  const opacity = current.progress.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, 1],
-  });
-
-  return {
-    cardStyle: {
-      opacity,
-    },
-  };
-};
 
 const forFadeFromBottom = ({ current }) => ({
   cardStyle: {
@@ -73,6 +62,8 @@ const AuthNavigator = () => (
 
 const App = () => {
   const [selectedButton, setSelectedButton] = useState('login');
+
+ 
 
   return (
     /*
