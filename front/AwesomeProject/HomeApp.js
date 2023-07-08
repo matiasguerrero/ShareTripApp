@@ -5,6 +5,11 @@ import {LinearGradient} from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import Icon from './Icon';
 
+
+const handleViajePress = () => {
+  // Lógica para el botón "Iniciar sesión"
+};
+
 const HomeTab = () => (
   //<View style={styles.container}>
   //  <View style={styles.centerContainer}>
@@ -31,6 +36,19 @@ const HomeTab = () => (
               style={styles.logo}
           />
         </View>
+        <View style={styles.overlayContainer}>
+          <View style={styles.blackContainer}>
+            <View style={styles.columnContainer}>
+              <Text style={styles.seleccioneText}>Seleccione una opción</Text> 
+              <TouchableOpacity onPress={handleViajePress} style={[styles.button, { backgroundColor: 'rgb(49, 48, 48)' }]}>
+                  <Text style={styles.buttonText}>Buscar viaje</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleViajePress} style={[styles.button, { backgroundColor: 'rgb(49, 48, 48)' }]}>
+                  <Text style={styles.buttonText}>Cargar viaje</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>      
       </View>
     </LinearGradient>
   </ImageBackground>
@@ -150,29 +168,55 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFFFFF',
   },
-  bottomContainer: {
+  overlayContainer: {
     position: 'absolute',
+    top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    paddingHorizontal: 30,
-    paddingBottom: 20,
+    zIndex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  blackContainer: {
+    width: '90%',
+    height: '40%',
+    backgroundColor: 'black',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 40,
+  },
+  columnContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '90%',
   },
   button: {
-    height: 58,
+    height: 70,
+    width: '95%',
     borderRadius: 40,
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 20,
   },
   buttonText: {
     fontWeight: 'normal',
     color: '#FFFFFF',
+    fontSize: 16,
   },
   underlineText: {
     textDecorationLine: 'underline',
   },
   icon:{
     
+  },
+  seleccioneText: {
+    color: 'rgb(255, 255, 255)',
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 20,
   },
 });
 
