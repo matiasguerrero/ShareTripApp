@@ -12,6 +12,7 @@ import MainApp from './MainApp';
 import TestLogin from './TestLogin';
 import { useState } from 'react';
 import HomeApp from './HomeApp';
+import CustomCalendar from './CustomCalendar';
 
 
 enableScreens();
@@ -85,7 +86,7 @@ const App = () => {
     <AuthProvider>
       <NavigationContainer>
         <StatusBar style="auto" />
-        <MainStack.Navigator initialRouteName="MainApp"  screenOptions={{
+        <MainStack.Navigator initialRouteName="CustomCalendar"  screenOptions={{
           headerShown: false,
           cardStyleInterpolator: forFadeFromBottom,
             cardStyle: { backgroundColor: 'transparent' },
@@ -100,6 +101,11 @@ const App = () => {
 
           <MainStack.Screen name="Tab_Home" options={{ headerShown: false }}>
             {props => <HomeApp {...props} selectedButton={selectedButton}/>}
+          </MainStack.Screen>
+
+          <MainStack.Screen name="CustomCalendar" options={{ headerShown: false }}>
+          {(props) => <CustomCalendar {...props} selectedButton={selectedButton} />}
+
           </MainStack.Screen>
 
         </MainStack.Navigator>
