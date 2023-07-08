@@ -7,6 +7,9 @@ const SelectedHome = () => {
   const handleViajePress = () => {
     navigation.navigate("SearchTrip");
   };
+  const handleLoadViajePress = () => {
+    navigation.navigate("DateTrip");
+  };
 
   const navigation = useNavigation();
 
@@ -38,7 +41,7 @@ const SelectedHome = () => {
               <TouchableOpacity onPress={handleViajePress} style={[styles.button, { backgroundColor: 'rgb(49, 48, 48)' }]}>
                   <Text style={styles.buttonText}>Buscar viaje</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={handleViajePress} style={[styles.button, { backgroundColor: 'rgb(49, 48, 48)' }]}>
+              <TouchableOpacity onPress={handleLoadViajePress} style={[styles.button, { backgroundColor: 'rgb(49, 48, 48)' }]}>
                   <Text style={styles.buttonText}>Cargar viaje</Text>
               </TouchableOpacity>
             </View>

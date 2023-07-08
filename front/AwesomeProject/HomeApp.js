@@ -7,6 +7,7 @@ import Icon from './Icon';
 
 import SelectedHome from './SelectedHome';
 import SearchTrip from './SearchTrip';
+import DateTrip from './DateTrip';
 
 const transitionConfig = {
   ...TransitionPresets.SlideFromRightIOS, // Utiliza la animación predeterminada de SlideFromRightAndroid
@@ -30,6 +31,9 @@ const HomeTab = () => (
     </HomeAppStack.Screen>
     <HomeAppStack.Screen name="SearchTrip" options={{ headerShown: false }}>
         {props => <SearchTrip {...props}/>}
+    </HomeAppStack.Screen>
+    <HomeAppStack.Screen name="DateTrip" options={{ headerShown: false }}>
+        {props => <DateTrip {...props}/>}
     </HomeAppStack.Screen>
   </HomeAppStack.Navigator>
 );
