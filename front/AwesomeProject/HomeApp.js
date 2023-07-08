@@ -3,7 +3,9 @@ import { View, Image, StyleSheet, ImageBackground, Text, TouchableOpacity } from
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import {  TransitionPresets ,createStackNavigator } from '@react-navigation/stack';
+import { useState } from 'react';
 import Icon from './Icon';
+import CustomCalendar from './CustomCalendar';
 
 import SelectedHome from './SelectedHome';
 import SearchTrip from './SearchTrip';
@@ -15,12 +17,15 @@ const transitionConfig = {
 
 const HomeAppStack = createStackNavigator();
 
+
+
 const HomeTab = () => (
   //<View style={styles.container}>
   //  <View style={styles.centerContainer}>
    //  <SearchContainer />
     //</View>
   //</View>
+  
   <HomeAppStack.Navigator initialRouteName="SelectedHome" screenOptions={{
     headerShown: false,
     ...transitionConfig,
@@ -34,6 +39,9 @@ const HomeTab = () => (
     </HomeAppStack.Screen>
     <HomeAppStack.Screen name="DateTrip" options={{ headerShown: false }}>
         {props => <DateTrip {...props}/>}
+    </HomeAppStack.Screen>
+    <HomeAppStack.Screen name="CustomCalendar" options={{ headerShown: false }}>
+          {(props) => <CustomCalendar {...props} maxMonthsToRender={3} />}
     </HomeAppStack.Screen>
   </HomeAppStack.Navigator>
 );

@@ -3,8 +3,11 @@ import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ImageBackground, Image, Keyboard, Dimensions, TouchableOpacity } from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
 import Icon from './Icon';
+import { useNavigation } from '@react-navigation/native';
 const DateTrip = () => {
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+
+  const navigator= useNavigation();
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
@@ -23,7 +26,7 @@ const DateTrip = () => {
 
 
   const handleCalendarPress = () => {
-  // Lógica para el botón "Iniciar sesión"
+    navigator.navigate('CustomCalendar');
   };
   
   return (

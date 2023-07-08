@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Image } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 
 LocaleConfig.locales['es'] = {
@@ -46,14 +46,14 @@ LocaleConfig.locales['es'] = {
 
 LocaleConfig.defaultLocale = 'es';
 
-const CustomCalendar = () => {
+const CustomCalendar = ({maxMonthsToRender}) => {
   const currentDate = new Date();
   const currentDay = currentDate.toISOString().split('T')[0];
   const currentMonth = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1)
     .toString()
     .padStart(2, '0')}-01`;
 
-  const monthsToShow = 12; // Número de meses a mostrar
+  const monthsToShow = maxMonthsToRender; // Número de meses a mostrar
 
   const renderHeader = (date) => {
     const monthName = LocaleConfig.locales['es'].monthNames[date.getMonth()];
@@ -104,10 +104,55 @@ const CustomCalendar = () => {
   }
 
   return (
+    <View style={styles.container}>
+    <View style={styles.logoContainer}>
+          <Image
+            source={require('./assets/logo.png')} // Ruta de tu imagen del logo
+            resizeMode="contain" // Ajusta la imagen al tamaño del contenedor manteniendo la proporción
+            style={styles.logo}
+          />
+    </View>
+    <View style={styles.dayNamesContainer}>
+      <Text style={styles.dayName}>dom</Text>
+      <Text style={styles.dayName}>lun</Text>
+      <Text style={styles.dayName}>mar</Text>
+      <Text style={styles.dayName}>mié</Text>
+      <Text style={styles.dayName}>jue</Text>
+      <Text style={styles.dayName}>vie</Text>
+      <Text style={styles.dayName}>sáb</Text>
+    </View>
     <ScrollView style={{ flex: 1 }}>
       {renderedMonths}
     </ScrollView>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container:{
+    flex: 1,
+    backgroundColor: '#131514',
+  },
+  dayNamesContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    marginBottom: 10,
+  },
+  dayName: {
+    fontWeight: 'bold',
+    fontSize: 14,
+    color: 'white',
+  },
+  logoContainer: {
+    alignItems: 'center',
+    marginTop: 10,
+    marginBottom: 10,
+    backgroundColor: '#131514',
+  },
+  logo:{
+    width: '70%',
+  },
+});
 
 export default CustomCalendar;

@@ -102,12 +102,6 @@ const App = () => {
           <MainStack.Screen name="Tab_Home" options={{ headerShown: false }}>
             {props => <HomeApp {...props} selectedButton={selectedButton}/>}
           </MainStack.Screen>
-
-          <MainStack.Screen name="CustomCalendar" options={{ headerShown: false }}>
-          {(props) => <CustomCalendar {...props} selectedButton={selectedButton} />}
-
-          </MainStack.Screen>
-
         </MainStack.Navigator>
       </NavigationContainer>
     </AuthProvider>
