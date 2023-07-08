@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet, Image } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
+import { useState, useEffect } from 'react';
+import { ActivityIndicator } from 'react-native';
 
 LocaleConfig.locales['es'] = {
   monthNames: [
@@ -54,6 +56,16 @@ const CustomCalendar = ({maxMonthsToRender}) => {
     .padStart(2, '0')}-01`;
 
   const monthsToShow = maxMonthsToRender; // Número de meses a mostrar
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      setIsLoading(false);
+    }, 300);
+
+    return () => clearTimeout(delay);
+  }, []);
 
   const renderHeader = (date) => {
     const monthName = LocaleConfig.locales['es'].monthNames[date.getMonth()];
@@ -121,8 +133,12 @@ const CustomCalendar = ({maxMonthsToRender}) => {
       <Text style={styles.dayName}>vie</Text>
       <Text style={styles.dayName}>sáb</Text>
     </View>
+    {isLoading &&  
+     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', height: '100%', width: '100%', }}>
+        <ActivityIndicator size="large" color="white" />
+      </View>}
     <ScrollView style={{ flex: 1 }}>
-      {renderedMonths}
+      {!isLoading && renderedMonths}
     </ScrollView>
     </View>
   );
