@@ -3,6 +3,7 @@ import { View, Text, ScrollView, StyleSheet, Image } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { useState, useEffect } from 'react';
 import { ActivityIndicator } from 'react-native';
+import { debounce } from 'lodash';
 
 LocaleConfig.locales['es'] = {
   monthNames: [
@@ -56,16 +57,65 @@ const CustomCalendar = ({maxMonthsToRender}) => {
     .padStart(2, '0')}-01`;
 
   const monthsToShow = maxMonthsToRender; // Número de meses a mostrar
-
+  const [monthCount, setMonthCount] = useState(monthsToShow);
+  const [renderedMonths, setRenderedMonths] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingAdicional, setIsLoadingAdicional] = useState(false);
+  const [additionalMonths, setadditionalMonths] = useState([]);
+  const [isFetchingAdditionalMonths, setIsFetchingAdditionalMonths] = useState(false);
+
 
   useEffect(() => {
     const delay = setTimeout(() => {
+      for (let i = 0; i < monthsToShow; i++) {
+        renderedMonths.push(renderMonth(i));
+      }
       setIsLoading(false);
     }, 300);
 
     return () => clearTimeout(delay);
   }, []);
+
+  const renderMonths = (startMonthIndex, endMonthIndex) => {
+    const months = [];
+    //console.log(startMonthIndex);
+    //console.log(endMonthIndex);
+    for (let i = startMonthIndex; i <= endMonthIndex; i++) {
+      months.push(renderMonth(i));
+    }
+    return months;
+  };
+
+  const handleScroll = (event) => {
+    if (event.nativeEvent) {
+      event.persist(); // Mantener el evento sintético
+  
+      const { contentOffset, layoutMeasurement, contentSize } = event.nativeEvent;
+      const scrollPosition = contentOffset.y;
+      const scrollViewHeight = layoutMeasurement.height;
+      const contentHeight = contentSize.height;
+  
+      if (scrollPosition + scrollViewHeight >= contentHeight && !isLoading && !isFetchingAdditionalMonths) {
+        setIsLoadingAdicional(true);
+        setIsFetchingAdditionalMonths(true);
+        // Simular una carga de datos asincrónica
+        setTimeout(() => {
+          const startMonthIndex = monthCount;
+          const endMonthIndex = startMonthIndex+1; // Renderizar 2 meses adicionales. Para agregar meses solo tocar este.
+          additionalMonths.push(renderMonths(startMonthIndex, endMonthIndex));
+          setMonthCount(endMonthIndex + 1);
+          setRenderedMonths((prevMonths) => [...prevMonths, ...additionalMonths]);
+          additionalMonths.length = 0;
+          //console.log(additionalMonths);
+          //console.log(additionalMonths.length);
+          //console.log(renderedMonths);
+          setIsLoadingAdicional(false);
+          setIsFetchingAdditionalMonths(false);
+        }, 500); // Simulación de retardo de carga de 0.5 segundos
+      }
+    }
+  };
+  
 
   const renderHeader = (date) => {
     const monthName = LocaleConfig.locales['es'].monthNames[date.getMonth()];
@@ -110,11 +160,6 @@ const CustomCalendar = ({maxMonthsToRender}) => {
     );
   };
 
-  const renderedMonths = [];
-  for (let i = 0; i < monthsToShow; i++) {
-    renderedMonths.push(renderMonth(i));
-  }
-
   return (
     <View style={styles.container}>
     <View style={styles.logoContainer}>
@@ -137,8 +182,13 @@ const CustomCalendar = ({maxMonthsToRender}) => {
      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', height: '100%', width: '100%', }}>
         <ActivityIndicator size="large" color="white" />
       </View>}
-    <ScrollView style={{ flex: 1 }}>
+    <ScrollView style={{ flex: 1 }} onScroll={handleScroll} scrollEventThrottle={16}>
       {!isLoading && renderedMonths}
+      {isLoadingAdicional &&  
+     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', height: '100%', width: '100%', }}>
+        <ActivityIndicator size="large" color="white" />
+      </View>}
+      {!isLoadingAdicional && additionalMonths}
     </ScrollView>
     </View>
   );
