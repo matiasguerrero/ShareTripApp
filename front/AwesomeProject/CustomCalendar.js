@@ -49,7 +49,7 @@ LocaleConfig.locales['es'] = {
 
 LocaleConfig.defaultLocale = 'es';
 
-const CustomCalendar = ({maxMonthsToRender}) => {
+const CustomCalendar = ({maxMonthsToRender, setToggleModal, setDate}) => {
   const currentDate = new Date();
   const currentDay = currentDate.toISOString().split('T')[0];
   const currentMonth = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1)
@@ -154,6 +154,8 @@ const CustomCalendar = ({maxMonthsToRender}) => {
           }}
           onDayPress={day => {
             console.log('selected day', day);
+            setDate(new Date(day.year, day.month - 1, day.day));
+            setToggleModal();
           }}
         />
       </View>
@@ -198,6 +200,7 @@ const styles = StyleSheet.create({
   container:{
     flex: 1,
     backgroundColor: '#131514',
+    width: '100%',
   },
   dayNamesContainer: {
     flexDirection: 'row',

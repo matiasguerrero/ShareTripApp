@@ -1,11 +1,16 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ImageBackground, Image, Keyboard, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, Image, Keyboard, Dimensions, TouchableOpacity, Modal } from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
 import Icon from './Icon';
 import { useNavigation } from '@react-navigation/native';
+import CustomCalendar from './CustomCalendar';
 const DateTrip = () => {
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+  const [modalStartVisible, setModalStartVisible] = useState(false);
+  const [modalEndVisible, setModalEndVisible] = useState(false);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
   const navigator= useNavigation();
 
@@ -24,14 +29,37 @@ const DateTrip = () => {
   };
   }, []);
 
+  const toggleModalStart = () => {
+    setModalStartVisible(!modalStartVisible);
+  };
+  
+  const toggleModalEnd = () => {
+    setModalEndVisible(!modalEndVisible);
+  };
 
-  const handleCalendarPress = () => {
-    navigator.navigate('CustomCalendar');
+  const handleStartCalendarPress = () => {
+    //avigator.navigate('CustomCalendar');
+    toggleModalStart();
+  };
+
+  const handleEndCalendarPress = () => {
+    //avigator.navigate('CustomCalendar');
+    toggleModalEnd();
   };
   
   return (
   
     <View style={styles.container}>
+      <Modal visible={modalStartVisible} onRequestClose={() => toggleModalStart()}>
+        <View style={styles.modalContainer}>
+          <CustomCalendar maxMonthsToRender={3} setToggleModal={toggleModalStart} setDate={setStartDate}></CustomCalendar>
+        </View>
+      </Modal>
+      <Modal visible={modalEndVisible} onRequestClose={() => toggleModalEnd()}>
+        <View style={styles.modalContainer}>
+          <CustomCalendar maxMonthsToRender={3} setToggleModal={toggleModalEnd} setDate={setEndDate}></CustomCalendar>
+        </View>
+      </Modal>
       <ImageBackground
         source={require('./assets/fondo.png')} // Ruta de tu imagen de fondo
         resizeMode="cover"
@@ -61,21 +89,21 @@ const DateTrip = () => {
           <View style={[styles.blackContainer, isKeyboardOpen ? styles.blackContainer_Keyboard : null]}>
             <View style={styles.columnContainer}>
               <Text style={[styles.seleccioneText, isKeyboardOpen ? styles.seleccioneText_Keyboard : null]}>Indique la fecha en la que desea viajar</Text>
-              <TouchableOpacity onPress={handleCalendarPress}>
+              <TouchableOpacity onPress={handleStartCalendarPress}>
                 <View style={[styles.textInputRow, isKeyboardOpen ? styles.email_keyboard : null]}>
                   <Icon style={styles.icon} name={"calendar"} color={'rgba(204, 204, 204, 0.8)'} width={30} height={30} />
                   <Text
                     style={[styles.text,{color: "rgba(204, 204, 204, 0.8)"}]}>
-                    Ida
+                      {startDate ? startDate.toLocaleDateString() : "Ida"}
                   </Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={handleCalendarPress}>
+              <TouchableOpacity onPress={handleEndCalendarPress}>
                 <View style={[styles.textInputRow, isKeyboardOpen ? styles.email_keyboard : null]}>
                   <Icon style={styles.icon} name={"calendar"} color={'rgba(204, 204, 204, 0.8)'} width={30} height={30} />
                   <Text
                     style={[styles.text,{color: "rgba(204, 204, 204, 0.8)"}]}>
-                    Vuelta {'('}opcional{')'}
+                      {endDate ? endDate.toLocaleDateString() : "Vuelta (opcional)"}
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -85,6 +113,7 @@ const DateTrip = () => {
       </View>
     </View>
 
+     
   
   );
 };
@@ -105,6 +134,12 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flexGrow: 1,
+  },
+  modalContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
   },
   backgroundImage: {
     position: 'absolute',
