@@ -225,7 +225,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     position: 'absolute',
     width: '100%',
-    //Este contenedor tiene 30px por 30px
     top: 0,
     left: 28,
     right: 0,
