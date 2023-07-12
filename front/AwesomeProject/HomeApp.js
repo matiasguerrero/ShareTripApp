@@ -10,6 +10,7 @@ import CustomCalendar from './CustomCalendar';
 import SelectedHome from './SelectedHome';
 import SearchTrip from './SearchTrip';
 import DateTrip from './DateTrip';
+import AsientosDisp from './AsientosDisp';
 
 const transitionConfig = {
   ...TransitionPresets.SlideFromRightIOS, // Utiliza la animación predeterminada de SlideFromRightAndroid
@@ -40,8 +41,8 @@ const HomeTab = () => (
     <HomeAppStack.Screen name="DateTrip" options={{ headerShown: false }}>
         {props => <DateTrip {...props}/>}
     </HomeAppStack.Screen>
-    <HomeAppStack.Screen name="CustomCalendar" options={{ headerShown: false }}>
-          {(props) => <CustomCalendar {...props} maxMonthsToRender={3} />}
+    <HomeAppStack.Screen name="AsientosDisp" options={{ headerShown: false }}>
+          {(props) => <AsientosDisp {...props}/>}
     </HomeAppStack.Screen>
   </HomeAppStack.Navigator>
 );

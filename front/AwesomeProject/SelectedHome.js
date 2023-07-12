@@ -8,7 +8,7 @@ const SelectedHome = () => {
     navigation.navigate("SearchTrip");
   };
   const handleLoadViajePress = () => {
-    navigation.navigate("DateTrip");
+    navigation.navigate("AsientosDisp");
   };
 
   const navigation = useNavigation();
