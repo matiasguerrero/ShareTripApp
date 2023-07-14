@@ -4,55 +4,61 @@ import { ScrollView } from 'react-native-gesture-handler';
 import Icon from './Icon';
 import { Dimensions } from 'react-native';
 import { useState, useEffect } from 'react';
+import { useNavigation } from '@react-navigation/native';
 
 const windowHeight = Dimensions.get('window').height;
 
-
-const renderTripButton = (nombre, opiniones) => {
-    return (
-    <View style={[{width: '100%'},{alignItems: 'center'}]}>
-      <TouchableOpacity style={styles.button}>
-        <View style={styles.rowTrip}>
-          <View style={styles.circleContainer}>
-            <Image
-                source={require('./assets/retrato-hombre-reir.jpg')} // Ruta de la imagen relativa al archivo actual
-                style={styles.imagen}
-                resizeMode='contain'
-            />        
-          </View>
-  
-          <Text style={styles.buttonText}>{nombre}</Text>
-  
-          <View style={styles.iconContainer}>
-            <Icon
-              style={styles.icon}
-              name={'circle-check'}
-              color={'rgb(240, 176, 10)'}
-              width={20}
-              height={20}
-            />
-          </View>
-  
-          <View style={styles.opinionContainer}>
-            <Text style={styles.opinionText}>{opiniones}</Text>
-            <Icon
-              style={styles.icon}
-              name={'star'}
-              color={'rgb(240, 176, 10)'}
-              width={13}
-              height={13}
-            />
-          </View>
-        </View>
-      </TouchableOpacity>
-      </View>
-    );
-  };
 
 const AvailableTrip = () => {
     const [contentHeight, setContentHeight] = useState('auto');
     const [trips, setTrips] = useState([]);
 
+    const navigator=useNavigation();
+
+    const handlePress = () => {
+        navigator.navigate("DataTrip");
+    }
+
+    const renderTripButton = (nombre, opiniones) => {
+        return (
+        <View style={[{width: '100%'},{alignItems: 'center'}]}>
+        <TouchableOpacity style={styles.button} onPress={handlePress}>
+            <View style={styles.rowTrip}>
+            <View style={styles.circleContainer}>
+                <Image
+                    source={require('./assets/retrato-hombre-reir.jpg')} // Ruta de la imagen relativa al archivo actual
+                    style={styles.imagen}
+                    resizeMode='contain'
+                />        
+            </View>
+    
+            <Text style={styles.buttonText}>{nombre}</Text>
+    
+            <View style={styles.iconContainer}>
+                <Icon
+                style={styles.icon}
+                name={'circle-check'}
+                color={'rgb(240, 176, 10)'}
+                width={20}
+                height={20}
+                />
+            </View>
+    
+            <View style={styles.opinionContainer}>
+                <Text style={styles.opinionText}>{opiniones}</Text>
+                <Icon
+                style={styles.icon}
+                name={'star'}
+                color={'rgb(240, 176, 10)'}
+                width={13}
+                height={13}
+                />
+            </View>
+            </View>
+        </TouchableOpacity>
+        </View>
+        );
+    };
     useEffect(() => {
       // Aquí realizarías la lógica para obtener los viajes disponibles
       // y actualizar el estado de 'trips' con los datos obtenidos.
