@@ -134,7 +134,12 @@ const Datatrip = () => {
                   <Text style={styles.button_icon_text}>+</Text>
                 </TouchableOpacity>
               </View>
-
+              
+              <View style={styles.car}>
+                <TouchableOpacity>
+                  <Text style={styles.text_car}>Toyota Etios</Text>
+                </TouchableOpacity>
+              </View>
             </View>
             <View style={styles.container_image}>
               <View style={styles.imageContainer}>
@@ -354,12 +359,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    top: '30%',
+    marginTop: '5%',
   },
   rowProfile:{
     width: '80%',
     flexDirection: 'row',
-    top: '25%',
+    marginTop: '25%',
   },
   columnTrip:{
     flexDirection: 'column',
@@ -433,6 +438,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     marginHorizontal: 10,
   },
+  car: {
+    flexDirection: 'row',
+    marginTop: '2%',
+  },
+  text_car:{
+    textDecorationLine: 'underline', 
+    color: 'rgb(240, 176, 10)',
+    fontSize: 12,
+  }
 });
 
 export default Datatrip;

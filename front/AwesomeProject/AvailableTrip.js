@@ -24,36 +24,44 @@ const AvailableTrip = () => {
         <View style={[{width: '100%'},{alignItems: 'center'}]}>
         <TouchableOpacity style={styles.button} onPress={handlePress}>
             <View style={styles.rowTrip}>
-            <View style={styles.circleContainer}>
-                <Image
-                    source={require('./assets/retrato-hombre-reir.jpg')} // Ruta de la imagen relativa al archivo actual
-                    style={styles.imagen}
-                    resizeMode='contain'
-                />        
-            </View>
-    
-            <Text style={styles.buttonText}>{nombre}</Text>
-    
-            <View style={styles.iconContainer}>
-                <Icon
-                style={styles.icon}
-                name={'circle-check'}
-                color={'rgb(240, 176, 10)'}
-                width={20}
-                height={20}
-                />
-            </View>
-    
-            <View style={styles.opinionContainer}>
-                <Text style={styles.opinionText}>{opiniones}</Text>
-                <Icon
-                style={styles.icon}
-                name={'star'}
-                color={'rgb(240, 176, 10)'}
-                width={13}
-                height={13}
-                />
-            </View>
+              <View style={styles.circleContainer}>
+                  <Image
+                      source={require('./assets/retrato-hombre-reir.jpg')} // Ruta de la imagen relativa al archivo actual
+                      style={styles.imagen}
+                      resizeMode='contain'
+                  />        
+              </View>
+      
+              <View style={styles.column}>
+                <View style={styles.rowTrip}>
+                  <Text style={styles.buttonText}>{nombre}</Text>
+                  <View style={styles.iconContainer}>
+                      <Icon
+                      style={styles.icon}
+                      name={'circle-check'}
+                      color={'rgb(240, 176, 10)'}
+                      width={20}
+                      height={20}
+                      />
+                  </View>
+                </View>
+                
+                <View style={styles.row_trip}>
+                    <Icon style={[styles.icon_trip]} name={"clock"} color={'rgb(240, 176, 10)'} width={12} height={12} />
+                    <Text style={styles.text_trip}>07:30 origen</Text>
+                </View>
+              </View>
+      
+              <View style={styles.opinionContainer}>
+                  <Text style={styles.opinionText}>{opiniones}</Text>
+                  <Icon
+                  style={styles.icon}
+                  name={'star'}
+                  color={'rgb(240, 176, 10)'}
+                  width={13}
+                  height={13}
+                  />
+              </View>
             </View>
         </TouchableOpacity>
         </View>
@@ -244,6 +252,24 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     borderRadius: 100,
+  },
+  column:{
+    flexDirection: 'column',
+  },
+  icon_trip:{
+    marginRight: 6,
+  },
+  text_trip:{
+    color: 'white',
+    fontSize:'bold',
+    fontSize: 10,
+    textAlign: 'center',
+  },
+  row_trip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 3,
+    marginTop: 2,
   },
 });
 
