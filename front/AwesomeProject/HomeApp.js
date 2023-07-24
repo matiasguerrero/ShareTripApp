@@ -13,6 +13,8 @@ import DateTrip from './DateTrip';
 import AsientosDisp from './AsientosDisp';
 import AvailableTrip from './AvailableTrip';
 import Datatrip from './DataTrip';
+import TimeTrip from './TimeTrip';
+import CarTrip from './CarTrip';
 
 const transitionConfig = {
   ...TransitionPresets.SlideFromRightIOS, // Utiliza la animación predeterminada de SlideFromRightAndroid
@@ -51,6 +53,12 @@ const HomeTab = () => (
     </HomeAppStack.Screen>
     <HomeAppStack.Screen name="DataTrip" options={{ headerShown: false }}>
           {(props) => <Datatrip {...props}/>}
+    </HomeAppStack.Screen>
+    <HomeAppStack.Screen name="TimeTrip" options={{ headerShown: false }}>
+          {(props) => <TimeTrip {...props}/>}
+    </HomeAppStack.Screen>
+    <HomeAppStack.Screen name="CarTrip" options={{ headerShown: false }}>
+          {(props) => <CarTrip {...props}/>}
     </HomeAppStack.Screen>
   </HomeAppStack.Navigator>
 );

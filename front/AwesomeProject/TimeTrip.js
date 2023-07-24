@@ -12,12 +12,12 @@ if (Platform.OS === 'android') {
   }
 }
 
-const SearchTrip = () => {
+const TimeTrip = () => {
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
-  const [originText, setOriginText] = useState('');
-  const [destinationText, setDestinationText] = useState('');
+  const [startTimeText, setstartTimeText] = useState('');
+  const [endTimeText, setendTimeText] = useState('');
 
-  const shouldShowContinueButton = (originText && destinationText);
+  const shouldShowContinueButton = (startTimeText && endTimeText);
 
   const navigator= useNavigation();
 
@@ -40,15 +40,38 @@ const SearchTrip = () => {
 
 
   const handleViajePress = () => {
-     navigator.navigate('DateTrip');
+     navigator.navigate('CarTrip');
   };
 
-  const handleOriginChange = (text) => {
-    setOriginText(text);
+  const handlestartTimeChange = (text) => {
+       // Eliminamos los caracteres no permitidos, dejando solo dígitos
+    const formattedText = text.replace(/[^0-9]/g, '');
+
+    // Formateamos el texto para que tenga el formato 'HH:mm'
+    if (formattedText.length <= 2) {
+      setstartTimeText(formattedText); // Si solo hay dos caracteres (horas), actualizamos el estado
+    } else if (formattedText.length > 2 && formattedText.length <= 4) {
+      // Si hay más de dos caracteres (horas) y menos de cinco, agregamos ':' después de las dos primeras posiciones
+      setstartTimeText(formattedText.slice(0, 2) + ':' + formattedText.slice(2));
+    } else {
+      // Si hay más de cuatro caracteres, truncamos el texto a 'HH:mm'
+      setstartTimeText(formattedText.slice(0, 4));
+    }
   };
 
-  const handleDestinationChange = (text) => {
-    setDestinationText(text);
+  const handleendTimeChange = (text) => {
+    const formattedText = text.replace(/[^0-9]/g, '');
+
+    // Formateamos el texto para que tenga el formato 'HH:mm'
+    if (formattedText.length <= 2) {
+      setendTimeText(formattedText); // Si solo hay dos caracteres (horas), actualizamos el estado
+    } else if (formattedText.length > 2 && formattedText.length <= 4) {
+      // Si hay más de dos caracteres (horas) y menos de cinco, agregamos ':' después de las dos primeras posiciones
+      setendTimeText(formattedText.slice(0, 2) + ':' + formattedText.slice(2));
+    } else {
+      // Si hay más de cuatro caracteres, truncamos el texto a 'HH:mm'
+      setendTimeText(formattedText.slice(0, 4));
+    }
   };
   
   return (
@@ -82,25 +105,29 @@ const SearchTrip = () => {
         <View style={[styles.overlayContainer, isKeyboardOpen ? styles.overlayContainer_Keyboard : null]}>
           <View style={[styles.blackContainer, isKeyboardOpen ? styles.blackContainer_Keyboard : null]}>
             <View style={styles.columnContainer}>
-              <Text style={[styles.seleccioneText, isKeyboardOpen ? styles.seleccioneText_Keyboard : null]}>Indique su ruta</Text>
+              <Text style={[styles.seleccioneText, isKeyboardOpen ? styles.seleccioneText_Keyboard : null]}>Indique el horario</Text>
               <View style={[styles.textInputRow, isKeyboardOpen ? styles.email_keyboard : null]}>
-                <Icon style={styles.icon} name={"location"} color={'rgba(204, 204, 204, 0.8)'} width={30} height={30} />
+                <Icon style={styles.icon} name={"clock"} color={'rgba(204, 204, 204, 0.8)'} width={15} height={15} />
                 <TextInput
                   style={styles.input}
-                  placeholder="Origen"
+                  placeholder="Hora de salida"
                   placeholderTextColor="rgba(204, 204, 204, 0.8)"
-                  value={originText}
-                  onChangeText={handleOriginChange}
+                  value={startTimeText}
+                  onChangeText={handlestartTimeChange}
+                  maxLength={5} // Limitamos el máximo de caracteres a 5 (por ejemplo: "23:59")
+                  keyboardType="numeric" 
                 />
               </View>
               <View style={[styles.textInputRow, isKeyboardOpen ? styles.email_keyboard : null]}>
-                <Icon style={styles.icon} name={"location"} color={'rgba(204, 204, 204, 0.8)'} width={30} height={30} />
+                <Icon style={styles.icon} name={"clock"} color={'rgba(204, 204, 204, 0.8)'} width={15} height={15} />
                 <TextInput
                   style={styles.input}
-                  placeholder="Destino"
+                  placeholder="Hora de llegada"
                   placeholderTextColor="rgba(204, 204, 204, 0.8)"
-                  value={destinationText}
-                  onChangeText={handleDestinationChange}
+                  value={endTimeText}
+                  onChangeText={handleendTimeChange}
+                  maxLength={5}
+                  keyboardType="numeric" // Teclado numérico para facilitar la entrada de horas y minutos
                 />
               </View>
             </View>
@@ -108,9 +135,9 @@ const SearchTrip = () => {
 
           {shouldShowContinueButton && (
             <View style={[styles.bottomContainer,isKeyboardOpen ? styles.bottomContainer_keyboard : null]}>
-              <TouchableOpacity onPress={handleViajePress} style={[styles.button,isKeyboardOpen ? styles.button_keyboard : null ]}>
+            <TouchableOpacity onPress={handleViajePress} style={[styles.button,isKeyboardOpen ? styles.button_keyboard : null ]}>
                 <Text style={styles.buttonText}>Continuar</Text>
-              </TouchableOpacity>
+            </TouchableOpacity>
             </View>
           )}
         </View>
@@ -203,15 +230,6 @@ const styles = StyleSheet.create({
     width: '90%',
     paddingHorizontal: 10,
   },
-  bottomContainer_keyboard: {
-    top: '0%',
-    width: '50%',
-    paddingHorizontal: 10,
-  },
-  button_keyboard:{
-    height: 40,
-    marginBottom: 10,
-  },
   button: {
     height: 60,
     width: '100%',
@@ -219,6 +237,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgb(240, 176, 10)' 
+  },
+  bottomContainer_keyboard: {
+    top: '0%',
+    width: '50%',
+    paddingHorizontal: 10,
+  },
+  button_keyboard:{
+    height: 40,
+    marginBottom: 20,
   },
   buttonText: {
     fontWeight: 'normal',
@@ -231,7 +258,7 @@ const styles = StyleSheet.create({
   icon:{
     borderBottomColor: 'rgba(204, 204, 204, 0.8)',
     borderBottomWidth: 1,
-    marginRight: 3,
+    marginRight: 5,
   },
   seleccioneText: {
     color: 'rgb(255, 255, 255)',
@@ -240,14 +267,15 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   seleccioneText_Keyboard:{
-    marginTop: 40,
-    marginBottom: 50,
+    marginTop: '15%',
+    marginBottom: '15%',
   },
   textInputRow:{
     flexDirection: 'row',
     borderBottomColor: 'rgba(204, 204, 204, 0.8)',
     borderBottomWidth: 1,
     marginBottom: 30,
+    alignItems: 'center'
   },
   input: {
     width: '80%',
@@ -259,4 +287,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SearchTrip;
+export default TimeTrip;

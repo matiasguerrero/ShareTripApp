@@ -13,6 +13,8 @@ const DateTrip = () => {
   const [endDate, setEndDate] = useState(null);
 
   const navigator= useNavigation();
+  const shouldShowContinueButton = (startDate || (endDate && startDate));
+
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
@@ -47,6 +49,9 @@ const DateTrip = () => {
     toggleModalEnd();
   };
   
+  const handleContinuePress = () => {
+    navigator.navigate('TimeTrip');
+ };
   return (
   
     <View style={styles.container}>
@@ -109,6 +114,13 @@ const DateTrip = () => {
               </TouchableOpacity>
             </View>
           </View>
+          {shouldShowContinueButton && (
+            <View style={styles.bottomContainer}>
+              <TouchableOpacity onPress={handleContinuePress} style={[styles.button, { backgroundColor: 'rgb(240, 176, 10)' }]}>
+                <Text style={styles.buttonText}>Continuar</Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       </View>
     </View>
@@ -200,13 +212,18 @@ const styles = StyleSheet.create({
     height: '100%',
     flexDirection: 'column',
   },
+
+  bottomContainer: {
+    top: '15%',
+    width: '90%',
+    paddingHorizontal: 10,
+  },
   button: {
-    height: 70,
-    width: '95%',
+    height: 60,
+    width: '100%',
     borderRadius: 40,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
   },
   buttonText: {
     fontWeight: 'normal',

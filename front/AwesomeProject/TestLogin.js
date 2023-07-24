@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, TextInput, Keyboard, ImageBackground , Image, Text, TouchableOpacity, Dimensions,KeyboardAvoidingView } from 'react-native';
+import { View, StyleSheet, TextInput, Keyboard, ImageBackground , Image, Text, TouchableOpacity, Dimensions,Platform, UIManager, LayoutAnimation } from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import Icon from './Icon';
 
+if (Platform.OS === 'android') {
+  if (UIManager.setLayoutAnimationEnabledExperimental) {
+    UIManager.setLayoutAnimationEnabledExperimental(true);
+  }
+}
 
 const TestLogin = ({selectedButton}) => {
    
@@ -27,10 +32,12 @@ const TestLogin = ({selectedButton}) => {
     
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+        //LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         setIsKeyboardOpen(true);
         });
 
         const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+        //LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         setIsKeyboardOpen(false);
         });
 

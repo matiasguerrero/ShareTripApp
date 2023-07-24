@@ -57,7 +57,8 @@ const MainApp = ({setSelectedButton} ) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    overflow: 'hidden', // Oculta la barra de desplazamiento
+    overflow: 'hidden',
+    // Oculta la barra de desplazamiento
   },
   contentContainer: {
     flexGrow: 1,
