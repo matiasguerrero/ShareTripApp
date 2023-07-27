@@ -16,6 +16,7 @@ import Datatrip from './DataTrip';
 import TimeTrip from './TimeTrip';
 import CarTrip from './CarTrip';
 import CostTrip from './CostTrip';
+import PostTrip from './PostTrip';
 
 const transitionConfig = {
   ...TransitionPresets.SlideFromRightIOS, // Utiliza la animación predeterminada de SlideFromRightAndroid
@@ -63,6 +64,9 @@ const HomeTab = () => (
     </HomeAppStack.Screen>
     <HomeAppStack.Screen name="CostTrip" options={{ headerShown: false }}>
           {(props) => <CostTrip {...props}/>}
+    </HomeAppStack.Screen>
+    <HomeAppStack.Screen name="PostTrip" options={{ headerShown: false }}>
+          {(props) => <PostTrip {...props}/>}
     </HomeAppStack.Screen>
   </HomeAppStack.Navigator>
 );

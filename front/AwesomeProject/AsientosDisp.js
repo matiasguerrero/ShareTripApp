@@ -95,7 +95,7 @@ const AsientosDisp = () => {
         </View>
         <View style={styles.bottomContainer}>
             <TouchableOpacity style={[styles.button, { backgroundColor: 'rgb(240, 176, 10)' }]} onPress={handleContinuePress}>
-                <Text style={styles.buttonText}>Publicar</Text>
+                <Text style={styles.buttonText}>Continuar</Text>
             </TouchableOpacity>
         </View>
       </View>

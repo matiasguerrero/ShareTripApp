@@ -38,8 +38,8 @@ const CostTrip = () => {
   }, []);
 
 
-  const handleViajePress = () => {
-     navigator.navigate('DateTrip');
+  const handleContinuePress = () => {
+     navigator.navigate('PostTrip');
   };
 
   const handleOriginChange = (text) => {
@@ -94,7 +94,7 @@ const CostTrip = () => {
 
           {shouldShowContinueButton && (
             <View style={[styles.bottomContainer,isKeyboardOpen ? styles.bottomContainer_keyboard : null]}>
-              <TouchableOpacity onPress={handleViajePress} style={[styles.button,isKeyboardOpen ? styles.button_keyboard : null ]}>
+              <TouchableOpacity onPress={handleContinuePress} style={[styles.button,isKeyboardOpen ? styles.button_keyboard : null ]}>
                 <Text style={styles.buttonText}>Continuar</Text>
               </TouchableOpacity>
             </View>
