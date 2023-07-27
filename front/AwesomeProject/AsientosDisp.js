@@ -39,6 +39,10 @@ const AsientosDisp = () => {
     setAsientos(cantidad);
   }
 
+  const handleContinuePress = () => {
+    navigator.navigate('CostTrip');
+ };
+
   return (
   
     <View style={styles.container}>
@@ -90,7 +94,7 @@ const AsientosDisp = () => {
           </View>
         </View>
         <View style={styles.bottomContainer}>
-            <TouchableOpacity style={[styles.button, { backgroundColor: 'rgb(240, 176, 10)' }]}>
+            <TouchableOpacity style={[styles.button, { backgroundColor: 'rgb(240, 176, 10)' }]} onPress={handleContinuePress}>
                 <Text style={styles.buttonText}>Publicar</Text>
             </TouchableOpacity>
         </View>
@@ -228,7 +232,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 28,
     right: 0,
-    button: 0,
+    bottom: 0,
   },
   button_icon:{
     width: 70,

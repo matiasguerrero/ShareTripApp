@@ -1,11 +1,9 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ImageBackground, TextInput,Image, Keyboard, Dimensions, TouchableOpacity,Platform, UIManager, BackHandler} from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, TextInput,Image, Keyboard, Dimensions, TouchableOpacity,Platform, UIManager, LayoutAnimation } from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
-import { Picker } from '@react-native-picker/picker';
 import Icon from './Icon';
 import { useNavigation } from '@react-navigation/native';
-import { Modal } from 'react-native';
 
 // Habilitar las animaciones en Android (opcional)
 if (Platform.OS === 'android') {
@@ -14,14 +12,11 @@ if (Platform.OS === 'android') {
   }
 }
 
-const CarTrip = () => {
+const CostTrip = () => {
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
-  const [typeCarText, settypeCarText] = useState('');
-  const [modelCarText, setmodelCarText] = useState('');
-  const [patenteText, setPatenteText] = useState('');
-  const [modalVisible, setModalVisible] = useState(false);
+  const [originText, setOriginText] = useState('');
 
-  const shouldShowContinueButton = (typeCarText && modelCarText && patenteText);
+  const shouldShowContinueButton = (originText);
 
   const navigator= useNavigation();
 
@@ -43,29 +38,13 @@ const CarTrip = () => {
   }, []);
 
 
-  const handleContinuePress = () => {
-     navigator.navigate('AsientosDisp');
+  const handleViajePress = () => {
+     navigator.navigate('DateTrip');
   };
 
-  const handletypeCarChange = (text) => {
-    settypeCarText(text);
-    setModalVisible(false);
+  const handleOriginChange = (text) => {
+    setOriginText(text);
   };
-
-  const handlemodelCarChange = (text) => {
-    setmodelCarText(text);
-  };
-
-  
-  const handlepatentCarChange = (text) => {
-    setPatenteText(text);
-  };
-
-  const data = [
-    { key: 0, label: 'Auto' },
-    { key: 1, label: 'Camioneta' },
-    // Agrega más opciones si es necesario
-  ];
   
   return (
   
@@ -98,67 +77,29 @@ const CarTrip = () => {
         <View style={[styles.overlayContainer, isKeyboardOpen ? styles.overlayContainer_Keyboard : null]}>
           <View style={[styles.blackContainer, isKeyboardOpen ? styles.blackContainer_Keyboard : null]}>
             <View style={styles.columnContainer}>
-              <Text style={[styles.seleccioneText, isKeyboardOpen ? styles.seleccioneText_Keyboard : null]}>Indique los datos de su vehículo</Text>
+              <Text style={[styles.seleccioneText, isKeyboardOpen ? styles.seleccioneText_Keyboard : null]}>Costo por persona</Text>
               <View style={[styles.textInputRow, isKeyboardOpen ? styles.email_keyboard : null]}>
-                <Icon style={styles.icon} name={"clock"} color={'rgba(204, 204, 204, 0.8)'} width={15} height={15} />
-                <TouchableOpacity style={styles.picker} onPress={() => setModalVisible(true)}>
-                  <Text style={typeCarText ? {color: 'white'}: {color: "rgba(204, 204, 204, 0.8)"}}>
-                    {typeCarText.label ? typeCarText.label : 'Tipo de vehículo'}
-                  </Text>
-                </TouchableOpacity>
-
-              </View>
-              <View style={[styles.textInputRow, isKeyboardOpen ? styles.email_keyboard : null]}>
-                <Icon style={styles.icon} name={"clock"} color={'rgba(204, 204, 204, 0.8)'} width={15} height={15} />
+                <Text style={styles.icon_peso}>$</Text>
                 <TextInput
                   style={styles.input}
-                  placeholder="Modelo"
+                  placeholder="0"
                   placeholderTextColor="rgba(204, 204, 204, 0.8)"
-                  value={modelCarText}
-                  onChangeText={handlemodelCarChange}
+                  value={originText}
+                  onChangeText={handleOriginChange}
+                  keyboardType="numeric" 
                 />
-              </View>
-              <View style={[styles.textInputRow, isKeyboardOpen ? styles.email_keyboard : null]}>
-                <Icon style={styles.icon} name={"clock"} color={'rgba(204, 204, 204, 0.8)'} width={15} height={15} />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Patente"
-                  placeholderTextColor="rgba(204, 204, 204, 0.8)"
-                  value={patenteText}
-                  onChangeText={setPatenteText}
-               />
               </View>
             </View>
           </View>
 
           {shouldShowContinueButton && (
             <View style={[styles.bottomContainer,isKeyboardOpen ? styles.bottomContainer_keyboard : null]}>
-              <TouchableOpacity onPress={handleContinuePress} style={[styles.button,isKeyboardOpen ? styles.button_keyboard : null ]}>
+              <TouchableOpacity onPress={handleViajePress} style={[styles.button,isKeyboardOpen ? styles.button_keyboard : null ]}>
                 <Text style={styles.buttonText}>Continuar</Text>
               </TouchableOpacity>
             </View>
           )}
         </View>
-        <Modal visible={modalVisible} animationType="slide" transparent>
-          <View style={styles.modalGeneralContainer}>
-            <View style={styles.modalContainer}>
-                    {data.map((option) => (
-                      <TouchableOpacity
-                        key={option.key}
-                        style={styles.modalOption}
-                        onPress={() => handletypeCarChange(option)}
-                      >
-                        <Text style={styles.modalOptionText}>{option.label}</Text>
-                      </TouchableOpacity>
-                    ))}
-              <View style={styles.container_cancel}>
-                <TouchableOpacity style={styles.modalCancel} onPress={() => setModalVisible(false)}>
-                    <Text style={styles.buttonText}>Cancelar</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </Modal>
       </View>
     </View>
 
@@ -190,7 +131,7 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   backgroundImage_Keyboard:{
-    bottom: '70%',
+    bottom: '63%',
   },
   gradientOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -219,11 +160,11 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   overlayContainer_Keyboard:{
-    top: '25%',
+    top: '30%',
   },
   blackContainer: {
     width: '90%',
-    height: '50%',
+    height: '40%',
     backgroundColor: 'black',
     alignItems: 'center',
     justifyContent: 'center',
@@ -231,7 +172,7 @@ const styles = StyleSheet.create({
   },
   blackContainer_Keyboard:{
     width: '100%',
-    height: '55%',
+    height: '50%',
     borderBottomLeftRadius: 0,
     borderBottomRightRadius:0,
     flex: 1,
@@ -240,13 +181,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '80%',
-    height: '100%',
+    height: '80%',
     flexDirection: 'column',
   },
   bottomContainer: {
     top: '15%',
     width: '90%',
     paddingHorizontal: 10,
+    zIndex: 2,
+  },
+  bottomContainer_keyboard: {
+    top: '0%',
+    width: '50%',
+    paddingHorizontal: 10,
+    marginBottom: 30,
+  },
+  button_keyboard:{
+    height: 40,
+    marginBottom: 10,
   },
   button: {
     height: 60,
@@ -261,86 +213,47 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
   },
-  bottomContainer_keyboard: {
-    top: '0%',
-    width: '50%',
-    paddingHorizontal: 10,
-  },
-  button_keyboard:{
-    height: 40,
-    marginBottom: 10,
-  },
   underlineText: {
     textDecorationLine: 'underline',
   },
   icon:{
     borderBottomColor: 'rgba(204, 204, 204, 0.8)',
     borderBottomWidth: 1,
-    marginRight: 5,
+    marginRight: 3,
   },
   seleccioneText: {
     color: 'rgb(255, 255, 255)',
     fontSize: 22,
     fontWeight: 'bold',
-    marginBottom: 30,
-    textAlign: 'center',
+    marginBottom: 40,
   },
   seleccioneText_Keyboard:{
-    marginTop: '15%',
-    marginBottom: '5%',
+    marginTop: 40,
   },
   textInputRow:{
     flexDirection: 'row',
-    borderBottomColor: 'rgba(204, 204, 204, 0.8)',
-    borderBottomWidth: 1,
-    marginBottom: 30,
-    alignItems: 'center',
+    backgroundColor: 'rgba(204, 204, 204, 0.8)',
+    borderRadius: 10,
+    marginBottom: 20,
   },
   input: {
-    width: '80%',
-    height: 40,
-    color: 'white',
+    minWidth: '50%',
+    height: 60,
+    color: 'black',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  icon_peso:{
+    color: 'black',
+    fontWeight: 'bold',
+    fontSize: 20,
+    textAlignVertical: 'center',
+    marginLeft: 5,
+    marginRight: 5,
   },
   email_keyboard:{
-    marginBottom: 30,  
-  },
-  picker: {
-    height: 40,
-    width: '80%',
-    justifyContent: 'center',
-  },
-  modalGeneralContainer:{
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
-  },
-  modalContainer: {
-    backgroundColor: 'white',
-    width: '100%',
-    padding: 10,
-    borderRadius: 20,
-    justifyContent: 'center',
-  },
-  modalOption: {
-    padding: 10,
-  },
-  modalOptionText: {
-    fontSize: 16,
-    color: 'black',
-    fontWeight: 'normal',
-  },
-  container_cancel:{
-    width: '100%',
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  modalCancel: {
-    borderRadius: 40,
-    backgroundColor: 'rgb(240, 176, 10)',
-    alignItems: 'center',
-    padding: 10,
-    width: '50%',
+    marginBottom: 0,  
   },
 });
 
-export default CarTrip;
+export default CostTrip;
