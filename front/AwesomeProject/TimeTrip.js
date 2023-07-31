@@ -12,12 +12,10 @@ if (Platform.OS === 'android') {
   }
 }
 
-const TimeTrip = () => {
+const TimeTrip = ({startTime, setStartTime, endTime, setEndTime}) => {
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
-  const [startTimeText, setstartTimeText] = useState('');
-  const [endTimeText, setendTimeText] = useState('');
 
-  const shouldShowContinueButton = (startTimeText && endTimeText);
+  const shouldShowContinueButton = (startTime && endTime);
 
   const navigator= useNavigation();
 
@@ -39,6 +37,11 @@ const TimeTrip = () => {
   }, []);
 
 
+  useEffect(() => {
+    setStartTime('');
+    setEndTime('');
+  }, []);
+
   const handleViajePress = () => {
      navigator.navigate('CarTrip');
   };
@@ -49,13 +52,13 @@ const TimeTrip = () => {
 
     // Formateamos el texto para que tenga el formato 'HH:mm'
     if (formattedText.length <= 2) {
-      setstartTimeText(formattedText); // Si solo hay dos caracteres (horas), actualizamos el estado
+      setStartTime(formattedText); // Si solo hay dos caracteres (horas), actualizamos el estado
     } else if (formattedText.length > 2 && formattedText.length <= 4) {
       // Si hay más de dos caracteres (horas) y menos de cinco, agregamos ':' después de las dos primeras posiciones
-      setstartTimeText(formattedText.slice(0, 2) + ':' + formattedText.slice(2));
+      setStartTime(formattedText.slice(0, 2) + ':' + formattedText.slice(2));
     } else {
       // Si hay más de cuatro caracteres, truncamos el texto a 'HH:mm'
-      setstartTimeText(formattedText.slice(0, 4));
+      setStartTime(formattedText.slice(0, 4));
     }
   };
 
@@ -64,13 +67,13 @@ const TimeTrip = () => {
 
     // Formateamos el texto para que tenga el formato 'HH:mm'
     if (formattedText.length <= 2) {
-      setendTimeText(formattedText); // Si solo hay dos caracteres (horas), actualizamos el estado
+      setEndTime(formattedText); // Si solo hay dos caracteres (horas), actualizamos el estado
     } else if (formattedText.length > 2 && formattedText.length <= 4) {
       // Si hay más de dos caracteres (horas) y menos de cinco, agregamos ':' después de las dos primeras posiciones
-      setendTimeText(formattedText.slice(0, 2) + ':' + formattedText.slice(2));
+      setEndTime(formattedText.slice(0, 2) + ':' + formattedText.slice(2));
     } else {
       // Si hay más de cuatro caracteres, truncamos el texto a 'HH:mm'
-      setendTimeText(formattedText.slice(0, 4));
+      setEndTime(formattedText.slice(0, 4));
     }
   };
   
@@ -112,7 +115,7 @@ const TimeTrip = () => {
                   style={styles.input}
                   placeholder="Hora de salida"
                   placeholderTextColor="rgba(204, 204, 204, 0.8)"
-                  value={startTimeText}
+                  value={startTime}
                   onChangeText={handlestartTimeChange}
                   maxLength={5} // Limitamos el máximo de caracteres a 5 (por ejemplo: "23:59")
                   keyboardType="numeric" 
@@ -124,7 +127,7 @@ const TimeTrip = () => {
                   style={styles.input}
                   placeholder="Hora de llegada"
                   placeholderTextColor="rgba(204, 204, 204, 0.8)"
-                  value={endTimeText}
+                  value={endTime}
                   onChangeText={handleendTimeChange}
                   maxLength={5}
                   keyboardType="numeric" // Teclado numérico para facilitar la entrada de horas y minutos

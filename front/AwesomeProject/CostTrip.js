@@ -12,11 +12,10 @@ if (Platform.OS === 'android') {
   }
 }
 
-const CostTrip = () => {
+const CostTrip = ({cost, setCost}) => {
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
-  const [originText, setOriginText] = useState('');
 
-  const shouldShowContinueButton = (originText);
+  const shouldShowContinueButton = (cost);
 
   const navigator= useNavigation();
 
@@ -42,8 +41,8 @@ const CostTrip = () => {
      navigator.navigate('PostTrip');
   };
 
-  const handleOriginChange = (text) => {
-    setOriginText(text);
+  const handleCostChange = (text) => {
+    setCost(text);
   };
   
   return (
@@ -84,8 +83,8 @@ const CostTrip = () => {
                   style={styles.input}
                   placeholder="0"
                   placeholderTextColor="rgba(204, 204, 204, 0.8)"
-                  value={originText}
-                  onChangeText={handleOriginChange}
+                  value={cost}
+                  onChangeText={handleCostChange}
                   keyboardType="numeric" 
                 />
               </View>

@@ -1,0 +1,7 @@
+https://github.com/BloggerNepal/Load-balancing-Socket.Io-NodeJs
+
+https://medium.com/@anuragvikramsingh/building-a-chat-service-using-micro-services-architecture-1494900a70b2
+
+https://redis.io/docs/interact/pubsub/
+
+https://aws.amazon.com/es/blogs/database/how-to-build-a-chat-application-with-amazon-elasticache-for-redis/

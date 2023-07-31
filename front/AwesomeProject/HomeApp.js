@@ -5,26 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 import {  TransitionPresets ,createStackNavigator } from '@react-navigation/stack';
 import { useState } from 'react';
 import Icon from './Icon';
-import CustomCalendar from './CustomCalendar';
 
-import SelectedHome from './SelectedHome';
-import SearchTrip from './SearchTrip';
-import DateTrip from './DateTrip';
-import AsientosDisp from './AsientosDisp';
-import AvailableTrip from './AvailableTrip';
-import Datatrip from './DataTrip';
-import TimeTrip from './TimeTrip';
-import CarTrip from './CarTrip';
-import CostTrip from './CostTrip';
-import PostTrip from './PostTrip';
-
-const transitionConfig = {
-  ...TransitionPresets.SlideFromRightIOS, // Utiliza la animación predeterminada de SlideFromRightAndroid
-};
-
-const HomeAppStack = createStackNavigator();
-
-
+import ContainerPublishTrip from './ContainerPublishTrip';
 
 const HomeTab = () => (
   //<View style={styles.container}>
@@ -32,43 +14,7 @@ const HomeTab = () => (
    //  <SearchContainer />
     //</View>
   //</View>
-  
-  <HomeAppStack.Navigator initialRouteName="SelectedHome" screenOptions={{
-    headerShown: false,
-    ...transitionConfig,
-      cardStyle: { backgroundColor: 'transparent' },
-  }}>
-    <HomeAppStack.Screen name="SelectedHome" options={{ headerShown: false }}>
-        {props => <SelectedHome {...props}/>}
-    </HomeAppStack.Screen>
-    <HomeAppStack.Screen name="SearchTrip" options={{ headerShown: false }}>
-        {props => <SearchTrip {...props}/>}
-    </HomeAppStack.Screen>
-    <HomeAppStack.Screen name="DateTrip" options={{ headerShown: false }}>
-        {props => <DateTrip {...props}/>}
-    </HomeAppStack.Screen>
-    <HomeAppStack.Screen name="AsientosDisp" options={{ headerShown: false }}>
-          {(props) => <AsientosDisp {...props}/>}
-    </HomeAppStack.Screen>
-    <HomeAppStack.Screen name="AvailableTrip" options={{ headerShown: false }}>
-          {(props) => <AvailableTrip {...props}/>}
-    </HomeAppStack.Screen>
-    <HomeAppStack.Screen name="DataTrip" options={{ headerShown: false }}>
-          {(props) => <Datatrip {...props}/>}
-    </HomeAppStack.Screen>
-    <HomeAppStack.Screen name="TimeTrip" options={{ headerShown: false }}>
-          {(props) => <TimeTrip {...props}/>}
-    </HomeAppStack.Screen>
-    <HomeAppStack.Screen name="CarTrip" options={{ headerShown: false }}>
-          {(props) => <CarTrip {...props}/>}
-    </HomeAppStack.Screen>
-    <HomeAppStack.Screen name="CostTrip" options={{ headerShown: false }}>
-          {(props) => <CostTrip {...props}/>}
-    </HomeAppStack.Screen>
-    <HomeAppStack.Screen name="PostTrip" options={{ headerShown: false }}>
-          {(props) => <PostTrip {...props}/>}
-    </HomeAppStack.Screen>
-  </HomeAppStack.Navigator>
+  <ContainerPublishTrip/>
 );
 
 const ProfileScreen = () => (

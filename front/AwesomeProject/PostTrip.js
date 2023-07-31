@@ -4,9 +4,22 @@ import { View, StyleSheet, Text, TouchableOpacity, Modal } from 'react-native';
 import { useState } from 'react';
 import Icon from './Icon';
 
-const PostTrip = () => {
+const PostTrip = ({
+    origin,
+    destination,
+    startDate,
+    endDate,
+    asientos,
+    startTime,
+    endTime,
+    typeCarText,
+    modelCarText,
+    patenteText,
+    cost,
+  }
+  ) => {
 
-    const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const navigator= useNavigation();
   const handlePublish = () => {
     setModalVisible(true);
@@ -16,17 +29,37 @@ const PostTrip = () => {
     setModalVisible(false);
     navigator.navigate('SelectedHome');
   };
+
+  const getFormattedDate = (date) => {
+    const options = {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'short',
+    };
+  
+    const formattedDate = new Intl.DateTimeFormat('es-ES', options).format(date);
+  
+    // Convertir el día y el mes a formato con la primera letra en mayúscula
+    const [weekday, day, month] = formattedDate.split(' ');
+    const formattedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+    const formattedMonth = month.charAt(0).toUpperCase() + month.slice(1);
+  
+    return `${formattedWeekday} ${day} ${formattedMonth}`;
+  };
+  
+  
+
   return (
     <View style={styles.container}>
         <Text style={styles.seleccioneText}>Detalles de la publicación </Text>
         <View style={styles.gray_container}>
             <View style={styles.container_trip}>
                 <View style={{flexDirection: 'row'}}>
-                    <Text style={styles.seleccioneText}>Viernes 30 Jun</Text>
+                    <Text style={styles.seleccioneText}>{getFormattedDate(startDate)}</Text>
                 </View>
                 <View style={{flexDirection: 'row'}}>
                     <Text style={styles.text}>
-                        origen ------- {'>'} destino
+                        {origin} ------- {'>'} {destination}
                     </Text>
                 </View>
 
@@ -34,12 +67,12 @@ const PostTrip = () => {
                     <View style={styles.col_trip}>
                         <View style={styles.row_time}>
                             <Icon style={[styles.icon_trip]} name={"clock"} color={'rgb(240, 176, 10)'} width={15} height={15} />
-                            <Text style={styles.text_trip}>07:30 origen</Text>
+                            <Text style={styles.text_trip}>{startTime} {origin}</Text>
                         </View>
                         <View style={styles.verticalLine}></View>
                         <View style={styles.row_time}>
                             <Icon style={[styles.icon_trip]} name={"clock"} color={'rgb(240, 176, 10)'} width={15} height={15} />
-                            <Text style={styles.text_trip}>10:30 destino</Text>
+                            <Text style={styles.text_trip}>{endTime} {destination}</Text>
                         </View>
                     </View>
                 </View>
@@ -48,7 +81,7 @@ const PostTrip = () => {
                     <View style={styles.icon_container}>
                         <Icon style={[styles.icon]} name={"user-solid"} color={'rgba(204, 204, 204, 0.8)'} width={30} height={'100%'} />
                         <Text style={styles.icon_text}>
-                            {1}
+                            {asientos}
                         </Text>
                     </View>
                     <Text style={styles.text_trip}>Asientos disponibles</Text>
@@ -57,16 +90,16 @@ const PostTrip = () => {
                 <View style={styles.row_data}>
                     <View style={styles.container_data}>
                         <Text style={[styles.text, {marginBottom: 20}]}>
-                            Tipo de vehículo: Auto
+                            Tipo de vehículo: {typeCarText.label} 
                         </Text>
                         <Text style={[styles.text, {marginBottom: 20}]}>
-                            Modelo: Toyota Etios
+                            Modelo: {modelCarText}
                         </Text>
                         <Text style={[styles.text, {marginBottom: 20}]}>
-                            Patente: AF56443
+                            Patente: {patenteText}
                         </Text>
                         <Text style={[styles.text, {marginBottom: 20}]}>
-                            Costo: $2500
+                            Costo: ${cost}
                         </Text>
                     </View>
                 </View>

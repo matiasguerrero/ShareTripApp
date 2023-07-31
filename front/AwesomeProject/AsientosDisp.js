@@ -5,9 +5,8 @@ import {LinearGradient} from 'expo-linear-gradient';
 import Icon from './Icon';
 import { useNavigation } from '@react-navigation/native';
 import CustomCalendar from './CustomCalendar';
-const AsientosDisp = () => {
+const AsientosDisp = ({asientos, setAsientos}) => {
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
-  const [asientos, setAsientos] = useState(0);
 
   const navigator= useNavigation();
 
@@ -24,6 +23,10 @@ const AsientosDisp = () => {
     keyboardDidShowListener.remove();
     keyboardDidHideListener.remove();
   };
+  }, []);
+
+  useEffect(() => {
+    setAsientos(0);
   }, []);
   
   const increasePress = () => {

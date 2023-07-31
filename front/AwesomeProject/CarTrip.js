@@ -14,11 +14,9 @@ if (Platform.OS === 'android') {
   }
 }
 
-const CarTrip = () => {
+const CarTrip = ({typeCarText, settypeCarText, modelCarText, setmodelCarText, patenteText, setPatenteText}) => {
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
-  const [typeCarText, settypeCarText] = useState('');
-  const [modelCarText, setmodelCarText] = useState('');
-  const [patenteText, setPatenteText] = useState('');
+
   const [modalVisible, setModalVisible] = useState(false);
 
   const shouldShowContinueButton = (typeCarText && modelCarText && patenteText);
@@ -42,6 +40,11 @@ const CarTrip = () => {
   };
   }, []);
 
+  useEffect(() => {
+    setPatenteText('');
+    setmodelCarText('');
+    settypeCarText('');
+  }, []);
 
   const handleContinuePress = () => {
      navigator.navigate('AsientosDisp');

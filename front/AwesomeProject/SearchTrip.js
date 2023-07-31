@@ -12,12 +12,9 @@ if (Platform.OS === 'android') {
   }
 }
 
-const SearchTrip = () => {
+const SearchTrip = ({origin, setOrigin, destination, setDestination}) => {
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
-  const [originText, setOriginText] = useState('');
-  const [destinationText, setDestinationText] = useState('');
-
-  const shouldShowContinueButton = (originText && destinationText);
+  const shouldShowContinueButton = (origin && destination);
 
   const navigator= useNavigation();
 
@@ -38,17 +35,21 @@ const SearchTrip = () => {
   };
   }, []);
 
+  useEffect(() => {
+    setOrigin('');
+    setDestination('');
+  }, []);
 
   const handleViajePress = () => {
      navigator.navigate('DateTrip');
   };
 
   const handleOriginChange = (text) => {
-    setOriginText(text);
+    setOrigin(text);
   };
 
   const handleDestinationChange = (text) => {
-    setDestinationText(text);
+    setDestination(text);
   };
   
   return (
@@ -89,7 +90,7 @@ const SearchTrip = () => {
                   style={styles.input}
                   placeholder="Origen"
                   placeholderTextColor="rgba(204, 204, 204, 0.8)"
-                  value={originText}
+                  value={origin}
                   onChangeText={handleOriginChange}
                 />
               </View>
@@ -99,7 +100,7 @@ const SearchTrip = () => {
                   style={styles.input}
                   placeholder="Destino"
                   placeholderTextColor="rgba(204, 204, 204, 0.8)"
-                  value={destinationText}
+                  value={destination}
                   onChangeText={handleDestinationChange}
                 />
               </View>
