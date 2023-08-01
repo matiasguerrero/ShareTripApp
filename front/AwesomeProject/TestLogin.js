@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, TextInput, Keyboard, ImageBackground , Image, Text, TouchableOpacity, Dimensions,Platform, UIManager, LayoutAnimation } from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
+import { Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import Icon from './Icon';
+import { color } from 'react-native-elements/dist/helpers';
+import CustomRegisterStack from './CustomRegisterStack';
+import ContainerPublishTrip from './ContainerPublishTrip';
 
 if (Platform.OS === 'android') {
   if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -13,12 +18,13 @@ if (Platform.OS === 'android') {
 const TestLogin = ({selectedButton}) => {
    
 
-    const [isLoginPressed, setIsLoginPressed] = useState(false);
-    const [isRegisterPressed, setIsRegisterPressed] = useState(true);
-
+    const [isLoginPressed, setIsLoginPressed] = useState(true);
+    const [isRegisterPressed, setIsRegisterPressed] = useState(false);
+    const [isContinueEmailPressed, setIsContinueEmailPressed] = useState(false);
     const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
 
     const navigation = useNavigation();
+
 
     useEffect(() => {
         if (selectedButton === 'Login') {
@@ -49,6 +55,32 @@ const TestLogin = ({selectedButton}) => {
   
     const [buttonWidth, setButtonWidth] = useState(0);
 
+    const RegisterStack = createStackNavigator();
+    const transitionConfig = {
+      ...TransitionPresets.SlideFromRightIOS,
+    };
+
+    const forFadeFromBottom = ({ current }) => ({
+      cardStyle: {
+        opacity: current.progress,
+        transform: [
+          {
+            translateY: Animated.multiply(
+              current.progress.interpolate({
+                inputRange: [0, 1],
+                outputRange: [200, 0],
+                extrapolate: 'clamp',
+              }),
+              -1
+            ),
+          },
+        ],
+      },
+    });
+
+    navigator=useNavigation();
+  
+
     const handleButtonLayout = (event) => {
         const { width } = event.nativeEvent.layout;
         const { marginLeft } = width * 0.2;
@@ -69,6 +101,152 @@ const TestLogin = ({selectedButton}) => {
       const verTerminosYPoliticas =() =>{
         navigation.navigate('Tab_Home');
       }
+
+      const GetCustomComponent = () => {
+        return (
+          <View>
+            <Text>Este es un componente personalizado</Text>
+            {/* Aquí puedes poner el contenido personalizado que desees */}
+          </View>
+        );
+      };
+
+
+      const EmailScreen = () => {
+      
+        return (
+            <View style={{justifyContent: 'center', alignItems: 'center', backgroundColor: 'black'}}>
+            <Text style={styles.welcomeText}>Bienvenido a RUTAPP</Text>
+            <TextInput
+                style={[styles.input, isKeyboardOpen ? styles.email_keyboard : null]}
+                placeholder="Correo electrónico"
+                placeholderTextColor="rgba(204, 204, 204, 0.8)"
+            />
+            <TextInput
+                style={styles.input}
+                placeholder="Contraseña"
+                placeholderTextColor="rgba(204, 204, 204, 0.8)"
+                secureTextEntry={true}
+            />
+
+            {!isKeyboardOpen && (
+                <View style={styles.bottomContainer}>
+                <TouchableOpacity  style={[styles.button, { backgroundColor: 'rgb(240, 176, 10)' }]}>
+                    <Text style={styles.buttonText}>Iniciar sesión</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.button, { backgroundColor: 'rgba(0, 0, 0, 0)' }]}>
+                    <Text style={[styles.buttonText, { color: 'rgb(255, 255, 255)' }, { fontSize: 14 }]}>
+                    ¿Has olvidado tu contraseña?
+                    </Text>
+                </TouchableOpacity>
+                </View>
+            )}
+            </View>
+        );
+    };
+
+  const InitRegister = ({
+    handleLoginPress,
+    verTerminosYPoliticas,
+  }) => {
+    return (
+      <View style={{justifyContent: 'center', alignItems: 'center', backgroundColor: 'black'}}>
+        <Text style={styles.welcomeText}>Bienvenido a RUTAPP</Text>
+        <Text style={styles.registerText}>¿Cómo quieres registrarte?</Text>
+        <View style={styles.bottomContainerRegister}>
+          <TouchableOpacity
+            onPress={handleContinueEmail}
+            style={[styles.buttonRegister, { backgroundColor: 'rgb(74,122,246)' }]}
+          >
+            <View style={styles.buttorInputRow}>
+              <Icon
+                style={[styles.icon, { top: 3 }]}
+                name={"email"}
+                color={"#ffffff"}
+                width={20}
+                height={20}
+                marginleft={'10%'}
+              />
+              <Text style={styles.buttonText}>Continuar con email</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={handleLoginPress}
+            style={[styles.buttonRegister, { backgroundColor: 'rgb(68,53,165)' }]}
+          >
+            <View style={styles.buttorInputRow}>
+              <Icon
+                style={styles.icon}
+                name={"facebook"}
+                color={"#ffffff"}
+                width={20}
+                height={20}
+                marginleft={'10%'}
+              />
+              <Text style={styles.buttonText}>Continuar con Facebook</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={handleLoginPress}
+            style={[styles.buttonRegister, { backgroundColor: 'rgb(255, 255, 255)' }]}
+          >
+            <View style={styles.buttorInputRow}>
+              <Icon
+                style={styles.icon}
+                name={"apple"}
+                color={"#000000"}
+                width={20}
+                height={20}
+                marginleft={'10%'}
+              />
+              <Text style={styles.buttonTextBlack}>Continuar con Apple</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+  
+        <View style={styles.terminosYPoliticas}>
+          <Text style={styles.textTerminos}>
+            Al registrarte, aceptas nuestros {' '}
+            <TouchableOpacity onPress={verTerminosYPoliticas}>
+              <Text style={styles.textTerminosGold}>Términos y Condiciones</Text>
+            </TouchableOpacity>
+            y nuestra {' '}
+            <TouchableOpacity onPress={verTerminosYPoliticas}>
+              <Text style={styles.textTerminosGold}>Política de privacidad</Text>
+            </TouchableOpacity>
+          </Text>
+        </View>
+  
+        <TouchableOpacity
+          onPress={handleLoginPress}
+          style={[styles.button, { backgroundColor: 'rgba(0, 0, 0, 0)' }]}
+        >
+          <Text
+            style={[
+              styles.buttonText,
+              { color: 'rgb(255, 255, 255)', fontSize: 15 },
+            ]}
+          >
+            ¿Ya tienes cuenta?{' '}
+            <Text
+              style={[
+                styles.underlineText,
+                { color: 'rgb(240, 176, 10)', fontSize: 15 },
+              ]}
+            >
+              Inicia sesión
+            </Text>
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  const handleContinueEmail = () => {
+    setIsContinueEmailPressed(true);
+    // Lógica adicional para el botón "Iniciar sesión"
+  };
+  
   return (
     <View style={styles.container}>
       <View style={[styles.headerContainer, isKeyboardOpen ? styles.headerContainerKeyboard : null]}>
@@ -93,7 +271,7 @@ const TestLogin = ({selectedButton}) => {
       </View>
       <View style={styles.overlayContainer}>
         <View style={[styles.blackContainer, isKeyboardOpen ? styles.blackContainer_Keyboard : null]}>
-            <View style={styles.columnContainer}>
+              <View style={styles.columnContainer}>
                 <View style={styles.buttonRowContainer}>
                     <TouchableOpacity
                         onPress={handleLoginPress}
@@ -149,50 +327,29 @@ const TestLogin = ({selectedButton}) => {
                             </TouchableOpacity>
                         </View>
                     )}
-                 </>)}
-
-                {isRegisterPressed && (<>
-                    <Text style={styles.welcomeText}>Bienvenido a RUTAPP</Text> 
-                    <Text style={styles.registerText}>¿Como quieres registrarte?</Text> 
-                    <View style={styles.bottomContainerRegister}>
-                        <TouchableOpacity onPress={handleLoginPress} style={[styles.buttonRegister, { backgroundColor: 'rgb(74,122,246)' }]}>
-                            <View style={styles.buttorInputRow}>
-                                <Icon style={[styles.icon ,{top: 3}]} name={"email"} color={"#ffffff"} width={20} height={20} marginleft={35}/>
-                                <Text style={styles.buttonText}>Continuar con email</Text>
-                            </View>
-                        </TouchableOpacity> 	
-                        <TouchableOpacity onPress={handleLoginPress} style={[styles.buttonRegister, { backgroundColor: 'rgb(68,53,165)' }]} onLayout={handleButtonLayout}>
-                            <Icon style={styles.icon} name={"facebook"} color={"#ffffff"} width={20} height={20} marginleft={35}/>
-                            <Text style={styles.buttonText}>Continuar con facebook</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={handleLoginPress} style={[styles.buttonRegister, { backgroundColor: 'rgb(255, 255, 255)' }]}>
-                            <Icon style={styles.icon} name={"apple"} color={"#000000"} width={20} height={20} marginleft={35}/>
-                            <Text style={styles.buttonTextBlack}>Continuar con Apple</Text>
-                        </TouchableOpacity>
-                         
-                    </View>
-
-                    <View style={styles.terminosYPoliticas}>
-                        <Text style={styles.textTerminos}>
-                        Al registrarte, aceptas nuestros {' '} 
-                        <TouchableOpacity onPress={verTerminosYPoliticas}>
-                            <Text style={styles.textTerminosGold}>Términos y Condiciones</Text>
-                        </TouchableOpacity>
-                          y nuestra {' '} 
-                        <TouchableOpacity onPress={verTerminosYPoliticas}>
-                            <Text style={styles.textTerminosGold}>Política de privacidad</Text>
-                        </TouchableOpacity>
-                        </Text>
-                    </View>
-
-                    <TouchableOpacity onPress={handleLoginPress} style={[styles.button, { backgroundColor: 'rgba(0, 0, 0, 0)' }]}>
-                        <Text style={[styles.buttonText, { color: 'rgb(255, 255, 255)', fontSize: 15 }]}>¿Ya tienes cuenta? <Text style={[styles.underlineText, { color: 'rgb(240, 176, 10)', fontSize: 15}]}>Inicia sesión</Text></Text>
-                    </TouchableOpacity>
-                 
-                 
                 </>)}
 
-           </View>
+                {isRegisterPressed && !isContinueEmailPressed && (
+                  <InitRegister/>
+                )}
+
+                {isRegisterPressed && isContinueEmailPressed && (
+                  <View style={{ width: '100%', height: '70%', marginBottom: 20 }}>
+                    <RegisterStack.Navigator
+                      initialRouteName="EmailScreen"
+                      screenOptions={{
+                      headerShown: false,
+                      ...transitionConfig,
+                      cardStyle: { backgroundColor: 'black' },
+                      }}
+                      >
+                    <RegisterStack.Screen name="EmailScreen" component={EmailScreen} />
+                    </RegisterStack.Navigator>
+                  </View>
+                )}      
+
+              </View>
+
         </View>
       </View>      
     </View>
@@ -258,7 +415,7 @@ const styles = StyleSheet.create({
   },
   blackContainer: {
     width: '90%',
-    height: '85%',
+    height: '88%',
     backgroundColor: 'black',
     alignItems: 'center',
     justifyContent: 'center',
@@ -275,6 +432,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
+    height: '100%',
   },
   buttonRowContainer: {
     flexDirection: 'row',
@@ -357,6 +515,7 @@ const styles = StyleSheet.create({
   },
   buttorInputRow:{
     flexDirection: 'row',
+    width: '90%',
   },
   icon: {
     marginRight: 6,

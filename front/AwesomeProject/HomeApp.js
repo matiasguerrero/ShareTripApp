@@ -7,6 +7,7 @@ import { useState } from 'react';
 import Icon from './Icon';
 
 import ContainerPublishTrip from './ContainerPublishTrip';
+import CustomRegisterStack from './CustomRegisterStack';
 
 const HomeTab = () => (
   //<View style={styles.container}>
@@ -31,7 +32,7 @@ const MyTripsScreen = () => (
 
 const ChatScreen = () => (
   <View style={styles.container}>
-    <Text>Chat Screen</Text>
+    <CustomRegisterStack/>
   </View>
 );
 
