@@ -13,7 +13,7 @@ import TestLogin from './TestLogin';
 import { useState } from 'react';
 import HomeApp from './HomeApp';
 import CustomCalendar from './CustomCalendar';
-
+import { TecladoProvider } from './TecladoContext';
 
 enableScreens();
 
@@ -82,7 +82,7 @@ const App = () => {
       </NavigationContainer>
     </AuthProvider>
     */
-
+    <TecladoProvider>
     <AuthProvider>
       <NavigationContainer>
         <StatusBar style="auto" />
@@ -105,6 +105,7 @@ const App = () => {
         </MainStack.Navigator>
       </NavigationContainer>
     </AuthProvider>
+    </TecladoProvider>
   );
 }
 

@@ -8,6 +8,8 @@ import Icon from './Icon';
 import { color } from 'react-native-elements/dist/helpers';
 import CustomRegisterStack from './CustomRegisterStack';
 import ContainerPublishTrip from './ContainerPublishTrip';
+import { TecladoContext } from './TecladoContext';
+import { useContext } from 'react';
 
 if (Platform.OS === 'android') {
   if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -15,16 +17,48 @@ if (Platform.OS === 'android') {
   }
 }
 
+const EmailScreen = () => {
+  const { isKeyboardOpen } = useContext(TecladoContext);
+  return (
+    <View style={{alignItems: 'center'}}>
+      <Text style={styles.welcomeText}>Bienvenido a RUTAPP</Text>
+      <TextInput
+        style={[styles.input, isKeyboardOpen ? styles.email_keyboard : null]}
+        placeholder="Correo electrónico"
+        placeholderTextColor="rgba(204, 204, 204, 0.8)"
+    />
+      <TextInput
+        style={styles.input}
+        placeholder="Contraseña"
+        placeholderTextColor="rgba(204, 204, 204, 0.8)"
+        secureTextEntry={true}
+     />
+
+      {!isKeyboardOpen && (
+        <View style={styles.bottomContainer}>
+          <TouchableOpacity style={[styles.button, { backgroundColor: 'rgb(240, 176, 10)' }]}>
+            <Text style={styles.buttonText}>Iniciar sesión</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, { backgroundColor: 'rgba(0, 0, 0, 0)' }]}>
+            <Text style={[styles.buttonText, { color: 'rgb(255, 255, 255)' }, { fontSize: 14 }]}>
+              ¿Has olvidado tu contraseña?
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
+    </View>
+  );
+};
+
 const TestLogin = ({selectedButton}) => {
    
 
     const [isLoginPressed, setIsLoginPressed] = useState(true);
     const [isRegisterPressed, setIsRegisterPressed] = useState(false);
     const [isContinueEmailPressed, setIsContinueEmailPressed] = useState(false);
-    const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+    const { isKeyboardOpen } = useContext(TecladoContext);
 
     const navigation = useNavigation();
-
 
     useEffect(() => {
         if (selectedButton === 'Login') {
@@ -35,23 +69,7 @@ const TestLogin = ({selectedButton}) => {
           setIsRegisterPressed(true);
         }
       }, [selectedButton]);
-    
-    useEffect(() => {
-        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
-        //LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-        setIsKeyboardOpen(true);
-        });
 
-        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
-        //LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-        setIsKeyboardOpen(false);
-        });
-
-    return () => {
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
-    };
-  }, []);
   
     const [buttonWidth, setButtonWidth] = useState(0);
 
@@ -96,55 +114,21 @@ const TestLogin = ({selectedButton}) => {
         setIsRegisterPressed(true);
         setIsLoginPressed(false);
         // Lógica adicional para el botón "Registrarse"
-      };
+    };
 
-      const verTerminosYPoliticas =() =>{
+    const verTerminosYPoliticas =() =>{
         navigation.navigate('Tab_Home');
-      }
+    }
 
-      const GetCustomComponent = () => {
+    const GetCustomComponent = () => {
         return (
           <View>
             <Text>Este es un componente personalizado</Text>
             {/* Aquí puedes poner el contenido personalizado que desees */}
           </View>
         );
-      };
-
-
-      const EmailScreen = () => {
-      
-        return (
-            <View style={{justifyContent: 'center', alignItems: 'center', backgroundColor: 'black'}}>
-            <Text style={styles.welcomeText}>Bienvenido a RUTAPP</Text>
-            <TextInput
-                style={[styles.input, isKeyboardOpen ? styles.email_keyboard : null]}
-                placeholder="Correo electrónico"
-                placeholderTextColor="rgba(204, 204, 204, 0.8)"
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Contraseña"
-                placeholderTextColor="rgba(204, 204, 204, 0.8)"
-                secureTextEntry={true}
-            />
-
-            {!isKeyboardOpen && (
-                <View style={styles.bottomContainer}>
-                <TouchableOpacity  style={[styles.button, { backgroundColor: 'rgb(240, 176, 10)' }]}>
-                    <Text style={styles.buttonText}>Iniciar sesión</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.button, { backgroundColor: 'rgba(0, 0, 0, 0)' }]}>
-                    <Text style={[styles.buttonText, { color: 'rgb(255, 255, 255)' }, { fontSize: 14 }]}>
-                    ¿Has olvidado tu contraseña?
-                    </Text>
-                </TouchableOpacity>
-                </View>
-            )}
-            </View>
-        );
     };
-
+    
   const InitRegister = ({
     handleLoginPress,
     verTerminosYPoliticas,
@@ -243,11 +227,13 @@ const TestLogin = ({selectedButton}) => {
   };
 
   const handleContinueEmail = () => {
-    setIsContinueEmailPressed(true);
+    navigator.navigate('EmailScreen');
     // Lógica adicional para el botón "Iniciar sesión"
   };
   
+
   return (
+    
     <View style={styles.container}>
       <View style={[styles.headerContainer, isKeyboardOpen ? styles.headerContainerKeyboard : null]}>
         <ImageBackground
@@ -329,25 +315,38 @@ const TestLogin = ({selectedButton}) => {
                     )}
                 </>)}
 
-                {isRegisterPressed && !isContinueEmailPressed && (
-                  <InitRegister/>
-                )}
-
-                {isRegisterPressed && isContinueEmailPressed && (
+                {isRegisterPressed && (
                   <View style={{ width: '100%', height: '70%', marginBottom: 20 }}>
                     <RegisterStack.Navigator
-                      initialRouteName="EmailScreen"
+                      initialRouteName="InitRegister"
                       screenOptions={{
                       headerShown: false,
                       ...transitionConfig,
                       cardStyle: { backgroundColor: 'black' },
                       }}
                       >
-                    <RegisterStack.Screen name="EmailScreen" component={EmailScreen} />
+                      <RegisterStack.Screen name="InitRegister" options={{ headerShown: false }}>
+                        {props => <InitRegister {...props} verTerminosYPoliticas={verTerminosYPoliticas}/>}
+                      </RegisterStack.Screen>
+                      <RegisterStack.Screen name="EmailScreen" component={EmailScreen} />
                     </RegisterStack.Navigator>
                   </View>
-                )}      
+                )}       
 
+                {
+                    /*
+                    <RegisterStack.Navigator
+                      initialRouteName="EmailScreen"
+                      screenOptions={{
+                      headerShown: false,
+                      ...transitionConfig,
+                      cardStyle: { backgroundColor: 'black', width: '100%', height: '100%' },
+                      }}
+                      >
+                    <RegisterStack.Screen name="EmailScreen" component={EmailScreen} />
+                    </RegisterStack.Navigator>
+                    */
+                  }
               </View>
 
         </View>
@@ -502,7 +501,7 @@ const styles = StyleSheet.create({
     zIndex: 0,
   },
   bottomContainerRegister: {
-    width: '95%',
+    width: '90%',
     paddingHorizontal: 10,
     marginTop: 40,
   },
