@@ -5,17 +5,69 @@ import { Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import Icon from './Icon';
-import { color } from 'react-native-elements/dist/helpers';
-import CustomRegisterStack from './CustomRegisterStack';
-import ContainerPublishTrip from './ContainerPublishTrip';
 import { TecladoContext } from './TecladoContext';
 import { useContext } from 'react';
+import CustomCalendar from './CustomCalendar';
 
 if (Platform.OS === 'android') {
   if (UIManager.setLayoutAnimationEnabledExperimental) {
     UIManager.setLayoutAnimationEnabledExperimental(true);
   }
 }
+
+const PasswordScreen = () => {
+  const { isKeyboardOpen } = useContext(TecladoContext);
+  const [password_register, setPassword_Register] = useState('');
+  const [password_confirm_register, setPassword_Confirm_Register] = useState('');
+  const shouldShowContinueButton= (password_register && password_confirm_register);
+
+  const handlePasswordRegisterChange = (text) => {
+    setPassword_Register(text);
+  };
+  const handleConfirmPasswordRegisterChange = (text) => {
+    setPassword_Confirm_Register(text);
+  };
+  const handlePressContinue = () => {
+    navigator.navigate("CodeEmailScreen");
+  };
+
+  return (
+    <View style={{alignItems: 'center'}}>
+      <Text style={styles.welcomeText}>Bienvenido a RUTAPP</Text>
+      <View style={{flexDirection: 'column', width: '100%', alignItems: 'center'}}>
+              <Text style={[styles.seleccioneTextBoth, isKeyboardOpen ? styles.seleccioneTextBoth_Keyboard : null]}>Ingresa una contraseña</Text>
+              <View style={[styles.textInputRow, {marginBottom: 20}, isKeyboardOpen ? styles.inputName_keyboard : null]}>
+                <View style={{flexDirection: 'column', width: '100%', height: '100%', alignItems: 'center'}}>
+                  <TextInput
+                          style={[styles.inputEmail, {marginBottom: 20}, isKeyboardOpen ? styles.inputName_keyboard : null]}
+                          placeholder="Contraseña"
+                          placeholderTextColor="rgba(204, 204, 204, 0.8)"
+                          onChangeText={handlePasswordRegisterChange}
+                          value={password_register}
+                          secureTextEntry={true} 
+                  />
+                  <TextInput
+                          style={[styles.inputEmail, isKeyboardOpen ? styles.inputName_keyboard : null]}
+                          placeholder="Confirmar contraseña "
+                          placeholderTextColor="rgba(204, 204, 204, 0.8)"
+                          onChangeText={handleConfirmPasswordRegisterChange}
+                          value={password_confirm_register}
+                          secureTextEntry={true} 
+                  />
+                </View>
+              </View>
+              {shouldShowContinueButton && (
+                <View style={[styles.bottomContainerEmail,isKeyboardOpen ? styles.bottomContainerEmail_keyboard : null]}>
+                  <TouchableOpacity onPress={handlePressContinue} style={[styles.button, { backgroundColor: 'rgba(240, 176, 10, 1)' }, isKeyboardOpen ? styles.button_keyboard : null ]}>
+                    <Text style={styles.buttonText}>Continuar</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+      </View>
+      
+    </View>
+  );
+};
 
 const NameScreen = () => {
   const { isKeyboardOpen } = useContext(TecladoContext);
@@ -28,6 +80,9 @@ const NameScreen = () => {
   };
   const handleSurNameRegisterChange = (text) => {
     setSurName_Register(text);
+  };
+  const handlePressContinue = () => {
+    navigator.navigate("DateScreen");
   };
 
   return (
@@ -55,7 +110,7 @@ const NameScreen = () => {
               </View>
               {shouldShowContinueButton && (
                 <View style={[styles.bottomContainerEmail,isKeyboardOpen ? styles.bottomContainerEmail_keyboard : null]}>
-                  <TouchableOpacity style={[styles.button, { backgroundColor: 'rgba(240, 176, 10, 1)' }, isKeyboardOpen ? styles.button_keyboard : null ]}>
+                  <TouchableOpacity onPress={handlePressContinue} style={[styles.button, { backgroundColor: 'rgba(240, 176, 10, 1)' }, isKeyboardOpen ? styles.button_keyboard : null ]}>
                     <Text style={styles.buttonText}>Continuar</Text>
                   </TouchableOpacity>
                 </View>
@@ -106,6 +161,83 @@ const EmailScreen = () => {
   );
 };
 
+const DateScreen = ({date_register, setToggleModal}) => {
+  const { isKeyboardOpen } = useContext(TecladoContext);
+  
+  const shouldShowContinueButton= (date_register);
+
+  const handlePressContinue = () =>{
+    navigator.navigate("PasswordScreen");
+  }
+
+  return (
+    <View style={{alignItems: 'center'}}>
+      <Text style={styles.welcomeText}>Bienvenido a RUTAPP</Text>
+      <View style={{flexDirection: 'column', width: '100%', alignItems: 'center'}}>
+              <Text style={[styles.seleccioneText, isKeyboardOpen ? styles.seleccioneText_Keyboard : null]}>Ingresa tu fecha de nacimiento</Text>
+              <TouchableOpacity onPress={setToggleModal}>
+                <View style={[styles.textInputRow,  {borderBottomColor: "rgba(204, 204, 204, 0.8)"}, {justifyContent: 'center'}, isKeyboardOpen ? styles.inputEmail_keyboard : null]}>
+                  <Text style={[styles.inputEmail, {textAlignVertical: 'center'}, {color: "rgba(204, 204, 204, 0.8)"}, isKeyboardOpen ? styles.inputEmail_keyboard : null]}>
+                    {date_register ? date_register.toLocaleDateString() : "DD/MM/YYYY"}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+
+              {shouldShowContinueButton && (
+                <View style={[styles.bottomContainerEmail,isKeyboardOpen ? styles.bottomContainerEmail_keyboard : null]}>
+                  <TouchableOpacity onPress={handlePressContinue} style={[styles.button, { backgroundColor: 'rgba(240, 176, 10, 1)' }, isKeyboardOpen ? styles.button_keyboard : null ]}>
+                    <Text style={styles.buttonText}>Continuar</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+      </View>
+      
+    </View>
+  );
+};
+
+const CodeEmailScreen = () => {
+  const { isKeyboardOpen } = useContext(TecladoContext);
+  const [code_email_register, setCodeEmail_Register] = useState('');
+  const shouldShowContinueButton= (code_email_register);
+
+  const handleCodeEmailRegisterChange = (text) => {
+    setCodeEmail_Register(text);
+  };
+
+  const handlePressContinue = () =>{
+    navigator.navigate('Tab_Home');
+  }
+
+  return (
+    <View style={{alignItems: 'center'}}>
+      <Text style={styles.welcomeText}>Bienvenido a RUTAPP</Text>
+      <View style={{flexDirection: 'column', width: '100%', alignItems: 'center'}}>
+              <Text style={[styles.seleccioneText, isKeyboardOpen ? styles.seleccioneText_Keyboard : null]}>Confirma el código que enviamos al email</Text>
+              <View style={[styles.textInputRow, isKeyboardOpen ? styles.inputEmail_keyboard : null]}>
+                <TextInput
+                        style={[styles.inputEmail, isKeyboardOpen ? styles.inputEmail_keyboard : null]}
+                        placeholder="Código de 6 dígitos"
+                        placeholderTextColor="rgba(204, 204, 204, 0.8)"
+                        onChangeText={handleCodeEmailRegisterChange}
+                        value={code_email_register}
+                        keyboardType="numeric" // Teclado numérico
+                        maxLength={6} // Limitar a 6 caracteres
+                />
+              </View>
+              {shouldShowContinueButton && (
+                <View style={[styles.bottomContainerEmail,isKeyboardOpen ? styles.bottomContainerEmail_keyboard : null]}>
+                  <TouchableOpacity onPress={handlePressContinue} style={[styles.button, { backgroundColor: 'rgba(240, 176, 10, 1)' }, isKeyboardOpen ? styles.button_keyboard : null ]}>
+                    <Text style={styles.buttonText}>Registrarse</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+      </View>
+      
+    </View>
+  );
+};
+
 const TestLogin = ({selectedButton}) => {
    
 
@@ -113,6 +245,8 @@ const TestLogin = ({selectedButton}) => {
     const [isRegisterPressed, setIsRegisterPressed] = useState(false);
     const [isContinueEmailPressed, setIsContinueEmailPressed] = useState(false);
     const { isKeyboardOpen } = useContext(TecladoContext);
+    const [date_register, setDate_Register] = useState('');
+    const [modalVisible, setModalStartVisible] = useState(false);
 
     const navigation = useNavigation();
 
@@ -287,10 +421,19 @@ const TestLogin = ({selectedButton}) => {
     // Lógica adicional para el botón "Iniciar sesión"
   };
   
-
+  
+  const toggleModalStart = () => {
+    setModalStartVisible(!modalVisible);
+  };
+  
   return (
     
     <View style={styles.container}>
+      <Modal visible={modalVisible} onRequestClose={() => toggleModalStart()}>
+          <View style={styles.modalContainer}>
+            <CustomCalendar maxMonthsToRender={3} setToggleModal={toggleModalStart} setDate={setDate_Register}></CustomCalendar>
+          </View>
+      </Modal>
       <View style={[styles.headerContainer, isKeyboardOpen ? styles.headerContainerKeyboard : null]}>
         <ImageBackground
           source={require('./assets/fondo.png')} // Ruta de tu imagen de fondo
@@ -389,9 +532,22 @@ const TestLogin = ({selectedButton}) => {
                       <RegisterStack.Screen name="InitRegister" options={{ headerShown: false }}>
                         {props => <InitRegister {...props} verTerminosYPoliticas={verTerminosYPoliticas}/>}
                       </RegisterStack.Screen>
-                      <RegisterStack.Screen name="EmailScreen" component={EmailScreen} />
-                      <RegisterStack.Screen name="nameScreen" component={NameScreen} />
-                    </RegisterStack.Navigator>
+                      <RegisterStack.Screen name="EmailScreen" options={{ headerShown: false }}>
+                        {props => <EmailScreen {...props}/>}
+                      </RegisterStack.Screen>
+                      <RegisterStack.Screen name="nameScreen" options={{ headerShown: false }}>
+                        {props => <NameScreen {...props}/>}
+                      </RegisterStack.Screen>
+                      <RegisterStack.Screen name="DateScreen" options={{ headerShown: false }}>
+                        {props => <DateScreen {...props} date_register={date_register} setToggleModal={toggleModalStart}/>}
+                      </RegisterStack.Screen>
+                      <RegisterStack.Screen name="PasswordScreen" options={{ headerShown: false }}>
+                        {props => <PasswordScreen {...props}/>}
+                      </RegisterStack.Screen>
+                      <RegisterStack.Screen name="CodeEmailScreen" options={{ headerShown: false }}>
+                        {props => <CodeEmailScreen {...props}/>}
+                      </RegisterStack.Screen>
+                   </RegisterStack.Navigator>
                   </View>
                 )}       
 
@@ -691,7 +847,13 @@ const styles = StyleSheet.create({
   },
   button_keyboard:{
     height: 40,
-  }
+  },
+  modalContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
+  },
 });
 
 export default TestLogin;
