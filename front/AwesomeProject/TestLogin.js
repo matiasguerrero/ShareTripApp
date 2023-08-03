@@ -17,35 +17,91 @@ if (Platform.OS === 'android') {
   }
 }
 
-const EmailScreen = () => {
+const NameScreen = () => {
   const { isKeyboardOpen } = useContext(TecladoContext);
+  const [name_register, setName_Register] = useState('');
+  const [surname_register, setSurName_Register] = useState('');
+  const shouldShowContinueButton= (name_register && surname_register);
+
+  const handleNameRegisterChange = (text) => {
+    setName_Register(text);
+  };
+  const handleSurNameRegisterChange = (text) => {
+    setSurName_Register(text);
+  };
+
   return (
     <View style={{alignItems: 'center'}}>
       <Text style={styles.welcomeText}>Bienvenido a RUTAPP</Text>
-      <TextInput
-        style={[styles.input, isKeyboardOpen ? styles.email_keyboard : null]}
-        placeholder="Correo electrónico"
-        placeholderTextColor="rgba(204, 204, 204, 0.8)"
-    />
-      <TextInput
-        style={styles.input}
-        placeholder="Contraseña"
-        placeholderTextColor="rgba(204, 204, 204, 0.8)"
-        secureTextEntry={true}
-     />
+      <View style={{flexDirection: 'column', width: '100%', alignItems: 'center'}}>
+              <Text style={[styles.seleccioneTextBoth, isKeyboardOpen ? styles.seleccioneTextBoth_Keyboard : null]}>Ingresá tu nombre y apellido</Text>
+              <View style={[styles.textInputRow, {marginBottom: 20}, isKeyboardOpen ? styles.inputName_keyboard : null]}>
+                <View style={{flexDirection: 'column', width: '100%', height: '100%', alignItems: 'center'}}>
+                  <TextInput
+                          style={[styles.inputEmail, {marginBottom: 20}, isKeyboardOpen ? styles.inputName_keyboard : null]}
+                          placeholder="Nombre"
+                          placeholderTextColor="rgba(204, 204, 204, 0.8)"
+                          onChangeText={handleNameRegisterChange}
+                          value={name_register}
+                  />
+                  <TextInput
+                          style={[styles.inputEmail, isKeyboardOpen ? styles.inputName_keyboard : null]}
+                          placeholder="Apellido"
+                          placeholderTextColor="rgba(204, 204, 204, 0.8)"
+                          onChangeText={handleSurNameRegisterChange}
+                          value={surname_register}
+                  />
+                </View>
+              </View>
+              {shouldShowContinueButton && (
+                <View style={[styles.bottomContainerEmail,isKeyboardOpen ? styles.bottomContainerEmail_keyboard : null]}>
+                  <TouchableOpacity style={[styles.button, { backgroundColor: 'rgba(240, 176, 10, 1)' }, isKeyboardOpen ? styles.button_keyboard : null ]}>
+                    <Text style={styles.buttonText}>Continuar</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+      </View>
+      
+    </View>
+  );
+};
 
-      {!isKeyboardOpen && (
-        <View style={styles.bottomContainer}>
-          <TouchableOpacity style={[styles.button, { backgroundColor: 'rgb(240, 176, 10)' }]}>
-            <Text style={styles.buttonText}>Iniciar sesión</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, { backgroundColor: 'rgba(0, 0, 0, 0)' }]}>
-            <Text style={[styles.buttonText, { color: 'rgb(255, 255, 255)' }, { fontSize: 14 }]}>
-              ¿Has olvidado tu contraseña?
-            </Text>
-          </TouchableOpacity>
-        </View>
-      )}
+const EmailScreen = () => {
+  const { isKeyboardOpen } = useContext(TecladoContext);
+  const [email_register, setEmail_Register] = useState('');
+  const shouldShowContinueButton= (email_register);
+
+  const handleEmailRegisterChange = (text) => {
+    setEmail_Register(text);
+  };
+
+  const handlePressContinue = () =>{
+    navigator.navigate("nameScreen");
+  }
+
+  return (
+    <View style={{alignItems: 'center'}}>
+      <Text style={styles.welcomeText}>Bienvenido a RUTAPP</Text>
+      <View style={{flexDirection: 'column', width: '100%', alignItems: 'center'}}>
+              <Text style={[styles.seleccioneText, isKeyboardOpen ? styles.seleccioneText_Keyboard : null]}>¿Cuál es tu email?</Text>
+              <View style={[styles.textInputRow, isKeyboardOpen ? styles.inputEmail_keyboard : null]}>
+                <TextInput
+                        style={[styles.inputEmail, isKeyboardOpen ? styles.inputEmail_keyboard : null]}
+                        placeholder="Correo electrónico"
+                        placeholderTextColor="rgba(204, 204, 204, 0.8)"
+                        onChangeText={handleEmailRegisterChange}
+                        value={email_register}
+                />
+              </View>
+              {shouldShowContinueButton && (
+                <View style={[styles.bottomContainerEmail,isKeyboardOpen ? styles.bottomContainerEmail_keyboard : null]}>
+                  <TouchableOpacity onPress={handlePressContinue} style={[styles.button, { backgroundColor: 'rgba(240, 176, 10, 1)' }, isKeyboardOpen ? styles.button_keyboard : null ]}>
+                    <Text style={styles.buttonText}>Continuar</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+      </View>
+      
     </View>
   );
 };
@@ -301,22 +357,27 @@ const TestLogin = ({selectedButton}) => {
                         secureTextEntry={true}
                     />
 
-                    {!isKeyboardOpen && ( 
-                        <View style={styles.bottomContainer}>
-                            <TouchableOpacity onPress={handleLoginPress} style={[styles.button, { backgroundColor: 'rgb(240, 176, 10)' }]}>
+                    
+                      <View style={[styles.bottomContainer, isKeyboardOpen ? styles.bottomContainer_keyboard : null]}>
+                            <TouchableOpacity onPress={handleLoginPress} style={[styles.button, { backgroundColor: 'rgb(240, 176, 10)' }, isKeyboardOpen ? styles.button_keyboard : null]}>
                                 <Text style={styles.buttonText}>Iniciar sesión</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={handleRegisterPress} style={[styles.button, { backgroundColor: 'rgba(0, 0, 0, 0)' }]}>
+                      </View>
+                     
+                    {!isKeyboardOpen && ( 
+                      <View style={{width: '90%'}}>
+                          <TouchableOpacity onPress={handleRegisterPress} style={[styles.button, { backgroundColor: 'rgba(0, 0, 0, 0)' }]}>
                                 <Text style={[styles.buttonText, { color: 'rgb(255, 255, 255)' }, { fontSize: 14 }]}>
                                 ¿Has olvidado tu contraseña?
                                 </Text>
                             </TouchableOpacity>
-                        </View>
+                       </View>
                     )}
+                  
                 </>)}
 
                 {isRegisterPressed && (
-                  <View style={{ width: '100%', height: '70%', marginBottom: 20 }}>
+                  <View style={[styles.viewRegisterEmail, isKeyboardOpen ? styles.viewRegisterEmailKeyboard : null]}>
                     <RegisterStack.Navigator
                       initialRouteName="InitRegister"
                       screenOptions={{
@@ -329,6 +390,7 @@ const TestLogin = ({selectedButton}) => {
                         {props => <InitRegister {...props} verTerminosYPoliticas={verTerminosYPoliticas}/>}
                       </RegisterStack.Screen>
                       <RegisterStack.Screen name="EmailScreen" component={EmailScreen} />
+                      <RegisterStack.Screen name="nameScreen" component={NameScreen} />
                     </RegisterStack.Navigator>
                   </View>
                 )}       
@@ -443,8 +505,12 @@ const styles = StyleSheet.create({
   bottomContainer: {
     width: '95%',
     paddingHorizontal: 10,
-    paddingBottom: 20,
     marginTop: 50,
+  },
+  bottomContainer_keyboard: {
+    width: '50%',
+    paddingHorizontal: 10,
+    marginTop: 20,
   },
   button_doble: {
     height: 58,
@@ -532,7 +598,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   email_keyboard:{
-    marginBottom: 70,  
+    marginTop: 20,
   },
   welcomeText: {
     color: 'rgb(255, 255, 255)',
@@ -559,6 +625,72 @@ const styles = StyleSheet.create({
     color : 'rgb(240,176,10)',
     fontSize: 10,
     marginBottom: -3,
+  },
+  viewRegisterEmail:{
+    width: '100%', height: '70%', marginBottom: 20,
+  },
+  viewRegisterEmailKeyboard:{
+    height: '72%', marginBottom: 0
+  },
+  inputEmail: {
+    width: '80%',
+    height: 40,
+    borderBottomColor: 'rgba(204, 204, 204, 0.8)',
+    borderBottomWidth: 1,
+    marginBottom: 30,
+    marginTop: 20,
+    color: 'white',
+  },
+  inputEmail_keyboard:{
+    marginTop: 20,
+    marginBottom: '7%',
+  },
+  inputName_keyboard:{
+    marginTop: '3%',
+    marginBottom: '4%',
+  },
+  seleccioneText: {
+    color: 'rgb(255, 255, 255)',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 30,
+    marginBottom: 20,
+    width: '80%',
+    textAlign: 'center'
+  },
+  seleccioneText_Keyboard:{
+    marginTop: 30,
+    marginBottom: 0,
+  },
+  seleccioneTextBoth: {
+    color: 'rgb(255, 255, 255)',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 20,
+    marginBottom: 5,
+    width: '80%',
+    textAlign: 'center'
+  },
+  seleccioneTextBoth_Keyboard:{
+    marginTop: 10,
+    fontSize: 16,
+    marginBottom: 0,
+  },
+  textInputRow:{
+    flexDirection: 'row',
+    borderBottomColor: 'rgba(204, 204, 204, 0.8)',
+    marginBottom: 30,
+  },
+  bottomContainerEmail: {
+    width: '90%',
+    paddingHorizontal: 10,
+  },
+  bottomContainerEmail_keyboard: {
+    width: '50%',
+    paddingHorizontal: 10,
+  },
+  button_keyboard:{
+    height: 40,
   }
 });
 
