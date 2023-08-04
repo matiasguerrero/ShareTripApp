@@ -146,6 +146,8 @@ const EmailScreen = () => {
                         placeholderTextColor="rgba(204, 204, 204, 0.8)"
                         onChangeText={handleEmailRegisterChange}
                         value={email_register}
+                        keyboardType="email-address" // Set the keyboardType to 'email-address'
+                        autoCapitalize="none" // Prevent auto capitalization of the email address
                 />
               </View>
               {shouldShowContinueButton && (
@@ -365,15 +367,29 @@ const TestLogin = ({selectedButton}) => {
             style={[styles.buttonRegister, { backgroundColor: 'rgb(255, 255, 255)' }]}
           >
             <View style={styles.buttorInputRow}>
-              <Icon
+              {Platform.OS === 'android' ? (
+                <Icon
+                style={styles.icon}
+                name={"google"}
+                width={20}
+                height={20}
+                marginleft={'10%'}
+                />
+            
+                ):
+                <Icon
                 style={styles.icon}
                 name={"apple"}
                 color={"#000000"}
                 width={20}
                 height={20}
                 marginleft={'10%'}
-              />
-              <Text style={styles.buttonTextBlack}>Continuar con Apple</Text>
+                />
+              }
+              {Platform.OS === 'android' ? (
+                  <Text style={styles.buttonTextBlack}>Continuar con Google</Text>
+                ) : <Text style={styles.buttonTextBlack}>Continuar con Apple</Text>
+              }
             </View>
           </TouchableOpacity>
         </View>
@@ -737,6 +753,7 @@ const styles = StyleSheet.create({
   buttorInputRow:{
     flexDirection: 'row',
     width: '90%',
+    alignItems: 'center',
   },
   icon: {
     marginRight: 6,
