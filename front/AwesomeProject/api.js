@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-const baseUrl = 'http://192.168.0.3:80/api/'; // Actualiza con la URL base de tu API
-
+const baseUrl = 'http://192.168.0.157:8000/api/'; // Actualiza con la URL base de tu API
 // Función para iniciar sesión
 export const login = async (email, password) => {
   try {
@@ -57,7 +56,7 @@ export const register = async (dni, email, password, name, lastName, date_of_bir
       lastName,
       date_of_birth,
     });
-    last_name=lastName;
+    const last_name=lastName;
     const response = await axios.post(usersUrl, {
       dni,
       email,
@@ -73,7 +72,7 @@ export const register = async (dni, email, password, name, lastName, date_of_bir
       return { success: true, data: response.data };
     } else {
       // Error en la respuesta del servidor
-      return { success: false, error: 'Error en la solicitud de creación de usuario' };
+      return { success: false, error: 'Error en la solicitud de creación de usuario', status: response.status };
     }
   } catch (error) {
     // Error de conexión o de la solicitud

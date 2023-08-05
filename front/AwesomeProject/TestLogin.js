@@ -10,7 +10,8 @@ import { useContext } from 'react';
 import CustomCalendar from './CustomCalendar';
 import ErrorModal from './ErrorModal';
 import { ActivityIndicator } from 'react-native';
-
+import moment from 'moment';
+import { register } from './api';
 
 if (Platform.OS === 'android') {
   if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -165,7 +166,7 @@ const PasswordScreen = ({password_register, setPassword_Register, password_confi
     }
 
     // Lógica adicional si ambos nombres y apellidos son válidos
-    navigator.navigate("CodeEmailScreen");
+    navigator.navigate("DniScreen");
   };
 
   return (
@@ -355,7 +356,59 @@ const DateScreen = ({date_register, setToggleModal}) => {
   );
 };
 
-const CodeEmailScreen = ({code_email_register, setCodeEmail_Register, openErrorModal, setErrorMessage}) => {
+const DniScreen = ({dni_register, setDniRegister, openErrorModal, setErrorMessage}) => {
+  const { isKeyboardOpen } = useContext(TecladoContext);
+  const shouldShowContinueButton= (dni_register);
+
+  const handleDniRegisterChange = (text) => {
+    setDniRegister(text);
+  };
+
+
+  const handlePressContinue = () => {
+    const sixDigitRegex = /^\d{8}$/;
+ 
+    if (!sixDigitRegex.test(dni_register)) {
+      setErrorMessage('El DNI debe tener exactamente 8 dígitos numéricos.');
+      openErrorModal();
+      return;
+    }
+  
+    navigator.navigate("CodeEmailScreen");
+  }
+  
+
+  return (
+    <View style={{alignItems: 'center'}}>
+      <Text style={styles.welcomeText}>Bienvenido a RUTAPP</Text>
+      <View style={{flexDirection: 'column', width: '100%', alignItems: 'center'}}>
+              <Text style={[styles.seleccioneText, isKeyboardOpen ? styles.seleccioneText_Keyboard : null]}>Ingrese tu número de DNI</Text>
+              <View style={[styles.textInputRow, isKeyboardOpen ? styles.inputEmail_keyboard : null]}>
+                <TextInput
+                        style={[styles.inputEmail, isKeyboardOpen ? styles.inputEmail_keyboard : null]}
+                        placeholder="Número de DNI"
+                        placeholderTextColor="rgba(204, 204, 204, 0.8)"
+                        onChangeText={handleDniRegisterChange}
+                        value={dni_register}
+                        keyboardType="numeric" // Teclado numérico
+                        maxLength={8} // Limitar a 6 caracteres
+                />
+              </View>
+              {shouldShowContinueButton && (
+                <View style={[styles.bottomContainerEmail,isKeyboardOpen ? styles.bottomContainerEmail_keyboard : null]}>
+                  <TouchableOpacity onPress={handlePressContinue} style={[styles.button, { backgroundColor: 'rgba(240, 176, 10, 1)' }, isKeyboardOpen ? styles.button_keyboard : null ]}>
+                    <Text style={styles.buttonText}>Continuar</Text>
+               
+                  </TouchableOpacity>
+                </View>
+              )}
+      </View>
+      
+    </View>
+  );
+};
+
+const CodeEmailScreen = ({code_email_register, setCodeEmail_Register, openErrorModal, setErrorMessage, dni, email, password, name, lastName, date_format}) => {
   const { isKeyboardOpen } = useContext(TecladoContext);
   const shouldShowContinueButton= (code_email_register);
   const [isLoading, setIsLoading] = useState(false);
@@ -363,6 +416,26 @@ const CodeEmailScreen = ({code_email_register, setCodeEmail_Register, openErrorM
   const handleCodeEmailRegisterChange = (text) => {
     setCodeEmail_Register(text);
   };
+
+  const formatDate = (date) => {
+    return moment(date).format('YYYY-MM-DD');
+  };
+
+  const handleRegister= async (dni, email, password, name, lastName, date_of_birth) => {
+    setIsLoading(true);
+    date_format=formatDate(date_of_birth);
+    const response = await register(parseInt(dni), email, password, name, lastName, date_format);
+    console.log(response);
+    if (response.success) {
+      console.log("Registro exitoso");
+      //handleLogin();
+      navigator.navigate('Tab_Home');
+    } else {
+      setErrorMessage(response.error);
+      openErrorModal();
+  }
+  setIsLoading(false);
+};
 
   const handlePressContinue = () => {
     const sixDigitRegex = /^\d{6}$/;
@@ -373,7 +446,7 @@ const CodeEmailScreen = ({code_email_register, setCodeEmail_Register, openErrorM
       return;
     }
   
-    navigator.navigate('Tab_Home');
+    handleRegister(dni, email, password, name, lastName, date_format);
   }
   
 
@@ -428,6 +501,7 @@ const TestLogin = ({selectedButton}) => {
     const [password_register, setPassword_Register] = useState('');
     const [password_confirm_register, setPassword_Confirm_Register] = useState('');
     const [code_email_register, setCodeEmail_Register] = useState('');
+    const [dni_register, setDniRegister] = useState('');
 
     const navigation = useNavigation();
 
@@ -628,8 +702,13 @@ const TestLogin = ({selectedButton}) => {
                          password_confirm_register={password_confirm_register} setPassword_Confirm_Register={setPassword_Confirm_Register}
                          openErrorModal={openErrorModal} setErrorMessage={setErrorMessage}/>}
                       </RegisterStack.Screen>
+                      <RegisterStack.Screen name="DniScreen" options={{ headerShown: false }}>
+                        {props => <DniScreen {...props} dni_register={dni_register} setDniRegister={setDniRegister} openErrorModal={openErrorModal} setErrorMessage={setErrorMessage}/>}
+                      </RegisterStack.Screen>
                       <RegisterStack.Screen name="CodeEmailScreen" options={{ headerShown: false }}>
-                        {props => <CodeEmailScreen {...props} code_email_register={code_email_register} setCodeEmail_Register={setCodeEmail_Register} openErrorModal={openErrorModal} setErrorMessage={setErrorMessage}/>}
+                        {props => <CodeEmailScreen {...props} code_email_register={code_email_register} setCodeEmail_Register={setCodeEmail_Register} openErrorModal={openErrorModal} setErrorMessage={setErrorMessage}
+                         dni={dni_register} email={email_register} password={password_register} name={name_register} lastName={surname_register} date_format={date_register}
+                        />}
                       </RegisterStack.Screen>
                    </RegisterStack.Navigator>
                   </View>

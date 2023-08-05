@@ -1,12 +1,12 @@
 import requests
 
 # URL base de la API
-base_url = 'http://192.168.0.3:80/api/'  # Actualiza con la URL base de tu API
+base_url = 'http://192.168.0.157:8000/api/'  # Actualiza con la URL base de tu API
 
 # Datos del nuevo usuario
 new_user_data = {
-    "dni": 1,
-    "email": "asd@gmail.com",
+    "dni": 13443,
+    "email": "assdsdsdd@gmail.com",
     "password": "asd",
     "name": "pepe",
     "last_name": "gonzalez",
