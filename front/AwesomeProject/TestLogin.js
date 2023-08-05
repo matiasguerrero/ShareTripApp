@@ -8,6 +8,9 @@ import Icon from './Icon';
 import { TecladoContext } from './TecladoContext';
 import { useContext } from 'react';
 import CustomCalendar from './CustomCalendar';
+import ErrorModal from './ErrorModal';
+import { ActivityIndicator } from 'react-native';
+
 
 if (Platform.OS === 'android') {
   if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -15,10 +18,120 @@ if (Platform.OS === 'android') {
   }
 }
 
-const PasswordScreen = () => {
+const InitRegister = ({ handleLoginPress, verTerminosYPoliticas,}) => {
+
+  const handlePressContinue = () => {
+    navigator.navigate("EmailScreen");
+  };
+  return (
+    <View style={{justifyContent: 'center', alignItems: 'center', backgroundColor: 'black'}}>
+      <Text style={styles.welcomeText}>Bienvenido a RUTAPP</Text>
+      <Text style={styles.registerText}>¿Cómo quieres registrarte?</Text>
+      <View style={styles.bottomContainerRegister}>
+        <TouchableOpacity
+          onPress={handlePressContinue}
+          style={[styles.buttonRegister, { backgroundColor: 'rgb(74,122,246)' }]}
+        >
+          <View style={styles.buttorInputRow}>
+            <Icon
+              style={[styles.icon, { top: 3 }]}
+              name={"email"}
+              color={"#ffffff"}
+              width={20}
+              height={20}
+              marginleft={'10%'}
+            />
+            <Text style={styles.buttonText}>Continuar con email</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={handleLoginPress}
+          style={[styles.buttonRegister, { backgroundColor: 'rgb(68,53,165)' }]}
+        >
+          <View style={styles.buttorInputRow}>
+            <Icon
+              style={styles.icon}
+              name={"facebook"}
+              color={"#ffffff"}
+              width={20}
+              height={20}
+              marginleft={'10%'}
+            />
+            <Text style={styles.buttonText}>Continuar con Facebook</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={handleLoginPress}
+          style={[styles.buttonRegister, { backgroundColor: 'rgb(255, 255, 255)' }]}
+        >
+          <View style={styles.buttorInputRow}>
+            {Platform.OS === 'android' ? (
+              <Icon
+              style={styles.icon}
+              name={"google"}
+              width={20}
+              height={20}
+              marginleft={'10%'}
+              />
+          
+              ):
+              <Icon
+              style={styles.icon}
+              name={"apple"}
+              color={"#000000"}
+              width={20}
+              height={20}
+              marginleft={'10%'}
+              />
+            }
+            {Platform.OS === 'android' ? (
+                <Text style={styles.buttonTextBlack}>Continuar con Google</Text>
+              ) : <Text style={styles.buttonTextBlack}>Continuar con Apple</Text>
+            }
+          </View>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.terminosYPoliticas}>
+        <Text style={styles.textTerminos}>
+          Al registrarte, aceptas nuestros {' '}
+          <TouchableOpacity onPress={verTerminosYPoliticas}>
+            <Text style={styles.textTerminosGold}>Términos y Condiciones</Text>
+          </TouchableOpacity>
+          y nuestra {' '}
+          <TouchableOpacity onPress={verTerminosYPoliticas}>
+            <Text style={styles.textTerminosGold}>Política de privacidad</Text>
+          </TouchableOpacity>
+        </Text>
+      </View>
+
+      <TouchableOpacity
+        onPress={handleLoginPress}
+        style={[styles.button, { backgroundColor: 'rgba(0, 0, 0, 0)' }]}
+      >
+        <Text
+          style={[
+            styles.buttonText,
+            { color: 'rgb(255, 255, 255)', fontSize: 15 },
+          ]}
+        >
+          ¿Ya tienes cuenta?{' '}
+          <Text
+            style={[
+              styles.underlineText,
+              { color: 'rgb(240, 176, 10)', fontSize: 15 },
+            ]}
+          >
+            Inicia sesión
+          </Text>
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+const PasswordScreen = ({password_register, setPassword_Register, password_confirm_register, setPassword_Confirm_Register, openErrorModal, setErrorMessage}) => {
   const { isKeyboardOpen } = useContext(TecladoContext);
-  const [password_register, setPassword_Register] = useState('');
-  const [password_confirm_register, setPassword_Confirm_Register] = useState('');
   const shouldShowContinueButton= (password_register && password_confirm_register);
 
   const handlePasswordRegisterChange = (text) => {
@@ -27,7 +140,31 @@ const PasswordScreen = () => {
   const handleConfirmPasswordRegisterChange = (text) => {
     setPassword_Confirm_Register(text);
   };
+
+
   const handlePressContinue = () => {
+    const passwordRegex= /^(?=.*[A-Z])(?=.*\d).{8,}$/; //Al menos 1 mayuscula, un numero y minimo 8 carac
+
+  
+    if (!passwordRegex.test(password_register)) {
+      setErrorMessage('Su contraseña debe contener un número, una mayúscula y al menos 8 caracteres');
+      openErrorModal();
+      return;
+    }
+  
+    if (!passwordRegex.test(password_confirm_register)) {
+      setErrorMessage('Su contraseña debe contener un número, una maýuscula y al menos 8 caracteres');
+      openErrorModal();
+      return;
+    }
+
+    if (password_register !== password_confirm_register) {
+      setErrorMessage('Sus contraseñas no coinciden');
+      openErrorModal();
+      return;
+    }
+
+    // Lógica adicional si ambos nombres y apellidos son válidos
     navigator.navigate("CodeEmailScreen");
   };
 
@@ -69,10 +206,8 @@ const PasswordScreen = () => {
   );
 };
 
-const NameScreen = () => {
+const NameScreen = ({name_register, setName_Register, surname_register, setSurName_Register, openErrorModal, setErrorMessage}) => {
   const { isKeyboardOpen } = useContext(TecladoContext);
-  const [name_register, setName_Register] = useState('');
-  const [surname_register, setSurName_Register] = useState('');
   const shouldShowContinueButton= (name_register && surname_register);
 
   const handleNameRegisterChange = (text) => {
@@ -82,6 +217,21 @@ const NameScreen = () => {
     setSurName_Register(text);
   };
   const handlePressContinue = () => {
+    const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóú]+$/;
+    const lastNameRegex = /^[A-Za-zÁÉÍÓÚáéíóú]+$/;
+    
+  
+    if (!nameRegex.test(name_register)) {
+      setErrorMessage('Su nombre no es válido');
+      openErrorModal();
+      return;
+    }
+  
+    if (!lastNameRegex.test(surname_register)) {
+      setErrorMessage('Su apellido no es válido');
+      openErrorModal();
+      return;
+    }
     navigator.navigate("DateScreen");
   };
 
@@ -121,9 +271,8 @@ const NameScreen = () => {
   );
 };
 
-const EmailScreen = () => {
+const EmailScreen = ({email_register, setEmail_Register, openErrorModal, setErrorMessage}) => {
   const { isKeyboardOpen } = useContext(TecladoContext);
-  const [email_register, setEmail_Register] = useState('');
   const shouldShowContinueButton= (email_register);
 
   const handleEmailRegisterChange = (text) => {
@@ -131,6 +280,14 @@ const EmailScreen = () => {
   };
 
   const handlePressContinue = () =>{
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email_register)) {
+      setErrorMessage('Su email no es válido');
+      openErrorModal();
+      return;
+    }
+
     navigator.navigate("nameScreen");
   }
 
@@ -198,18 +355,27 @@ const DateScreen = ({date_register, setToggleModal}) => {
   );
 };
 
-const CodeEmailScreen = () => {
+const CodeEmailScreen = ({code_email_register, setCodeEmail_Register, openErrorModal, setErrorMessage}) => {
   const { isKeyboardOpen } = useContext(TecladoContext);
-  const [code_email_register, setCodeEmail_Register] = useState('');
   const shouldShowContinueButton= (code_email_register);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleCodeEmailRegisterChange = (text) => {
     setCodeEmail_Register(text);
   };
 
-  const handlePressContinue = () =>{
+  const handlePressContinue = () => {
+    const sixDigitRegex = /^\d{6}$/;
+ 
+    if (!sixDigitRegex.test(code_email_register)) {
+      setErrorMessage('El código debe tener exactamente 6 dígitos numéricos.');
+      openErrorModal();
+      return;
+    }
+  
     navigator.navigate('Tab_Home');
   }
+  
 
   return (
     <View style={{alignItems: 'center'}}>
@@ -230,7 +396,11 @@ const CodeEmailScreen = () => {
               {shouldShowContinueButton && (
                 <View style={[styles.bottomContainerEmail,isKeyboardOpen ? styles.bottomContainerEmail_keyboard : null]}>
                   <TouchableOpacity onPress={handlePressContinue} style={[styles.button, { backgroundColor: 'rgba(240, 176, 10, 1)' }, isKeyboardOpen ? styles.button_keyboard : null ]}>
-                    <Text style={styles.buttonText}>Registrarse</Text>
+                  {isLoading ? (
+                    <ActivityIndicator size="small" color="#ffffff" />
+                  ) : (
+                    <Text style={styles.buttonText}>Registrarme</Text>
+                  )}
                   </TouchableOpacity>
                 </View>
               )}
@@ -249,6 +419,15 @@ const TestLogin = ({selectedButton}) => {
     const { isKeyboardOpen } = useContext(TecladoContext);
     const [date_register, setDate_Register] = useState('');
     const [modalVisible, setModalStartVisible] = useState(false);
+    const [errorModalVisible, setErrorModalVisible] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const [email_register, setEmail_Register] = useState('');
+    const [name_register, setName_Register] = useState('');
+    const [surname_register, setSurName_Register] = useState('');
+    const [password_register, setPassword_Register] = useState('');
+    const [password_confirm_register, setPassword_Confirm_Register] = useState('');
+    const [code_email_register, setCodeEmail_Register] = useState('');
 
     const navigation = useNavigation();
 
@@ -310,141 +489,25 @@ const TestLogin = ({selectedButton}) => {
 
     const verTerminosYPoliticas =() =>{
         navigation.navigate('Tab_Home');
-    }
-
-    const GetCustomComponent = () => {
-        return (
-          <View>
-            <Text>Este es un componente personalizado</Text>
-            {/* Aquí puedes poner el contenido personalizado que desees */}
-          </View>
-        );
     };
     
-  const InitRegister = ({
-    handleLoginPress,
-    verTerminosYPoliticas,
-  }) => {
-    return (
-      <View style={{justifyContent: 'center', alignItems: 'center', backgroundColor: 'black'}}>
-        <Text style={styles.welcomeText}>Bienvenido a RUTAPP</Text>
-        <Text style={styles.registerText}>¿Cómo quieres registrarte?</Text>
-        <View style={styles.bottomContainerRegister}>
-          <TouchableOpacity
-            onPress={handleContinueEmail}
-            style={[styles.buttonRegister, { backgroundColor: 'rgb(74,122,246)' }]}
-          >
-            <View style={styles.buttorInputRow}>
-              <Icon
-                style={[styles.icon, { top: 3 }]}
-                name={"email"}
-                color={"#ffffff"}
-                width={20}
-                height={20}
-                marginleft={'10%'}
-              />
-              <Text style={styles.buttonText}>Continuar con email</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={handleLoginPress}
-            style={[styles.buttonRegister, { backgroundColor: 'rgb(68,53,165)' }]}
-          >
-            <View style={styles.buttorInputRow}>
-              <Icon
-                style={styles.icon}
-                name={"facebook"}
-                color={"#ffffff"}
-                width={20}
-                height={20}
-                marginleft={'10%'}
-              />
-              <Text style={styles.buttonText}>Continuar con Facebook</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={handleLoginPress}
-            style={[styles.buttonRegister, { backgroundColor: 'rgb(255, 255, 255)' }]}
-          >
-            <View style={styles.buttorInputRow}>
-              {Platform.OS === 'android' ? (
-                <Icon
-                style={styles.icon}
-                name={"google"}
-                width={20}
-                height={20}
-                marginleft={'10%'}
-                />
-            
-                ):
-                <Icon
-                style={styles.icon}
-                name={"apple"}
-                color={"#000000"}
-                width={20}
-                height={20}
-                marginleft={'10%'}
-                />
-              }
-              {Platform.OS === 'android' ? (
-                  <Text style={styles.buttonTextBlack}>Continuar con Google</Text>
-                ) : <Text style={styles.buttonTextBlack}>Continuar con Apple</Text>
-              }
-            </View>
-          </TouchableOpacity>
-        </View>
-  
-        <View style={styles.terminosYPoliticas}>
-          <Text style={styles.textTerminos}>
-            Al registrarte, aceptas nuestros {' '}
-            <TouchableOpacity onPress={verTerminosYPoliticas}>
-              <Text style={styles.textTerminosGold}>Términos y Condiciones</Text>
-            </TouchableOpacity>
-            y nuestra {' '}
-            <TouchableOpacity onPress={verTerminosYPoliticas}>
-              <Text style={styles.textTerminosGold}>Política de privacidad</Text>
-            </TouchableOpacity>
-          </Text>
-        </View>
-  
-        <TouchableOpacity
-          onPress={handleLoginPress}
-          style={[styles.button, { backgroundColor: 'rgba(0, 0, 0, 0)' }]}
-        >
-          <Text
-            style={[
-              styles.buttonText,
-              { color: 'rgb(255, 255, 255)', fontSize: 15 },
-            ]}
-          >
-            ¿Ya tienes cuenta?{' '}
-            <Text
-              style={[
-                styles.underlineText,
-                { color: 'rgb(240, 176, 10)', fontSize: 15 },
-              ]}
-            >
-              Inicia sesión
-            </Text>
-          </Text>
-        </TouchableOpacity>
-      </View>
-    );
-  };
-
-  const handleContinueEmail = () => {
-    navigator.navigate('EmailScreen');
-    // Lógica adicional para el botón "Iniciar sesión"
-  };
-  
   
   const toggleModalStart = () => {
     setModalStartVisible(!modalVisible);
+  };
+
+  const openErrorModal = () => {
+    setErrorModalVisible(true);
+  };
+  
+  const closeErrorModal = () => {
+    setErrorModalVisible(false);
   };
   
   return (
     
     <View style={styles.container}>
+      <ErrorModal visible={errorModalVisible} message={errorMessage} onClose={closeErrorModal} />
       <Modal visible={modalVisible} onRequestClose={() => toggleModalStart()}>
           <View style={styles.modalContainer}>
             <CustomCalendar maxMonthsToRender={3} setToggleModal={toggleModalStart} setDate={setDate_Register}></CustomCalendar>
@@ -546,41 +609,31 @@ const TestLogin = ({selectedButton}) => {
                       }}
                       >
                       <RegisterStack.Screen name="InitRegister" options={{ headerShown: false }}>
-                        {props => <InitRegister {...props} verTerminosYPoliticas={verTerminosYPoliticas}/>}
+                        {props => <InitRegister {...props} handleLoginPress={handleLoginPress}verTerminosYPoliticas={verTerminosYPoliticas}/>}
                       </RegisterStack.Screen>
                       <RegisterStack.Screen name="EmailScreen" options={{ headerShown: false }}>
-                        {props => <EmailScreen {...props}/>}
+                        {props => <EmailScreen {...props} email_register={email_register} setEmail_Register={setEmail_Register} openErrorModal={openErrorModal} setErrorMessage={setErrorMessage}/>}
                       </RegisterStack.Screen>
                       <RegisterStack.Screen name="nameScreen" options={{ headerShown: false }}>
-                        {props => <NameScreen {...props}/>}
+                        {props => <NameScreen {...props} 
+                        name_register={name_register}setName_Register={setName_Register}
+                        surname_register={surname_register}  setSurName_Register={setSurName_Register}
+                        openErrorModal={openErrorModal} setErrorMessage={setErrorMessage}/>}
                       </RegisterStack.Screen>
                       <RegisterStack.Screen name="DateScreen" options={{ headerShown: false }}>
                         {props => <DateScreen {...props} date_register={date_register} setToggleModal={toggleModalStart}/>}
                       </RegisterStack.Screen>
                       <RegisterStack.Screen name="PasswordScreen" options={{ headerShown: false }}>
-                        {props => <PasswordScreen {...props}/>}
+                        {props => <PasswordScreen {...props} password_register={password_register} setPassword_Register={setPassword_Register}
+                         password_confirm_register={password_confirm_register} setPassword_Confirm_Register={setPassword_Confirm_Register}
+                         openErrorModal={openErrorModal} setErrorMessage={setErrorMessage}/>}
                       </RegisterStack.Screen>
                       <RegisterStack.Screen name="CodeEmailScreen" options={{ headerShown: false }}>
-                        {props => <CodeEmailScreen {...props}/>}
+                        {props => <CodeEmailScreen {...props} code_email_register={code_email_register} setCodeEmail_Register={setCodeEmail_Register} openErrorModal={openErrorModal} setErrorMessage={setErrorMessage}/>}
                       </RegisterStack.Screen>
                    </RegisterStack.Navigator>
                   </View>
                 )}       
-
-                {
-                    /*
-                    <RegisterStack.Navigator
-                      initialRouteName="EmailScreen"
-                      screenOptions={{
-                      headerShown: false,
-                      ...transitionConfig,
-                      cardStyle: { backgroundColor: 'black', width: '100%', height: '100%' },
-                      }}
-                      >
-                    <RegisterStack.Screen name="EmailScreen" component={EmailScreen} />
-                    </RegisterStack.Navigator>
-                    */
-                  }
               </View>
 
         </View>
