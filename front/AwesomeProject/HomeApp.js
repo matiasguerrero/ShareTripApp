@@ -5,10 +5,12 @@ import { useNavigation } from '@react-navigation/native';
 import {  TransitionPresets ,createStackNavigator } from '@react-navigation/stack';
 import { useState } from 'react';
 import Icon from './Icon';
-
+import { AuthContext } from './AuthProvider';
+import { useContext } from 'react';
 import ContainerPublishTrip from './ContainerPublishTrip';
 import CustomRegisterStack from './CustomRegisterStack';
-
+import { Button } from 'react-native-elements';
+import Profile from './Profile';
 const HomeTab = () => (
   //<View style={styles.container}>
   //  <View style={styles.centerContainer}>
@@ -18,11 +20,6 @@ const HomeTab = () => (
   <ContainerPublishTrip/>
 );
 
-const ProfileScreen = () => (
-  <View style={styles.container}>
-    <Text>Profile Screen</Text>
-  </View>
-);
 
 const MyTripsScreen = () => (
   <View style={styles.container}>
@@ -42,9 +39,11 @@ const Tab = createBottomTabNavigator();
 const colorDorado = 'rgb(255,236,61)';
 const colorDoradoselecc= 'rgb(255, 215, 0)';
 
-const HomeApp = ({setSelectedButton} ) => {
+const HomeApp = ( ) => {
  
   const navigation = useNavigation();
+
+  const {logout} = useContext(AuthContext);
 
   return (
     <View style={styles.container}>
@@ -85,7 +84,12 @@ const HomeApp = ({setSelectedButton} ) => {
         <Tab.Screen name="Home" component={HomeTab} options={{ headerShown: false, tabBarLabel: ""}} />
         <Tab.Screen name="Mis viajes" component={MyTripsScreen} options={{ headerShown: false, tabBarLabel: "" }} />
         <Tab.Screen name="Chat" component={ChatScreen} options={{ headerShown: false, tabBarLabel: "" }} />
-        <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false, tabBarLabel: "" }} />
+        <Tab.Screen
+          name="Profile"
+          component={Profile} // Asegúrate de proporcionar el componente Profile
+          options={{ headerShown: false, tabBarLabel: '' }}
+        />
+      
       </Tab.Navigator>
     </View>
   );

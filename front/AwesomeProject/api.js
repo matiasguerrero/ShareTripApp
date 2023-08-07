@@ -7,6 +7,7 @@ export const login = async (email, password) => {
     const loginUrl = baseUrl + 'login/';
     const response = await axios.post(loginUrl, { email, password });
     const data = response.data;
+    console.log(response);
     console.log(data);
     if (response.status === 200) {
       // Inicio de sesión exitoso
@@ -14,13 +15,11 @@ export const login = async (email, password) => {
       const userData=data.user;
       console.log(userData);
       return { success: true, token:token, userData:userData};
-    } else {
-      // Error en la respuesta del servidor
-      return { success: false, error: 'Error de inicio de sesión' };
-    }
+    } 
   } catch (error) {
     // Error de conexión o de la solicitud
-    return { success: false, error: 'Error en la solicitud de inicio de sesión' };
+    console.log('Mensaje de error del backend:', error.response.data.message); // Mostrar el mensaje de error del backend
+    return { success: false, error: error.response.data.message };
   }
 };
 
@@ -30,7 +29,6 @@ export const logout = async (token) => {
     const logoutUrl = baseUrl + 'logout/';
     const headers = { Authorization: 'Token ' + token };
     const response = await axios.post(logoutUrl, null, { headers });
-
     if (response.status === 200) {
       // Cierre de sesión exitoso
       return { success: true };
@@ -46,7 +44,6 @@ export const logout = async (token) => {
 
 export const register = async (dni, email, password, name, lastName, date_of_birth) => {
   try {
-    console.log("va a entrar");
     const usersUrl = baseUrl + 'users/';
     console.log({
       dni,
@@ -76,7 +73,7 @@ export const register = async (dni, email, password, name, lastName, date_of_bir
     }
   } catch (error) {
     // Error de conexión o de la solicitud
-    return { success: false, error: 'Error en la solicitud de creación de usuario' };
+    return { success: false, error: error.response.data };
   }
 };
 // Otras funciones para llamar a otros puntos finales de tu backend

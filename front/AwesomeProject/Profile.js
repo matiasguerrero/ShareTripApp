@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { AuthContext } from './AuthProvider';
 import { View, Button } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 const Profile = () => {
   const { loggedIn, logout } = useContext(AuthContext);
@@ -11,7 +12,7 @@ const Profile = () => {
   };
 
   return (
-    <View>
+    <View style={styles.container}>
     {/* Contenido del perfil */}
     {loggedIn && (
       <Button title="Cerrar sesión" onPress={handleLogout} />
@@ -19,5 +20,13 @@ const Profile = () => {
   </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    overflow: 'hidden', // Oculta la barra de desplazamiento
+    backgroundColor: 'black',
+  },
+});
 
 export default Profile;

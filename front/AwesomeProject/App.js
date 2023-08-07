@@ -14,6 +14,9 @@ import { useState } from 'react';
 import HomeApp from './HomeApp';
 import CustomCalendar from './CustomCalendar';
 import { TecladoProvider } from './TecladoContext';
+import { useContext } from 'react';
+import { AuthContext } from './AuthProvider';
+import { View } from 'react-native';
 
 enableScreens();
 
@@ -55,59 +58,55 @@ const forFadeFromBottom = ({ current }) => ({
 });
 
 const AuthNavigator = () => (
-  <AuthStack.Navigator initialRouteName="Login">
-    <AuthStack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-    <AuthStack.Screen name="Register" component={RegisterUser} options={{ headerShown: false }} />
+  <AuthStack.Navigator initialRouteName="Tab_Home">
+    <AuthStack.Screen name="Tab_Home" options={{ headerShown: false }}>
+      {props => <HomeApp {...props} />}
+    </AuthStack.Screen>
   </AuthStack.Navigator>
+);
+
+const MainNavigator =({selectedButton, setSelectedButton}) => (
+  <MainStack.Navigator initialRouteName="MainApp"  screenOptions={{
+    headerShown: false,
+    cardStyleInterpolator: forFadeFromBottom,
+      cardStyle: { backgroundColor: 'transparent' },
+  }}>
+    <MainStack.Screen name="MainApp" options={{ headerShown: false }}>
+      {props => <MainApp {...props} setSelectedButton={setSelectedButton}/>}
+    </MainStack.Screen>
+
+    <MainStack.Screen name="Login" options={{ headerShown: false }}>
+      {props => <TestLogin {...props} selectedButton={selectedButton} setSelectedButton={setSelectedButton}/>}
+    </MainStack.Screen>
+  </MainStack.Navigator>
 );
 
 const App = () => {
   const [selectedButton, setSelectedButton] = useState('login');
-
+  const { loggedIn } = useContext(AuthContext);
  
 
   return (
-    /*
-    <AuthProvider>
-      <NavigationContainer>
-        <StatusBar style="auto" />
-        <MainStack.Navigator initialRouteName="HomeMain"  screenOptions={{
-          headerShown: false,
-          cardStyleInterpolator: forFadeFromBottom,
-            cardStyle: { backgroundColor: 'transparent' },
-        }}>
-          <MainStack.Screen name="AuthUI" component={AuthNavigator} options={{ headerShown: false }} />
-          <MainStack.Screen name="HomeMain" component={HomeMain} options={{ headerShown: false }} />
-        </MainStack.Navigator>
-      </NavigationContainer>
-    </AuthProvider>
-    */
     <TecladoProvider>
-    <AuthProvider>
       <NavigationContainer>
         <StatusBar style="auto" />
-        <MainStack.Navigator initialRouteName="CustomCalendar"  screenOptions={{
-          headerShown: false,
-          cardStyleInterpolator: forFadeFromBottom,
-            cardStyle: { backgroundColor: 'transparent' },
-        }}>
-          <MainStack.Screen name="MainApp" options={{ headerShown: false }}>
-            {props => <MainApp {...props} setSelectedButton={setSelectedButton}/>}
-          </MainStack.Screen>
-
-          <MainStack.Screen name="Login" options={{ headerShown: false }}>
-            {props => <TestLogin {...props} selectedButton={selectedButton}/>}
-          </MainStack.Screen>
-
-          <MainStack.Screen name="Tab_Home" options={{ headerShown: false }}>
-            {props => <HomeApp {...props} selectedButton={selectedButton}/>}
-          </MainStack.Screen>
-        </MainStack.Navigator>
+        <View style={{ flex: 1 }}>
+          {loggedIn ? (
+            <AuthNavigator />
+          ) : (
+            <MainNavigator setSelectedButton={setSelectedButton} selectedButton={selectedButton}/>
+          )}
+        </View>
       </NavigationContainer>
-    </AuthProvider>
     </TecladoProvider>
   );
 }
 
-export default App;
+const AppWithAuthProvider = () => (
+  <AuthProvider>
+    <App />
+  </AuthProvider>
+);
+
+export default AppWithAuthProvider;
 

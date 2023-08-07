@@ -5,11 +5,13 @@ class EmailBackend(ModelBackend):
     def authenticate(self, request, email=None, password=None, **kwargs):
         try:
             user = User.objects.get(email=email)
-            print(user)
+            print("va a autenticar" , user)
         except User.DoesNotExist:
             return None
-
+        print("va a chequear password")
         if user.check_password(password):
+            print("va a ejecutar")
+            print(user)
             return user
         return None
 

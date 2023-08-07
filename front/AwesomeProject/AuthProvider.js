@@ -20,7 +20,7 @@ const AuthProvider = ({ children }) => {
       return { success: true}
     } else {
       console.log('Error de inicio de sesión:', response.error);
-      throw new Error("Usuario o contraseña incorrectos");
+      throw new Error(response.error);
       return { success: false}
     }
   };

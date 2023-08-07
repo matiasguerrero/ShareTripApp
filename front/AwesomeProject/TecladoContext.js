@@ -9,8 +9,8 @@ const TecladoProvider = ({ children }) => {
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
 
   useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', handleKeyboardOpen, console.log("Disparo abrir"));
-    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', handleKeyboardClose, console.log("Disparo cerrar"));
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', handleKeyboardOpen);
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', handleKeyboardClose);
 
     return () => {
       keyboardDidShowListener.remove();
@@ -21,12 +21,11 @@ const TecladoProvider = ({ children }) => {
 
   const handleKeyboardOpen = () => {
     setIsKeyboardOpen(true);
-    console.log("teclado en true");
+
   };
 
   const handleKeyboardClose = () => {
     setIsKeyboardOpen(false);
-    console.log("teclado en false");
   };
 
   return (

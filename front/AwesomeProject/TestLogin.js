@@ -12,6 +12,7 @@ import ErrorModal from './ErrorModal';
 import { ActivityIndicator } from 'react-native';
 import moment from 'moment';
 import { register } from './api';
+import { AuthContext } from './AuthProvider';
 
 if (Platform.OS === 'android') {
   if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -306,6 +307,7 @@ const EmailScreen = ({email_register, setEmail_Register, openErrorModal, setErro
                         value={email_register}
                         keyboardType="email-address" // Set the keyboardType to 'email-address'
                         autoCapitalize="none" // Prevent auto capitalization of the email address
+                        
                 />
               </View>
               {shouldShowContinueButton && (
@@ -408,10 +410,11 @@ const DniScreen = ({dni_register, setDniRegister, openErrorModal, setErrorMessag
   );
 };
 
-const CodeEmailScreen = ({code_email_register, setCodeEmail_Register, openErrorModal, setErrorMessage, dni, email, password, name, lastName, date_format}) => {
+const CodeEmailScreen = ({code_email_register, setCodeEmail_Register, openErrorModal, setErrorMessage, dni, email, password, name, lastName, date_format,handleLoginPress,setEmail_Login, setPassword_Login}) => {
   const { isKeyboardOpen } = useContext(TecladoContext);
   const shouldShowContinueButton= (code_email_register);
   const [isLoading, setIsLoading] = useState(false);
+  
 
   const handleCodeEmailRegisterChange = (text) => {
     setCodeEmail_Register(text);
@@ -428,8 +431,10 @@ const CodeEmailScreen = ({code_email_register, setCodeEmail_Register, openErrorM
     console.log(response);
     if (response.success) {
       console.log("Registro exitoso");
-      //handleLogin();
-      navigator.navigate('Tab_Home');
+      setEmail_Login(email);
+      setPassword_Login(password);
+      handleLoginPress();
+      
     } else {
       setErrorMessage(response.error);
       openErrorModal();
@@ -483,13 +488,14 @@ const CodeEmailScreen = ({code_email_register, setCodeEmail_Register, openErrorM
   );
 };
 
-const TestLogin = ({selectedButton}) => {
+const TestLogin = ({selectedButton, setSelectedButton}) => {
    
 
     const [isLoginPressed, setIsLoginPressed] = useState(true);
     const [isRegisterPressed, setIsRegisterPressed] = useState(false);
     const [isContinueEmailPressed, setIsContinueEmailPressed] = useState(false);
     const { isKeyboardOpen } = useContext(TecladoContext);
+    const { login} = useContext(AuthContext);
     const [date_register, setDate_Register] = useState('');
     const [modalVisible, setModalStartVisible] = useState(false);
     const [errorModalVisible, setErrorModalVisible] = useState(false);
@@ -503,7 +509,11 @@ const TestLogin = ({selectedButton}) => {
     const [code_email_register, setCodeEmail_Register] = useState('');
     const [dni_register, setDniRegister] = useState('');
 
+    const [email_login, setEmail_Login] = useState('');
+    const [password_login, setPassword_Login] = useState('');
+
     const navigation = useNavigation();
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         if (selectedButton === 'Login') {
@@ -550,10 +560,31 @@ const TestLogin = ({selectedButton}) => {
         setButtonWidth(marginLeft);
     };
 
+    const handleLogin = async () => {
+      try{
+        setIsLoading(true);
+        const success = await login(email_login, password_login);
+        console.log(success);
+        if (success) {
+          console.log("Logueo exitoso");
+          //const previousRoute = navigation?.dangerouslyGetState()?.routes?.[navigation?.dangerouslyGetState().index - 1];
+        } else {
+          console.log("success dio otro valor");
+        }
+        setIsLoading(false);
+      } catch (error) {
+        console.log(error.message);
+        setErrorMessage(error.message);
+        openErrorModal();
+        setIsLoading(false);
+      }
+    };
+
     const handleLoginPress = () => {
       setIsLoginPressed(true);
       setIsRegisterPressed(false);
       // Lógica adicional para el botón "Iniciar sesión"
+  
     };
     const handleRegisterPress = () => {
         setIsRegisterPressed(true);
@@ -578,6 +609,14 @@ const TestLogin = ({selectedButton}) => {
     setErrorModalVisible(false);
   };
   
+
+  const handleEmailLoginChange = (text) => {
+    setEmail_Login(text);
+  };
+
+  const handlePasswordLoginChange = (text) => {
+    setPassword_Login(text);
+  };
   return (
     
     <View style={styles.container}>
@@ -645,18 +684,29 @@ const TestLogin = ({selectedButton}) => {
                         style={[styles.input, isKeyboardOpen ? styles.email_keyboard : null]}
                         placeholder="Correo electrónico"
                         placeholderTextColor="rgba(204, 204, 204, 0.8)"
+                        onChangeText={handleEmailLoginChange}
+                        value={email_login}
+                        keyboardType="email-address" // Set the keyboardType to 'email-address'
+                        autoCapitalize="none" // Prevent auto capitalization of the email address
                     />
                     <TextInput
                         style={styles.input}
                         placeholder="Contraseña"
                         placeholderTextColor="rgba(204, 204, 204, 0.8)"
                         secureTextEntry={true}
+                        onChangeText={handlePasswordLoginChange}
+                        value={password_login}
+                        autoCapitalize="none" // Prevent auto capitalization of the email address
                     />
 
                     
                       <View style={[styles.bottomContainer, isKeyboardOpen ? styles.bottomContainer_keyboard : null]}>
-                            <TouchableOpacity onPress={handleLoginPress} style={[styles.button, { backgroundColor: 'rgb(240, 176, 10)' }, isKeyboardOpen ? styles.button_keyboard : null]}>
-                                <Text style={styles.buttonText}>Iniciar sesión</Text>
+                            <TouchableOpacity onPress={handleLogin} style={[styles.button, { backgroundColor: 'rgb(240, 176, 10)' }, isKeyboardOpen ? styles.button_keyboard : null]}>
+                                {isLoading ? (
+                                  <ActivityIndicator size="small" color="#ffffff" />
+                                ) : (
+                                  <Text style={styles.buttonText}>Iniciar sesión</Text>
+                                )}
                             </TouchableOpacity>
                       </View>
                      
@@ -707,8 +757,8 @@ const TestLogin = ({selectedButton}) => {
                       </RegisterStack.Screen>
                       <RegisterStack.Screen name="CodeEmailScreen" options={{ headerShown: false }}>
                         {props => <CodeEmailScreen {...props} code_email_register={code_email_register} setCodeEmail_Register={setCodeEmail_Register} openErrorModal={openErrorModal} setErrorMessage={setErrorMessage}
-                         dni={dni_register} email={email_register} password={password_register} name={name_register} lastName={surname_register} date_format={date_register}
-                        />}
+                         dni={dni_register} email={email_register} password={password_register} name={name_register} lastName={surname_register} date_format={date_register} handleLoginPress={handleLoginPress}
+                        setEmail_Login={setEmail_Login} setPassword_Login={setPassword_Login}/>}
                       </RegisterStack.Screen>
                    </RegisterStack.Navigator>
                   </View>

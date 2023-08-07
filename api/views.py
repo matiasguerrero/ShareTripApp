@@ -90,7 +90,6 @@ class PaymentViewSet(viewsets.ModelViewSet):
     serializer_class = PaymentSerializer
     permission_classes = [permissions.AllowAny]
 
-
 @authentication_classes([authentication.TokenAuthentication])
 @permission_classes([permissions.AllowAny])     
 class LoginView(views.APIView):
@@ -98,20 +97,24 @@ class LoginView(views.APIView):
     
     def post(self, request):
         # Recuperamos las credenciales y autenticamos al usuario
+        print("entra a python")
         email = request.data.get('email', None)
         password = request.data.get('password', None)
-
+        print(email)
+        print(password)
         if email is None or password is None:
+            print("pasa aca4")
             return response.Response({'message': 'Por favor provea email y contraseña'}, status=status.HTTP_400_BAD_REQUEST)
 
         user = authenticate(request=request, email=email, password=password)
         if not user:
+            print("usuario no autenticado")
             return response.Response({'message': 'Email o contraseña incorrectos'}, status=status.HTTP_404_NOT_FOUND)
-
+        print("pasa aca3")
         token, _ = Token.objects.get_or_create(user=user)
 
         login(request,user)
-        print(request.user)
+        print(user)
         user_data = {
             'id': user.id,
             'email': user.email,
