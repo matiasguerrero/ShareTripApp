@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { AuthContext } from './AuthProvider';
+import { AuthContext } from '../utils/AuthProvider';
 import { View, Button } from 'react-native';
 import { StyleSheet } from 'react-native';
 

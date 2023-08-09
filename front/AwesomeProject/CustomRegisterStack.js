@@ -2,7 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { createStackNavigator} from '@react-navigation/stack';
 import { StyleSheet, Text, TouchableOpacity, TextInput } from 'react-native';
-import Icon from './Icon';
+import Icon from './src/utils/Icon';
 import { useNavigation } from '@react-navigation/native';
 import { TransitionPresets } from '@react-navigation/stack';
 

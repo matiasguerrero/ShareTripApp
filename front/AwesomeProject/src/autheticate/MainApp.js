@@ -21,7 +21,7 @@ const MainApp = ({setSelectedButton} ) => {
   }
   return (
     <ImageBackground
-      source={require('./assets/fondo.png')} // Ruta de tu imagen de fondo
+      source={require('../../assets/fondo.png')} // Ruta de tu imagen de fondo
       resizeMode="cover"
       style={styles.backgroundImage}
     >
@@ -35,7 +35,7 @@ const MainApp = ({setSelectedButton} ) => {
         <View style={styles.container}>
           <View style={styles.logoContainer}>
           <Image
-                source={require('./assets/logo.png')} // Ruta de tu imagen del logo
+                source={require('../../assets/logo.png')} // Ruta de tu imagen del logo
                 resizeMode="contain" // Ajusta la imagen al tamaño del contenedor manteniendo la proporción
                 style={styles.logo}
            />

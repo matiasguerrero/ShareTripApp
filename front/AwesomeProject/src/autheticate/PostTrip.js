@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, Modal } from 'react-native';
 import { useState } from 'react';
-import Icon from './Icon';
+import Icon from '../utils/Icon';
 
 const PostTrip = ({
     origin,

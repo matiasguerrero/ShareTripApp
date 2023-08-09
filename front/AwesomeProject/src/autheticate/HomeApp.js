@@ -2,14 +2,11 @@ import React from 'react';
 import { View, Image, StyleSheet, ImageBackground, Text, TouchableOpacity } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
-import {  TransitionPresets ,createStackNavigator } from '@react-navigation/stack';
-import { useState } from 'react';
-import Icon from './Icon';
-import { AuthContext } from './AuthProvider';
+
+import Icon  from '../utils/Icon';
+import { AuthContext } from '../utils/AuthProvider';
 import { useContext } from 'react';
 import ContainerPublishTrip from './ContainerPublishTrip';
-import CustomRegisterStack from './CustomRegisterStack';
-import { Button } from 'react-native-elements';
 import Profile from './Profile';
 const HomeTab = () => (
   //<View style={styles.container}>
@@ -29,7 +26,7 @@ const MyTripsScreen = () => (
 
 const ChatScreen = () => (
   <View style={styles.container}>
-    <CustomRegisterStack/>
+   
   </View>
 );
 

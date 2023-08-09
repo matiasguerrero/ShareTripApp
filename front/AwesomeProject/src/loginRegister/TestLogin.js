@@ -4,15 +4,15 @@ import {LinearGradient} from 'expo-linear-gradient';
 import { Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
-import Icon from './Icon';
-import { TecladoContext } from './TecladoContext';
+import Icon from '../utils/Icon';
+import { TecladoContext } from '../utils/TecladoContext';
 import { useContext } from 'react';
-import CustomCalendar from './CustomCalendar';
-import ErrorModal from './ErrorModal';
+import CustomCalendar from '../utils/CustomCalendar';
+import ErrorModal from '../utils/ErrorModal';
 import { ActivityIndicator } from 'react-native';
 import moment from 'moment';
-import { register } from './api';
-import { AuthContext } from './AuthProvider';
+import { register } from '../utils/api';
+import { AuthContext } from '../utils/AuthProvider';
 
 if (Platform.OS === 'android') {
   if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -628,7 +628,7 @@ const TestLogin = ({selectedButton, setSelectedButton}) => {
       </Modal>
       <View style={[styles.headerContainer, isKeyboardOpen ? styles.headerContainerKeyboard : null]}>
         <ImageBackground
-          source={require('./assets/fondo.png')} // Ruta de tu imagen de fondo
+          source={require('../../assets/fondo.png')} // Ruta de tu imagen de fondo
           style={[styles.backgroundImage, , isKeyboardOpen ? styles.backgroundImageKeyboard : null]}
         >
           <LinearGradient
@@ -640,7 +640,7 @@ const TestLogin = ({selectedButton, setSelectedButton}) => {
         </ImageBackground>
         <View style={styles.logoContainer}>
             <Image
-                    source={require('./assets/logo.png')} // Ruta de tu imagen del logo
+                    source={require('../../assets/logo.png')} // Ruta de tu imagen del logo
                     resizeMode="contain" // Ajusta la imagen al tamaño del contenedor manteniendo la proporción
                     style={styles.logo}
             />

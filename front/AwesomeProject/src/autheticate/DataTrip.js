@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import Icon from './Icon';
+import Icon from '../utils/Icon';
 import { Dimensions } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
@@ -153,7 +153,7 @@ const Datatrip = () => {
               </View>
               <View style={styles.circleContainer}>
                 <Image
-                    source={require('./assets/retrato-hombre-reir.jpg')} // Ruta de la imagen relativa al archivo actual
+                    source={require('../../assets/retrato-hombre-reir.jpg')} // Ruta de la imagen relativa al archivo actual
                     style={styles.imagen}
                     resizeMode='contain'
                 />        

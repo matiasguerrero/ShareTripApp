@@ -4,7 +4,7 @@ import ErrorModal from './ErrorModal';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { register } from './api';
+import { register } from './src/utils/api';
 import { AuthContext } from './AuthProvider';
 import moment from 'moment';
 

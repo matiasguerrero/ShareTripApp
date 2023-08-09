@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect} from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { AuthContext } from './AuthProvider';
-import SearchContainer from './SearchContainer';
+import SearchContainer from './src/autheticate/SearchContainer';
 import Register from './Register';
 import LoginScreen from './LoginScreen';
 import { useNavigation } from '@react-navigation/native';

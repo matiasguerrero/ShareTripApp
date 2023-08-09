@@ -2,17 +2,12 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ImageBackground, Image, Keyboard, Dimensions, TouchableOpacity, Modal } from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
-import Icon from './Icon';
+import Icon from '../utils/Icon';
 import { useNavigation } from '@react-navigation/native';
-import CustomCalendar from './CustomCalendar';
-const DateTrip = ({startDate, setStartDate, endDate, setEndDate}) => {
+const AsientosDisp = ({asientos, setAsientos}) => {
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
-  const [modalStartVisible, setModalStartVisible] = useState(false);
-  const [modalEndVisible, setModalEndVisible] = useState(false);
 
   const navigator= useNavigation();
-  const shouldShowContinueButton = (startDate || (endDate && startDate));
-
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
@@ -30,46 +25,32 @@ const DateTrip = ({startDate, setStartDate, endDate, setEndDate}) => {
   }, []);
 
   useEffect(() => {
-    setStartDate(null);
-    setEndDate(null);
+    setAsientos(0);
   }, []);
-
-  const toggleModalStart = () => {
-    setModalStartVisible(!modalStartVisible);
-  };
   
-  const toggleModalEnd = () => {
-    setModalEndVisible(!modalEndVisible);
+  const increasePress = () => {
+    //avigator.navigate('CustomCalendar');
+    setAsientos(asientos+1);
   };
 
-  const handleStartCalendarPress = () => {
-    //avigator.navigate('CustomCalendar');
-    toggleModalStart();
-  };
+  const decreasePress  = () => {
+    cantidad = asientos-1;
+    if (cantidad < 0) {
+      cantidad=0;
+    }
+    setAsientos(cantidad);
+  }
 
-  const handleEndCalendarPress = () => {
-    //avigator.navigate('CustomCalendar');
-    toggleModalEnd();
-  };
-  
   const handleContinuePress = () => {
-    navigator.navigate('TimeTrip');
+    navigator.navigate('CostTrip');
  };
+
   return (
   
     <View style={styles.container}>
-      <Modal visible={modalStartVisible} onRequestClose={() => toggleModalStart()}>
-        <View style={styles.modalContainer}>
-          <CustomCalendar maxMonthsToRender={3} setToggleModal={toggleModalStart} setDate={setStartDate}></CustomCalendar>
-        </View>
-      </Modal>
-      <Modal visible={modalEndVisible} onRequestClose={() => toggleModalEnd()}>
-        <View style={styles.modalContainer}>
-          <CustomCalendar maxMonthsToRender={3} setToggleModal={toggleModalEnd} setDate={setEndDate}></CustomCalendar>
-        </View>
-      </Modal>
+  
       <ImageBackground
-        source={require('./assets/fondo.png')} // Ruta de tu imagen de fondo
+        source={require('../../assets/fondo.png')} // Ruta de tu imagen de fondo
         resizeMode="cover"
         style={[
           styles.backgroundImage,
@@ -87,7 +68,7 @@ const DateTrip = ({startDate, setStartDate, endDate, setEndDate}) => {
       <View style={styles.container_2}>
         <View style={styles.logoContainer}>
           <Image
-            source={require('./assets/logo.png')} // Ruta de tu imagen del logo
+            source={require('../../assets/logo.png')} // Ruta de tu imagen del logo
             resizeMode="contain" // Ajusta la imagen al tamaño del contenedor manteniendo la proporción
             style={styles.logo}
           />
@@ -96,36 +77,31 @@ const DateTrip = ({startDate, setStartDate, endDate, setEndDate}) => {
         <View style={[styles.overlayContainer, isKeyboardOpen ? styles.overlayContainer_Keyboard : null]}>
           <View style={[styles.blackContainer, isKeyboardOpen ? styles.blackContainer_Keyboard : null]}>
             <View style={styles.columnContainer}>
-              <Text style={[styles.seleccioneText, isKeyboardOpen ? styles.seleccioneText_Keyboard : null]}>Indique la fecha en la que desea viajar</Text>
-              <TouchableOpacity onPress={handleStartCalendarPress}>
-                <View style={[styles.textInputRow, isKeyboardOpen ? styles.email_keyboard : null]}>
-                  <Icon style={styles.icon} name={"calendar"} color={'rgba(204, 204, 204, 0.8)'} width={30} height={30} />
-                  <Text
-                    style={[styles.text,{color: "rgba(204, 204, 204, 0.8)"}]}>
-                      {startDate ? startDate.toLocaleDateString() : "Ida"}
+              <Text style={styles.seleccioneText}>Cantidad de asientos disponibles</Text>
+              <View style={styles.textInputRow}>
+                <TouchableOpacity style={styles.button_icon} onPress={decreasePress}>
+                  <Text style={styles.button_icon_text}>-</Text>
+                </TouchableOpacity>
+                <View style={styles.icon_container}>
+                  <Icon style={[styles.icon]} name={"user-solid"} color={'rgba(204, 204, 204, 0.8)'} width={30} height={'100%'} />
+                  <Text style={styles.icon_text}>
+                    {asientos}
                   </Text>
                 </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleEndCalendarPress}>
-                <View style={[styles.textInputRow, isKeyboardOpen ? styles.email_keyboard : null]}>
-                  <Icon style={styles.icon} name={"calendar"} color={'rgba(204, 204, 204, 0.8)'} width={30} height={30} />
-                  <Text
-                    style={[styles.text,{color: "rgba(204, 204, 204, 0.8)"}]}>
-                      {endDate ? endDate.toLocaleDateString() : "Vuelta (opcional)"}
-                  </Text>
-                </View>
-              </TouchableOpacity>
+                <TouchableOpacity style={styles.button_icon} onPress={increasePress}>
+                  <Text style={styles.button_icon_text}>+</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-          {shouldShowContinueButton && (
-            <View style={styles.bottomContainer}>
-              <TouchableOpacity onPress={handleContinuePress} style={[styles.button, { backgroundColor: 'rgb(240, 176, 10)' }]}>
+        </View>
+        <View style={styles.bottomContainer}>
+            <TouchableOpacity style={[styles.button, { backgroundColor: 'rgb(240, 176, 10)' }]} onPress={handleContinuePress}>
                 <Text style={styles.buttonText}>Continuar</Text>
-              </TouchableOpacity>
-            </View>
-          )}
+            </TouchableOpacity>
         </View>
       </View>
+
     </View>
 
      
@@ -146,6 +122,7 @@ const styles = StyleSheet.create({
     flex: 1,
     overflow: 'hidden', // Oculta la barra de desplazamiento
     zIndex: 1,
+    width: '100%',
   },
   contentContainer: {
     flexGrow: 1,
@@ -189,6 +166,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
+    height: '100%',
   },
   overlayContainer_Keyboard:{
     top: '30%',
@@ -215,15 +193,17 @@ const styles = StyleSheet.create({
     height: '100%',
     flexDirection: 'column',
   },
-
   bottomContainer: {
-    top: '15%',
-    width: '90%',
-    paddingHorizontal: 10,
+    width: '100%',
+    top: '60%',
+    zIndex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   button: {
-    height: 60,
-    width: '100%',
+    height: 70,
+    width: '90%',
+    marginTop: 30,
     borderRadius: 40,
     justifyContent: 'center',
     alignItems: 'center',
@@ -236,16 +216,44 @@ const styles = StyleSheet.create({
   underlineText: {
     textDecorationLine: 'underline',
   },
+  icon_container:{
+    width: 40,
+    height: 30,
+    zIndex:0,
+    marginRight: 30,
+    marginLeft: 30,
+    justifyContent: 'center',
+  },
+  icon_text:{
+    color: 'rgba(204, 204, 204, 0.8)',
+    zIndex: 1,
+    fontSize: 10,
+    fontWeight: 'bold',
+    position: 'absolute',
+    width: '100%',
+    top: 0,
+    left: 28,
+    right: 0,
+    bottom: 0,
+  },
+  button_icon:{
+    width: 70,
+    height: 30,
+    justifyContent: 'center',
+  },
+  button_icon_text:{
+    color: 'rgba(204, 204, 204, 0.8)',
+    textAlign: 'center',
+  },
   icon:{
     borderBottomColor: 'rgba(204, 204, 204, 0.8)',
-    borderBottomWidth: 1,
-    marginRight: 5,
+    zIndex: 1,
   },
   seleccioneText: {
     color: 'rgb(255, 255, 255)',
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 30,
+    marginBottom: 60,
     textAlign: 'center',
   },
   seleccioneText_Keyboard:{
@@ -255,8 +263,9 @@ const styles = StyleSheet.create({
   textInputRow:{
     flexDirection: 'row',
     borderBottomColor: 'rgba(204, 204, 204, 0.8)',
-    borderBottomWidth: 1,
-    marginBottom: 30,
+    marginBottom: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   text: {
     top: 10,
@@ -268,4 +277,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DateTrip;
+export default AsientosDisp;

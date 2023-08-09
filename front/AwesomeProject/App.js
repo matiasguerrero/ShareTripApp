@@ -2,20 +2,17 @@ import React from 'react';
 import { StatusBar } from 'react-native';
 import { NavigationContainer  } from '@react-navigation/native';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
-import HomeMain from './HomeMain';
-import LoginScreen from './LoginScreen';
-import RegisterUser from './RegisterUser';
-import { AuthProvider } from './AuthProvider';
+
+import { AuthProvider } from './src/utils/AuthProvider';
 import { Animated } from 'react-native';
 import { enableScreens } from 'react-native-screens';
-import MainApp from './MainApp';
-import TestLogin from './TestLogin';
+import MainApp  from './src/autheticate/MainApp';
+import TestLogin from './src/loginRegister/TestLogin';
 import { useState } from 'react';
-import HomeApp from './HomeApp';
-import CustomCalendar from './CustomCalendar';
-import { TecladoProvider } from './TecladoContext';
+import  HomeApp  from './src/autheticate/HomeApp';
+import { TecladoProvider } from './src/utils/TecladoContext';
 import { useContext } from 'react';
-import { AuthContext } from './AuthProvider';
+import { AuthContext } from './src/utils/AuthProvider';
 import { View } from 'react-native';
 
 enableScreens();
@@ -92,7 +89,10 @@ const App = () => {
         <StatusBar style="auto" />
         <View style={{ flex: 1 }}>
           {loggedIn ? (
+            <>
+            {console.log("va a renderizar")}
             <AuthNavigator />
+            </>
           ) : (
             <MainNavigator setSelectedButton={setSelectedButton} selectedButton={selectedButton}/>
           )}

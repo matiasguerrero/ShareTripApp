@@ -2,9 +2,9 @@ import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AntDesign, FontAwesome, MaterialIcons } from '@expo/vector-icons';
-import SearchContainer from './SearchContainer';
+import SearchContainer from './src/autheticate/SearchContainer';
 import HomeScreen from './HomeScreen';
-import Profile from './Profile';
+import Profile from './src/autheticate/Profile';
 import { useNavigation } from '@react-navigation/native';
 
 

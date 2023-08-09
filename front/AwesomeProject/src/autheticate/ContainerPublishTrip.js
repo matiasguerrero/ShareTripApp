@@ -2,8 +2,8 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { TransitionPresets } from '@react-navigation/stack';
 import { useState } from 'react';
-import SelectedHome from './SelectedHome';
-import SearchTrip from './SearchTrip';
+import  SelectedHome from "./SelectedHome"
+import  SearchTrip  from './SearchTrip';
 import DateTrip from './DateTrip';
 import AsientosDisp from './AsientosDisp';
 import AvailableTrip from './AvailableTrip';

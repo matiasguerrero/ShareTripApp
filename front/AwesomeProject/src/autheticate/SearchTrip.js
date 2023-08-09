@@ -2,7 +2,7 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ImageBackground, TextInput,Image, Keyboard, Dimensions, TouchableOpacity,Platform, UIManager, LayoutAnimation } from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
-import Icon from './Icon';
+import Icon from '../utils/Icon';
 import { useNavigation } from '@react-navigation/native';
 
 // Habilitar las animaciones en Android (opcional)
@@ -56,7 +56,7 @@ const SearchTrip = ({origin, setOrigin, destination, setDestination}) => {
   
     <View style={styles.container}>
       <ImageBackground
-        source={require('./assets/fondo.png')} // Ruta de tu imagen de fondo
+        source={require('../../assets/fondo.png')} // Ruta de tu imagen de fondo
         resizeMode="cover"
         style={[
           styles.backgroundImage,
@@ -74,7 +74,7 @@ const SearchTrip = ({origin, setOrigin, destination, setDestination}) => {
       <View style={styles.container_2}>
         <View style={styles.logoContainer}>
           <Image
-            source={require('./assets/logo.png')} // Ruta de tu imagen del logo
+            source={require('../../assets/logo.png')} // Ruta de tu imagen del logo
             resizeMode="contain" // Ajusta la imagen al tamaño del contenedor manteniendo la proporción
             style={styles.logo}
           />
