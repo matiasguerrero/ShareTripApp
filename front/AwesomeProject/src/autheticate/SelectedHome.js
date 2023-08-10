@@ -5,10 +5,10 @@ import { useNavigation } from '@react-navigation/native';
 
 const SelectedHome = () => {
   const handleViajePress = () => {
-    navigation.navigate("SearchTrip");
+    navigation.navigate("ContainerSearchTrip");
   };
   const handleLoadViajePress = () => {
-    navigation.navigate("AvailableTrip");
+    navigation.navigate("ContainerPublishTrip");
   };
 
   const navigation = useNavigation();

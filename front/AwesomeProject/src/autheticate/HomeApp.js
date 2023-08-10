@@ -8,13 +8,14 @@ import { AuthContext } from '../utils/AuthProvider';
 import { useContext } from 'react';
 import ContainerPublishTrip from './ContainerPublishTrip';
 import Profile from './Profile';
+import ContainerSelected from './ContainerSelected';
 const HomeTab = () => (
   //<View style={styles.container}>
   //  <View style={styles.centerContainer}>
    //  <SearchContainer />
     //</View>
   //</View>
-  <ContainerPublishTrip/>
+  <ContainerSelected/>
 );
 
 

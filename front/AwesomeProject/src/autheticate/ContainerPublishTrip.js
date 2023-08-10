@@ -1,6 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { TransitionPresets } from '@react-navigation/stack';
+import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import  SelectedHome from "./SelectedHome"
 import  SearchTrip  from './SearchTrip';
@@ -32,23 +33,26 @@ const ContainerPublishTrip = () => {
     const [patenteText, setPatenteText] = useState('');
     const [cost, setCost] = useState('');
 
+    navigator= useNavigation();
+
+    const handleContinuePress = () => {
+        navigator.navigate("TimeTrip");
+     };
+
   return (
     <HomeAppStack.Navigator
-      initialRouteName="SelectedHome"
+      initialRouteName="SearchTrip"
       screenOptions={{
         headerShown: false,
         ...transitionConfig, // assuming you have this defined elsewhere
         cardStyle: { backgroundColor: 'transparent' },
       }}
     >
-      <HomeAppStack.Screen name="SelectedHome" options={{ headerShown: false }}>
-        {props => <SelectedHome {...props} />}
-      </HomeAppStack.Screen>
       <HomeAppStack.Screen name="SearchTrip" options={{ headerShown: false }}>
         {props => <SearchTrip {...props} origin={origin} setOrigin={setOrigin} destination={destination} setDestination={setDestination}/>}
       </HomeAppStack.Screen>
       <HomeAppStack.Screen name="DateTrip" options={{ headerShown: false }}>
-        {props => <DateTrip {...props} startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate}/>}
+        {props => <DateTrip {...props} startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} handleContinuePress={handleContinuePress} nameButtonContinue={"Continuar"}/>}
       </HomeAppStack.Screen>
       <HomeAppStack.Screen name="TimeTrip" options={{ headerShown: false }}>
         {props => <TimeTrip {...props} startTime={startTime} setStartTime={setStartTime} endTime={endTime} setEndTime={setEndTime}/>}
@@ -74,12 +78,6 @@ const ContainerPublishTrip = () => {
                             modelCarText={modelCarText}
                             patenteText={patenteText}
                             cost={cost} />}
-      </HomeAppStack.Screen>
-      <HomeAppStack.Screen name="AvailableTrip" options={{ headerShown: false }}>
-        {props => <AvailableTrip {...props} />}
-      </HomeAppStack.Screen>
-      <HomeAppStack.Screen name="DataTrip" options={{ headerShown: false }}>
-        {props => <Datatrip {...props} />}
       </HomeAppStack.Screen>
     </HomeAppStack.Navigator>
   );

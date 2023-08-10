@@ -8,7 +8,7 @@ import CustomCalendar from '../utils/CustomCalendar';
 import { TecladoContext } from '../utils/TecladoContext';
 import { useContext } from 'react';
 
-const DateTrip = ({startDate, setStartDate, endDate, setEndDate}) => {
+const DateTrip = ({startDate, setStartDate, endDate, setEndDate, handleContinuePress, nameButtonContinue}) => {
   const { isKeyboardOpen } = useContext(TecladoContext);
   const [modalStartVisible, setModalStartVisible] = useState(false);
   const [modalEndVisible, setModalEndVisible] = useState(false);
@@ -39,9 +39,6 @@ const DateTrip = ({startDate, setStartDate, endDate, setEndDate}) => {
     toggleModalEnd();
   };
   
-  const handleContinuePress = () => {
-    navigator.navigate('TimeTrip');
- };
   return (
   
     <View style={styles.container}>
@@ -107,7 +104,7 @@ const DateTrip = ({startDate, setStartDate, endDate, setEndDate}) => {
           {shouldShowContinueButton && (
             <View style={styles.bottomContainer}>
               <TouchableOpacity onPress={handleContinuePress} style={[styles.button, { backgroundColor: 'rgb(240, 176, 10)' }]}>
-                <Text style={styles.buttonText}>Continuar</Text>
+                <Text style={styles.buttonText}>{nameButtonContinue}</Text>
               </TouchableOpacity>
             </View>
           )}
