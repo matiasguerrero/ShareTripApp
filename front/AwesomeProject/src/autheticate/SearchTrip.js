@@ -4,6 +4,8 @@ import { View, Text, StyleSheet, ImageBackground, TextInput,Image, Keyboard, Dim
 import {LinearGradient} from 'expo-linear-gradient';
 import Icon from '../utils/Icon';
 import { useNavigation } from '@react-navigation/native';
+import { TecladoContext } from '../utils/TecladoContext';
+import { useContext } from 'react';
 
 // Habilitar las animaciones en Android (opcional)
 if (Platform.OS === 'android') {
@@ -13,27 +15,10 @@ if (Platform.OS === 'android') {
 }
 
 const SearchTrip = ({origin, setOrigin, destination, setDestination}) => {
-  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+  const { isKeyboardOpen } = useContext(TecladoContext);
   const shouldShowContinueButton = (origin && destination);
 
   const navigator= useNavigation();
-
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
-    //LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setIsKeyboardOpen(true);
-    });
-
-    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
-    //LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setIsKeyboardOpen(false);
-    });
-
-  return () => {
-    keyboardDidShowListener.remove();
-    keyboardDidHideListener.remove();
-  };
-  }, []);
 
   useEffect(() => {
     setOrigin('');

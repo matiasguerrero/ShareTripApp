@@ -6,6 +6,8 @@ import { Picker } from '@react-native-picker/picker';
 import Icon from '../utils/Icon';
 import { useNavigation } from '@react-navigation/native';
 import { Modal } from 'react-native';
+import { TecladoContext } from '../utils/TecladoContext';
+import { useContext } from 'react';
 
 // Habilitar las animaciones en Android (opcional)
 if (Platform.OS === 'android') {
@@ -15,30 +17,13 @@ if (Platform.OS === 'android') {
 }
 
 const CarTrip = ({typeCarText, settypeCarText, modelCarText, setmodelCarText, patenteText, setPatenteText}) => {
-  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+  const { isKeyboardOpen } = useContext(TecladoContext);
 
   const [modalVisible, setModalVisible] = useState(false);
 
   const shouldShowContinueButton = (typeCarText && modelCarText && patenteText);
 
   const navigator= useNavigation();
-
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
-    //LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setIsKeyboardOpen(true);
-    });
-
-    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
-    //LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setIsKeyboardOpen(false);
-    });
-
-  return () => {
-    keyboardDidShowListener.remove();
-    keyboardDidHideListener.remove();
-  };
-  }, []);
 
   useEffect(() => {
     setPatenteText('');

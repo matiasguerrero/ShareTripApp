@@ -4,25 +4,12 @@ import { View, Text, StyleSheet, ImageBackground, Image, Keyboard, Dimensions, T
 import {LinearGradient} from 'expo-linear-gradient';
 import Icon from '../utils/Icon';
 import { useNavigation } from '@react-navigation/native';
+import { TecladoContext } from '../utils/TecladoContext';
+import { useContext } from 'react';
 const AsientosDisp = ({asientos, setAsientos}) => {
-  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+  const { isKeyboardOpen } = useContext(TecladoContext);
 
   const navigator= useNavigation();
-
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
-    setIsKeyboardOpen(true);
-    });
-
-    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
-    setIsKeyboardOpen(false);
-    });
-
-  return () => {
-    keyboardDidShowListener.remove();
-    keyboardDidHideListener.remove();
-  };
-  }, []);
 
   useEffect(() => {
     setAsientos(0);

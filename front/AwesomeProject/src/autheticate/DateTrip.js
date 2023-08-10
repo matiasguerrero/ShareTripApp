@@ -5,29 +5,16 @@ import {LinearGradient} from 'expo-linear-gradient';
 import Icon from '../utils/Icon';
 import { useNavigation } from '@react-navigation/native';
 import CustomCalendar from '../utils/CustomCalendar';
+import { TecladoContext } from '../utils/TecladoContext';
+import { useContext } from 'react';
+
 const DateTrip = ({startDate, setStartDate, endDate, setEndDate}) => {
-  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+  const { isKeyboardOpen } = useContext(TecladoContext);
   const [modalStartVisible, setModalStartVisible] = useState(false);
   const [modalEndVisible, setModalEndVisible] = useState(false);
 
   const navigator= useNavigation();
   const shouldShowContinueButton = (startDate || (endDate && startDate));
-
-
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
-    setIsKeyboardOpen(true);
-    });
-
-    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
-    setIsKeyboardOpen(false);
-    });
-
-  return () => {
-    keyboardDidShowListener.remove();
-    keyboardDidHideListener.remove();
-  };
-  }, []);
 
   useEffect(() => {
     setStartDate(null);
