@@ -5,6 +5,8 @@ import Icon from '../utils/Icon';
 import { Dimensions } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import { ActivityIndicator } from 'react-native';
+
 
 const windowHeight = Dimensions.get('window').height;
 
@@ -12,6 +14,8 @@ const windowHeight = Dimensions.get('window').height;
 const AvailableTrip = () => {
     const [contentHeight, setContentHeight] = useState('auto');
     const [trips, setTrips] = useState([]);
+
+    const [isLoading, setIsLoading] = useState(true);
 
     const navigator=useNavigation();
 
@@ -72,7 +76,7 @@ const AvailableTrip = () => {
       // y actualizar el estado de 'trips' con los datos obtenidos.
       const fetchTrips = async () => {
         // Lógica para obtener los viajes disponibles ->    const data = await getAvailableTrips(); // Ejemplo: función asincrónica para obtener los viajes
-        
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulamos un tiempo de carga de 2 segundos
         //Test con mas de 50% de la pantalla
         const data = [ renderTripButton('Juan Perez', 3.2),renderTripButton('Juan Perez', 3.2),
         renderTripButton('Juan Perez', 3.2),renderTripButton('Juan Perez', 3.2),renderTripButton('Juan Perez', 3.2),renderTripButton('Juan Perez', 3.2),renderTripButton('Juan Perez', 3.2),]
@@ -83,6 +87,7 @@ const AvailableTrip = () => {
         //Test sin viajes
         //const data=[];
         setTrips(data);
+        setIsLoading(false);
       };
   
       fetchTrips();
@@ -113,18 +118,20 @@ const AvailableTrip = () => {
                     contentContainerStyle={styles.scrollContent}
                     onContentSizeChange={handleContentSizeChange}
                 >
-                
-                {trips.length > 0 ? (
-                <View style={styles.scroll} >
-                    {/* Renderizar los viajes disponibles */}
-                    {trips.map((trip, index) => (
-                    <View key={index}>{trip}</View>
-                    ))}
-                </View>
-                ) : (
-                <Text style={[styles.seleccioneText,{marginBottom:30}]}>No hay viajes disponibles</Text>
-                )}
-
+                  {isLoading ? (
+                    <><ActivityIndicator size="large" color="white" style={styles.loadingIndicator} />
+                    <Text style={[styles.seleccioneText, {fontSize: 16, marginBottom: '5%'}]}>Buscando viajes...</Text>
+                    </>
+                    ) : trips.length > 0 ? (
+                      <View style={styles.scroll}>
+                       {/* Renderizar los viajes disponibles */}
+                        {trips.map((trip, index) => (
+                        <View key={index}>{trip}</View>
+                        ))}
+                      </View>
+                    ) : (
+                      <Text style={[styles.seleccioneText, { marginBottom: 30 }]}>No hay viajes disponibles</Text>
+                  )}
                    
                    
                 </ScrollView>
