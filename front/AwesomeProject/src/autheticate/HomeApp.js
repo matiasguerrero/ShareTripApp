@@ -9,6 +9,7 @@ import { useContext } from 'react';
 import ContainerPublishTrip from './ContainerPublishTrip';
 import Profile from './Profile';
 import ContainerSelected from './ContainerSelected';
+import ContainerProfile from './ContainerProfile';
 const HomeTab = () => (
   //<View style={styles.container}>
   //  <View style={styles.centerContainer}>
@@ -29,6 +30,10 @@ const ChatScreen = () => (
   <View style={styles.container}>
    
   </View>
+);
+
+const ProfileScreen = () => (
+  <ContainerProfile/>
 );
 
 
@@ -84,7 +89,7 @@ const HomeApp = ( ) => {
         <Tab.Screen name="Chat" component={ChatScreen} options={{ headerShown: false, tabBarLabel: "" }} />
         <Tab.Screen
           name="Profile"
-          component={Profile} // Asegúrate de proporcionar el componente Profile
+          component={ProfileScreen} // Asegúrate de proporcionar el componente Profile
           options={{ headerShown: false, tabBarLabel: '' }}
         />
       

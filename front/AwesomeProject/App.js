@@ -35,7 +35,6 @@ const verticalSlideUpAnimation = (props) => {
   };
 };
 
-
 const forFadeFromBottom = ({ current }) => ({
   cardStyle: {
     opacity: current.progress,
