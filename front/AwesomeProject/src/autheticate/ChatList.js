@@ -2,14 +2,14 @@ import React from "react"
 import { View, StyleSheet } from "react-native"
 import { Text, TouchableOpacity, Image, ScrollView } from "react-native"
 import Icon from "../utils/Icon"
+import { useNavigation } from "@react-navigation/native"
 const ChatList = () => {
   const dorado = "rgb(240, 176, 10)"
   const gris = "rgba(204, 204, 204,0.8)"
-
+  const navigation = useNavigation()
   function formatDate(date) {
     const currentDate = new Date()
     const inputDate = new Date(date)
-
     const diffInDays = Math.floor(
       (currentDate - inputDate) / (1000 * 60 * 60 * 24)
     )
@@ -31,6 +31,9 @@ const ChatList = () => {
     }
   }
 
+  const handlePress = () => {
+    navigation.navigate("ChatScreen")
+  }
   const renderTripButton = (
     nombre,
     hasNotification,
@@ -47,7 +50,7 @@ const ChatList = () => {
           },
         ]}
       >
-        <TouchableOpacity style={[styles.button]}>
+        <TouchableOpacity onPress={handlePress} style={[styles.button]}>
           <View style={styles.rowTrip}>
             <View style={styles.circleContainer}>
               <Image

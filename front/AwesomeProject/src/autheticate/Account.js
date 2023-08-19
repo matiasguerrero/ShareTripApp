@@ -112,7 +112,7 @@ const Account = () => {
                   <TextInput
                     style={styles.input}
                     placeholder="Nombre"
-                    placeholderTextColor="rgba(204, 204, 204, 0.8)"
+                    placeholderTextColor="rgba(204, 204, 204,0.8)"
                     value={name}
                     onChangeText={setName}
                   />

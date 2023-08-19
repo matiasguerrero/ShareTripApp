@@ -13,11 +13,9 @@ import { useNavigation } from "@react-navigation/native"
 import Icon from "../utils/Icon"
 import { AuthContext } from "../utils/AuthProvider"
 import { useContext } from "react"
-import ContainerPublishTrip from "./ContainerPublishTrip"
-import Profile from "./Profile"
 import ContainerSelected from "./ContainerSelected"
 import ContainerProfile from "./ContainerProfile"
-import ChatList from "./ChatList"
+import ContainerChat from "./ContainerChat"
 const HomeTab = () => (
   //<View style={styles.container}>
   //  <View style={styles.centerContainer}>
@@ -33,7 +31,7 @@ const MyTripsScreen = () => (
   </View>
 )
 
-const ChatScreen = () => <ChatList />
+const ChatScreen = () => <ContainerChat />
 
 const ProfileScreen = () => <ContainerProfile />
 
