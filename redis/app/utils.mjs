@@ -1,6 +1,11 @@
 // redisUtil.js
 import Redis from "ioredis"
-const redis = new Redis()
+
+// Configura la conexión para que apunte a redis_internal en el puerto 6380
+const redis = new Redis({
+  host: "redis_internal",
+  port: 6379, // Puerto que corresponde a redis_internal
+})
 
 function storeUserLocation(userId, location) {
   return redis.set(`user:${userId}:location`, JSON.stringify(location))

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Client</title>
+</head>
+<body>
+    <h1>WebSocket Client</h1>
+    <label for="userIdInput">User ID:</label>
+    <input type="text" id="userIdInput" placeholder="Enter Your User ID">
+    <br>
+    <label for="recipientUserIdInput">Recipient User ID:</label>
+    <input type="text" id="recipientUserIdInput" placeholder="Enter Recipient User ID">
+    <br>
+    <input type="text" id="messageInput" placeholder="Type a message">
+    <button onclick="sendMessage()">Send</button>
+    <hr>
+    <div id="messages"></div>
+
+    <script>
+        let ws; // Variable para almacenar la conexión WebSocket
+    
+        // Función para obtener el valor del campo de ID de usuario
+        function getUserId() {
+            return document.getElementById("userIdInput").value;
+        }
+
+        // Función para obtener el valor del campo de ID del destinatario
+        function getRecipientUserId() {
+            return document.getElementById("recipientUserIdInput").value;
+        }
+    
+        // Función para conectar al WebSocket
+        function connectWebSocket() {
+            const userId = getUserId();
+            ws = new WebSocket(`ws://localhost:8080?userId=${userId}`);
+    
+            // Manejar eventos de la conexión WebSocket
+            ws.onopen = function(event) {
+                // La conexión WebSocket está abierta y lista para enviar mensajes
+                console.log("WebSocket connection opened.");
+            };
+    
+            ws.onmessage = function(event) {
+                const message = event.data;
+                displayMessage(message);
+            };
+    
+            ws.onclose = function(event) {
+                // La conexión WebSocket se ha cerrado
+                console.log("WebSocket connection closed.");
+            };
+        }
+    
+        // Función para enviar mensajes
+        function sendMessage() {
+            if (!ws || ws.readyState !== WebSocket.OPEN) {
+                // Si la conexión WebSocket no está abierta, intenta conectar
+                connectWebSocket();
+            } else {
+                // La conexión WebSocket está abierta, puede enviar mensajes
+                const messageInput = document.getElementById("messageInput");
+                const message = messageInput.value;
+                const recipientUserId = getRecipientUserId(); // Obtener el destinatario del campo de entrada
+                const messageData = {
+                    user: getUserId(),
+                    recipient: recipientUserId,
+                    text: message,
+                };
+                ws.send(JSON.stringify(messageData));
+                displayMessage(`You to ${recipientUserId}: ${message}`);
+                messageInput.value = "";
+            }
+        }
+    
+        // Función para mostrar mensajes en la página
+        function displayMessage(message) {
+            const messagesDiv = document.getElementById("messages");
+            const messageElement = document.createElement("p");
+            messageElement.textContent = message;
+            messagesDiv.appendChild(messageElement);
+        }
+    </script>
+</body>
+</html>

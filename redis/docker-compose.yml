@@ -25,7 +25,7 @@ services:
             - APPID=4444
     rds:
         image: redis
-    
+
       # Nuevo servicio de Redis
     redis_internal:
         image: redis
