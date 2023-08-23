@@ -32,7 +32,7 @@
         // Función para conectar al WebSocket
         function connectWebSocket() {
             const userId = getUserId();
-            ws = new WebSocket(`ws://localhost:8080?userId=${userId}`);
+            ws = new WebSocket(`ws://192.168.0.157:8080?userId=${userId}`);
     
             // Manejar eventos de la conexión WebSocket
             ws.onopen = function(event) {
@@ -66,6 +66,7 @@
                     recipient: recipientUserId,
                     text: message,
                 };
+                console.log("Sending message: " + JSON.stringify(messageData));
                 ws.send(JSON.stringify(messageData));
                 displayMessage(`You to ${recipientUserId}: ${message}`);
                 messageInput.value = "";

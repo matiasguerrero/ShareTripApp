@@ -12,17 +12,26 @@ import Icon from "../utils/Icon"
 import { useState, useEffect } from "react"
 import { useNavigation } from "@react-navigation/native"
 import { TecladoContext } from "../utils/TecladoContext"
+import { useChatContext } from "../utils/ChatProvider"
+import useWebSocketManager from "../utils/WebSocketManager"
+import { AuthContext } from "../utils/AuthProvider"
+import { useWebSocket } from "../utils/WebSocketContext"
 const ChatScreen = () => {
   const navigation = useNavigation()
   const [messages, setMessages] = useState([]) // Lista de mensajes
   const [newMessage, setNewMessage] = useState("") // Nuevo mensaje ingresado
   const scrollViewRef = React.useRef()
   const { isKeyboardOpen } = useContext(TecladoContext)
+  const { userChatActual, userIdChatActual, userMessages, addMessage } =
+    useChatContext()
+  const { sendMessage } = useWebSocket()
+  const { userData } = useContext(AuthContext)
 
   const handleSendMessage = () => {
     if (newMessage) {
       // Agregar el nuevo mensaje a la lista de mensajes
-      setMessages([...messages, newMessage])
+      sendMessage(userData.id, userIdChatActual, newMessage)
+      addMessage(userIdChatActual, newMessage, (isSender = true)) //mensaje del usuario actual al receptor
       setNewMessage("") // Limpiar el campo de texto
     }
   }
@@ -31,6 +40,20 @@ const ChatScreen = () => {
     // Desplazarse automáticamente hacia abajo al agregar un nuevo mensaje
     scrollViewRef.current.scrollToEnd({ animated: true })
   }, [messages])
+
+  useEffect(() => {
+    // Encuentra el índice del usuario en userMessages
+    console.log(userMessages)
+    const userIndex = userMessages.findIndex(
+      (userMessage) => userMessage.userId === userIdChatActual
+    )
+    console.log(userIndex)
+    if (userIndex !== -1) {
+      // Obtiene los mensajes del usuario actual y los establece en el estado local
+      console.log("entra")
+      setMessages(userMessages[userIndex].messages)
+    }
+  }, [userIdChatActual, userMessages])
 
   const handleBack = () => {
     navigation.goBack()
@@ -98,7 +121,7 @@ const ChatScreen = () => {
 
   return (
     <View style={styles.container}>
-      {renderHeader("Carlos")}
+      {renderHeader(userChatActual)}
       <View style={[styles.scroll, isKeyboardOpen ? { height: "75%" } : null]}>
         <ScrollView
           ref={scrollViewRef}
@@ -106,10 +129,10 @@ const ChatScreen = () => {
         >
           {messages.map((message, index) =>
             renderMessage(
-              message,
+              message.message,
               "12:00",
-              index % 2 == 0 ? "rgb(49,48,48)" : "rgb(103, 100, 100)",
-              index % 2 == 0 ? "flex-end" : "flex-start",
+              message.isSender ? "rgb(49,48,48)" : "rgb(103, 100, 100)",
+              message.isSender ? "flex-end" : "flex-start",
               index
             )
           )}

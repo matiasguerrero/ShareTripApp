@@ -21,15 +21,18 @@ const redisCentralUsers = redis.createClient({
   host: "redis_internal",
 })
 
-function sendMessageToUser(userId, message) {
+function sendMessageToUser(userId, recipient, message) {
   // Buscar la conexión correspondiente al userId
-  const targetConnection = connections.find((c) => c.userId === userId)
+  console.log("Parametros a enviar:" + userId + " " + recipient + " " + message)
+  const targetConnection = connections.find((c) => c.userId === recipient)
 
   if (targetConnection) {
     // Encontramos la conexión, enviamos el mensaje
-    targetConnection.send(APPID + ":" + message)
+    targetConnection.send(
+      JSON.stringify({ type: "message", user: userId, message: message })
+    )
   } else {
-    console.log(`No se encontró una conexión para el usuario ${userId}`)
+    console.log(`No se encontró una conexión para el usuario ${recipient}`)
   }
 }
 
@@ -48,7 +51,19 @@ subscriber.on("message", function (channel, message) {
 
     if (channel === redisSVIdentifier) {
       // Enviar el mensaje a una conexion particular
-      sendMessageToUser(messageData.user, messageData.message)
+      console.log(
+        "Voy a enviar " +
+          messageData.user +
+          " " +
+          messageData.recipient +
+          " " +
+          messageData.message
+      )
+      sendMessageToUser(
+        messageData.user,
+        messageData.recipient,
+        messageData.message
+      )
     } else {
       //connections.forEach((c) => c.send(APPID + ":" + message))
       console.log("El mensaje no era para un usuario de este server")
@@ -72,7 +87,7 @@ const websocket = new WebSocketServer({
   httpServer: httpserver,
 })
 
-httpserver.listen(8080, () =>
+httpserver.listen(8080, "0.0.0.0", () =>
   console.log("My server is listening on port 8080")
 )
 
@@ -111,6 +126,7 @@ websocket.on("request", (request) => {
 
     let userAPPID = null
 
+    console.log("ANTES DE PUBLICAR" + user + " " + recipient + " " + text)
     // Obtener el APPID asociado al usuario, es ASYNC
     redisCentralUsers.get(`user:${recipient}:appid`, (err, userAPPID) => {
       if (err) {
@@ -125,14 +141,18 @@ websocket.on("request", (request) => {
 
           // Ahora puedes usar la variable userAPPID según tus necesidades
           if (userAPPID === APPID) {
-            sendMessageToUser(recipient, text)
+            sendMessageToUser(user, recipient, text)
           } else {
             if (userAPPID === null) {
               console.log("No se encontró un APPID para el usuario")
             } else {
               publisher.publish(
                 userAPPID,
-                JSON.stringify({ user: recipient, message: text })
+                JSON.stringify({
+                  user: user,
+                  recipient: recipient,
+                  message: text,
+                })
               )
             }
           }
@@ -143,7 +163,16 @@ websocket.on("request", (request) => {
     //publisher.publish("livechat", message.utf8Data)
   })
 
-  setTimeout(() => con.send(`Connected successfully to server ${APPID}`), 5000)
+  setTimeout(
+    () =>
+      con.send(
+        JSON.stringify({
+          type: "conexion",
+          message: `Connected successfully to server ${APPID}`,
+        })
+      ),
+    5000
+  )
 
   if (userId) {
     // Almacenar el APPID del servidor en Redis para este usuario

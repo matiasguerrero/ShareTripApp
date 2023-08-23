@@ -16,6 +16,7 @@ import { useContext } from "react"
 import ContainerSelected from "./ContainerSelected"
 import ContainerProfile from "./ContainerProfile"
 import ContainerChat from "./ContainerChat"
+import { ChatProvider } from "../utils/ChatProvider"
 const HomeTab = () => (
   //<View style={styles.container}>
   //  <View style={styles.centerContainer}>
@@ -125,6 +126,7 @@ const HomeApp = () => {
         />
         <Tab.Screen
           name="Chat"
+          lazy={true} //Renderizado cada vez que entra a la pantalla y destruccion al salir
           component={ChatScreen}
           options={{ headerShown: false, tabBarLabel: "" }}
         />

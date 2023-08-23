@@ -1,12 +1,34 @@
-import React from "react"
+import React, { useContext } from "react"
 import { View, StyleSheet } from "react-native"
 import { Text, TouchableOpacity, Image, ScrollView } from "react-native"
 import Icon from "../utils/Icon"
+import { useEffect } from "react"
 import { useNavigation } from "@react-navigation/native"
+import { useChatContext } from "../utils/ChatProvider"
+import { AuthContext } from "../utils/AuthProvider"
+import { useWebSocket } from "../utils/WebSocketContext"
+
 const ChatList = () => {
   const dorado = "rgb(240, 176, 10)"
   const gris = "rgba(204, 204, 204,0.8)"
   const navigation = useNavigation()
+  const { usersToChatWith, userChatActual, setUserChatActual, addMessage } =
+    useChatContext()
+  const { userData } = useContext(AuthContext)
+
+  const { ws, isConnected, connectWebSocket, closeWebSocket } = useWebSocket()
+
+  useEffect(() => {
+    if (!isConnected) connectWebSocket(userData.id)
+    return () => {
+      // Esta función se ejecutará cuando el componente se desmonte
+      if (isConnected) {
+        // Cerrar la conexión WebSocket antes de desmontar el componente
+        closeWebSocket()
+      }
+    }
+  }, [])
+
   function formatDate(date) {
     const currentDate = new Date()
     const inputDate = new Date(date)
@@ -31,9 +53,6 @@ const ChatList = () => {
     }
   }
 
-  const handlePress = () => {
-    navigation.navigate("ChatScreen")
-  }
   const renderTripButton = (
     nombre,
     hasNotification,
@@ -41,6 +60,11 @@ const ChatList = () => {
     lastMessage,
     time
   ) => {
+    const handlePress = () => {
+      setUserChatActual(nombre)
+      navigation.navigate("ChatScreen")
+    }
+
     return (
       <View
         style={[
@@ -112,90 +136,17 @@ const ChatList = () => {
       </View>
       <View style={styles.scroll}>
         <ScrollView contentContainerStyle={[styles.scrollContent]}>
-          {renderTripButton(
-            "Carlos",
-            true,
-            2,
-            "Hola, ¿cómo estás? bien y vos bien bien que ehacias nada y vos",
-            formatDate("2021-05-01T12:00:00.000Z")
-          )}
-          {renderTripButton(
-            "Carlos",
-            false,
-            2,
-            "Hola, ¿cómo estás?",
-            formatDate("2023-08-18T10:00:00.000Z")
-          )}
-          {renderTripButton(
-            "Carlos",
-            true,
-            2,
-            "Hola, ¿cómo estás?",
-            formatDate("2023-08-17T10:00:00.000Z")
-          )}
-          {renderTripButton(
-            "Carlos",
-            true,
-            2,
-            "Hola, ¿cómo estás? bien y vos bien bien que ehacias nada y vos",
-            formatDate("2021-05-01T12:00:00.000Z")
-          )}
-          {renderTripButton(
-            "Carlos",
-            false,
-            2,
-            "Hola, ¿cómo estás?",
-            formatDate("2023-08-18T10:00:00.000Z")
-          )}
-          {renderTripButton(
-            "Carlos",
-            false,
-            2,
-            "Hola, ¿cómo estás?",
-            formatDate("2023-08-17T10:00:00.000Z")
-          )}
-          {renderTripButton(
-            "Carlos",
-            false,
-            2,
-            "Hola, ¿cómo estás? bien y vos bien bien que ehacias nada y vos",
-            formatDate("2021-05-01T12:00:00.000Z")
-          )}
-          {renderTripButton(
-            "Carlos",
-            true,
-            2,
-            "Hola, ¿cómo estás?",
-            formatDate("2023-08-18T10:00:00.000Z")
-          )}
-          {renderTripButton(
-            "Carlos",
-            true,
-            2,
-            "Hola, ¿cómo estás?",
-            formatDate("2023-08-17T10:00:00.000Z")
-          )}
-          {renderTripButton(
-            "Carlos",
-            true,
-            2,
-            "Hola, ¿cómo estás? bien y vos bien bien que ehacias nada y vos",
-            formatDate("2021-05-01T12:00:00.000Z")
-          )}
-          {renderTripButton(
-            "Carlos",
-            true,
-            2,
-            "Hola, ¿cómo estás?",
-            formatDate("2023-08-18T10:00:00.000Z")
-          )}
-          {renderTripButton(
-            "Carlos",
-            true,
-            2,
-            "Hola, ¿cómo estás?",
-            formatDate("2023-08-17T10:00:00.000Z")
-          )}
+          {usersToChatWith.map((user, index) => (
+            <View key={index}>
+              {renderTripButton(
+                user.name,
+                user.hasNotification,
+                user.cantMessages,
+                user.lastMessage,
+                formatDate(user.time)
+              )}
+            </View>
+          ))}
         </ScrollView>
       </View>
     </View>
