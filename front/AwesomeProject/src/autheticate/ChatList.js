@@ -12,8 +12,13 @@ const ChatList = () => {
   const dorado = "rgb(240, 176, 10)"
   const gris = "rgba(204, 204, 204,0.8)"
   const navigation = useNavigation()
-  const { usersToChatWith, userChatActual, setUserChatActual, addMessage } =
-    useChatContext()
+  const {
+    usersToChatWith,
+    userIdChatActual,
+    setUserChatActual,
+    userMessages,
+    updateUserById,
+  } = useChatContext()
   const { userData } = useContext(AuthContext)
 
   const { ws, isConnected, connectWebSocket, closeWebSocket } = useWebSocket()
@@ -29,29 +34,11 @@ const ChatList = () => {
     }
   }, [])
 
-  function formatDate(date) {
-    const currentDate = new Date()
-    const inputDate = new Date(date)
-    const diffInDays = Math.floor(
-      (currentDate - inputDate) / (1000 * 60 * 60 * 24)
-    )
-
-    if (diffInDays === 0) {
-      const options = {
-        timeZone: "America/Argentina/Buenos_Aires",
-        hour: "2-digit",
-        minute: "2-digit",
-      }
-      return inputDate.toLocaleTimeString("es-ES", options)
-    } else if (diffInDays === 1) {
-      return "Ayer"
-    } else if (diffInDays >= 2) {
-      const day = inputDate.getDate()
-      const month = inputDate.getMonth() + 1 // Sumamos 1 ya que los meses en Date son 0-indexados
-      const year = inputDate.getFullYear() % 100 // Obtenemos los últimos dos dígitos del año
-      return `${day}/${month}/${year}`
-    }
-  }
+  useEffect(() => {
+    // Aquí puedes realizar acciones después de que userMessages se haya actualizado
+    //console.log(JSON.stringify(userMessages))
+    updateUserById(userIdChatActual)
+  }, [userMessages])
 
   const renderTripButton = (
     nombre,
@@ -143,7 +130,7 @@ const ChatList = () => {
                 user.hasNotification,
                 user.cantMessages,
                 user.lastMessage,
-                formatDate(user.time)
+                user.time
               )}
             </View>
           ))}

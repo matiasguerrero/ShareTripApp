@@ -16,45 +16,69 @@ import { useChatContext } from "../utils/ChatProvider"
 import useWebSocketManager from "../utils/WebSocketManager"
 import { AuthContext } from "../utils/AuthProvider"
 import { useWebSocket } from "../utils/WebSocketContext"
+import { memo } from "react"
+import { FlatList } from "react-native"
+import MessageItem from "./MessageItem"
+
 const ChatScreen = () => {
   const navigation = useNavigation()
   const [messages, setMessages] = useState([]) // Lista de mensajes
   const [newMessage, setNewMessage] = useState("") // Nuevo mensaje ingresado
   const scrollViewRef = React.useRef()
   const { isKeyboardOpen } = useContext(TecladoContext)
-  const { userChatActual, userIdChatActual, userMessages, addMessage } =
-    useChatContext()
+  const {
+    userChatActual,
+    userIdChatActual,
+    userMessages,
+    addMessage,
+    updateUserById,
+  } = useChatContext()
   const { sendMessage } = useWebSocket()
   const { userData } = useContext(AuthContext)
+
+  const userIndex = userMessages.findIndex(
+    (userMessage) => userMessage.userId === userIdChatActual
+  )
 
   const handleSendMessage = () => {
     if (newMessage) {
       // Agregar el nuevo mensaje a la lista de mensajes
+      addMessage(
+        userIdChatActual,
+        newMessage,
+        (isSender = true),
+        formatDate(new Date().toString())
+      ) //mensaje del usuario actual al receptor
       sendMessage(userData.id, userIdChatActual, newMessage)
-      addMessage(userIdChatActual, newMessage, (isSender = true)) //mensaje del usuario actual al receptor
       setNewMessage("") // Limpiar el campo de texto
     }
   }
 
-  useEffect(() => {
-    // Desplazarse automáticamente hacia abajo al agregar un nuevo mensaje
-    scrollViewRef.current.scrollToEnd({ animated: true })
-  }, [messages])
+  const scrollToBottom = () => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollToEnd({ animated: false })
+    }
+  }
 
+  {
+    /*
   useEffect(() => {
     // Encuentra el índice del usuario en userMessages
-    console.log(userMessages)
     const userIndex = userMessages.findIndex(
       (userMessage) => userMessage.userId === userIdChatActual
     )
     console.log(userIndex)
     if (userIndex !== -1) {
       // Obtiene los mensajes del usuario actual y los establece en el estado local
-      console.log("entra")
-      setMessages(userMessages[userIndex].messages)
+      console.log("entra a editar los mensajes")
+      setMessages([...userMessages[userIndex].messages])
     }
-  }, [userIdChatActual, userMessages])
+  }, [userIdChatActual, userMessages])*/
+  }
 
+  useEffect(() => {
+    console.log(userMessages[userIndex].messages)
+  }, [userMessages])
   const handleBack = () => {
     navigation.goBack()
   }
@@ -104,6 +128,30 @@ const ChatScreen = () => {
     )
   }
 
+  function formatDate(date) {
+    const currentDate = new Date()
+    const inputDate = new Date(date)
+    const diffInDays = Math.floor(
+      (currentDate - inputDate) / (1000 * 60 * 60 * 24)
+    )
+
+    if (diffInDays === 0) {
+      const options = {
+        timeZone: "America/Argentina/Buenos_Aires",
+        hour: "2-digit",
+        minute: "2-digit",
+      }
+      return inputDate.toLocaleTimeString("es-ES", options)
+    } else if (diffInDays === 1) {
+      return "Ayer"
+    } else if (diffInDays >= 2) {
+      const day = inputDate.getDate()
+      const month = inputDate.getMonth() + 1 // Sumamos 1 ya que los meses en Date son 0-indexados
+      const year = inputDate.getFullYear() % 100 // Obtenemos los últimos dos dígitos del año
+      return `${day}/${month}/${year}`
+    }
+  }
+
   const renderMessage = (message, time, color, align, index) => {
     return (
       <View
@@ -119,24 +167,34 @@ const ChatScreen = () => {
     )
   }
 
+  const [layout, setLayout] = useState({
+    width: 0,
+    height: 0,
+  })
+
   return (
     <View style={styles.container}>
       {renderHeader(userChatActual)}
       <View style={[styles.scroll, isKeyboardOpen ? { height: "75%" } : null]}>
-        <ScrollView
-          ref={scrollViewRef}
-          contentContainerStyle={[styles.scrollContent]}
-        >
-          {messages.map((message, index) =>
-            renderMessage(
-              message.message,
-              "12:00",
-              message.isSender ? "rgb(49,48,48)" : "rgb(103, 100, 100)",
-              message.isSender ? "flex-end" : "flex-start",
-              index
-            )
-          )}
-        </ScrollView>
+        {userMessages[userIndex].messages.length > 0 ? (
+          <FlatList
+            ref={scrollViewRef}
+            data={userMessages[userIndex].messages}
+            renderItem={({ item }) => (
+              <MessageItem
+                message={item.message}
+                time={"12:00"} // Reemplaza con la propiedad de tiempo adecuada de tu objeto de mensaje
+                color={item.isSender ? "rgb(49,48,48)" : "rgb(103, 100, 100)"}
+                width={layout.width} //Se envia el ancho del contenedor padre
+                align={item.isSender ? "flex-end" : "flex-start"}
+              />
+            )}
+            onContentSizeChange={scrollToBottom}
+            keyExtractor={(item, index) => index.toString()}
+            contentContainerStyle={styles.scrollContent}
+            onLayout={(event) => setLayout(event.nativeEvent.layout)} //Es necesario capturar el ancho del contenedor
+          />
+        ) : null}
       </View>
       <View
         style={[
@@ -255,8 +313,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgb(240, 176, 10)",
   },
   scrollContent: {
-    flexGrow: 1,
-    width: "100%",
     alignItems: "center",
   },
   scroll: {
