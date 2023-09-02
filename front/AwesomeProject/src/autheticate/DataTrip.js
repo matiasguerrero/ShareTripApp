@@ -322,6 +322,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 15,
     textAlignVertical: "center",
+    fontFamily: "Inter",
   },
   rowTrip: {
     flexDirection: "row",
@@ -349,8 +350,9 @@ const styles = StyleSheet.create({
   text_trip: {
     color: "white",
     fontSize: "bold",
-    fontSize: 13,
+    fontSize: 12,
     textAlign: "center",
+    fontFamily: "Inter",
   },
   iconContainer: {
     zIndex: 0,
@@ -440,6 +442,7 @@ const styles = StyleSheet.create({
     textAlignVertical: "center",
     textAlign: "center",
     marginRight: 5,
+    fontFamily: "Inter",
   },
   imageNameText: {
     fontWeight: "normal",
@@ -447,6 +450,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     textAlignVertical: "center",
     textAlign: "center",
+    fontFamily: "Inter",
   },
   alertaContainer: {
     width: "100%",
@@ -489,7 +493,8 @@ const styles = StyleSheet.create({
   text_car: {
     textDecorationLine: "underline",
     color: "rgb(240, 176, 10)",
-    fontSize: 12,
+    fontSize: 11,
+    fontFamily: "Inter",
   },
 })
 

@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
     color: "white",
     padding: 10,
     maxWidth: "90%",
+    fontFamily: "Inter",
   },
   time_message: {
     flexDirection: "column",
@@ -45,6 +46,7 @@ const styles = StyleSheet.create({
     textAlignVertical: "bottom",
     paddingBottom: 5,
     paddingRight: 5,
+    fontFamily: "Inter",
   },
 })
 

@@ -237,6 +237,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     textAlign: "center",
+    fontFamily: "Inter",
   },
   text: {
     top: 10,
@@ -264,6 +265,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 15,
     textAlignVertical: "center",
+    fontFamily: "Inter",
   },
   rowTrip: {
     flexDirection: "row",
@@ -293,6 +295,7 @@ const styles = StyleSheet.create({
     fontSize: "bold",
     fontSize: 13,
     textAlign: "center",
+    fontFamily: "Inter",
   },
   iconContainer: {
     zIndex: 0,
@@ -321,12 +324,14 @@ const styles = StyleSheet.create({
     zIndex: 2,
     fontSize: 10,
     fontWeight: "bold",
+    fontFamily: "Inter",
   },
   icon_text_2: {
     color: "rgba(204, 204, 204, 0.8)",
     zIndex: 2,
     fontSize: 10,
     fontWeight: "bold",
+    fontFamily: "Inter",
   },
   button_icon: {
     width: 70,
@@ -343,6 +348,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginLeft: "5%",
     marginBottom: "1%",
+    fontFamily: "Inter",
   },
   textInputRow: {
     flexDirection: "row",
@@ -359,6 +365,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 10,
     backgroundColor: "rgba(204, 204, 204, 0.8)",
+    fontFamily: "Inter",
   },
   rowProfile: {
     width: "80%",
@@ -396,6 +403,7 @@ const styles = StyleSheet.create({
     textAlignVertical: "center",
     textAlign: "center",
     marginRight: 5,
+    fontFamily: "Inter",
   },
   imageNameText: {
     fontWeight: "normal",
@@ -403,6 +411,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlignVertical: "center",
     textAlign: "center",
+    fontFamily: "Inter",
   },
   alertaContainer: {
     width: "100%",
@@ -458,6 +467,7 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline",
     color: "rgb(240, 176, 10)",
     fontSize: 12,
+    fontFamily: "Inter",
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,

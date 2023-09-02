@@ -175,6 +175,7 @@ const styles = StyleSheet.create({
     textAlignVertical: "center",
     textAlign: "center",
     marginRight: 5,
+    fontFamily: "Inter",
   },
   imageNameText: {
     fontWeight: "normal",
@@ -182,6 +183,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlignVertical: "center",
     textAlign: "center",
+    fontFamily: "Inter",
   },
   circleContainer: {
     width: 120,
@@ -211,6 +213,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 15,
     textAlignVertical: "center",
+    fontFamily: "Inter",
   },
 })
 

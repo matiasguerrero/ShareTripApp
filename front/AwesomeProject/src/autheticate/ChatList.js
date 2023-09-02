@@ -165,6 +165,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     textAlign: "left",
+    fontFamily: "Inter",
   },
   text: {
     top: 10,
@@ -192,6 +193,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 16,
     textAlignVertical: "center",
+    fontFamily: "Inter",
   },
   rowTrip: {
     flexDirection: "row",
@@ -232,6 +234,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "normal",
     textAlignVertical: "center",
+    fontFamily: "Inter",
   },
   alertaContainer: {
     width: "100%",
@@ -275,6 +278,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     textAlign: "left",
     color: "rgba(204, 204, 204,0.8)",
+    fontFamily: "Inter",
   },
   row_trip: {
     flexDirection: "row",
@@ -286,6 +290,7 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 10,
     textAlignVertical: "center",
+    fontFamily: "Inter",
   },
 })
 

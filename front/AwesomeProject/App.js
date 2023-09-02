@@ -18,8 +18,13 @@ import { useContext } from "react"
 import { AuthContext } from "./src/utils/AuthProvider"
 import { View } from "react-native"
 import { ChatProvider } from "./src/utils/ChatProvider"
+import { useFonts } from "expo-font"
+import * as SplashScreen from "expo-splash-screen"
+import { useCallback } from "react"
 
 enableScreens()
+
+SplashScreen.preventAutoHideAsync()
 
 const MainStack = createStackNavigator()
 
@@ -94,11 +99,25 @@ const App = () => {
   const [selectedButton, setSelectedButton] = useState("login")
   const { loggedIn } = useContext(AuthContext)
 
+  const [isLoaded] = useFonts({
+    Inter: require("./assets/fonts/Inter-Regular.otf"),
+  })
+
+  const handleOnLayout = useCallback(async () => {
+    if (isLoaded) {
+      await SplashScreen.hideAsync() //hide the splashscreen
+    }
+  }, [isLoaded])
+
+  if (!isLoaded) {
+    return null
+  }
+
   return (
     <TecladoProvider>
       <NavigationContainer>
         <StatusBar style="auto" />
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1 }} onLayout={handleOnLayout}>
           {loggedIn ? (
             <>
               {console.log("va a renderizar")}

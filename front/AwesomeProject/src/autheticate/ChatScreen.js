@@ -272,6 +272,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 16,
     textAlignVertical: "center",
+    fontFamily: "Inter",
   },
   rowTrip: {
     flexDirection: "row",
