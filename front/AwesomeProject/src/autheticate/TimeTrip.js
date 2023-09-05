@@ -19,6 +19,8 @@ import Icon from "../utils/Icon"
 import { useNavigation } from "@react-navigation/native"
 import { TecladoContext } from "../utils/TecladoContext"
 import { useContext } from "react"
+import DateTimePicker from "@react-native-community/datetimepicker"
+import { Modal } from "react-native"
 
 // Habilitar las animaciones en Android (opcional)
 if (Platform.OS === "android") {
@@ -29,6 +31,12 @@ if (Platform.OS === "android") {
 
 const TimeTrip = ({ startTime, setStartTime, endTime, setEndTime }) => {
   const { isKeyboardOpen } = useContext(TecladoContext)
+
+  const [showTimePicker, setShowTimePicker] = useState(false)
+  const [isStartButton, setIsStartButton] = useState(false)
+  const [isEndButton, setIsEndButton] = useState(false)
+  const [hasChange, setHasChange] = useState(false)
+  const [selectedTime, setSelectedTime] = useState(new Date())
 
   const shouldShowContinueButton = startTime && endTime
 
@@ -74,6 +82,54 @@ const TimeTrip = ({ startTime, setStartTime, endTime, setEndTime }) => {
     }
   }
 
+  const onChange = (event, selected) => {
+    if (event.type === "set") {
+      if (selected) {
+        if (Platform.OS === "android") {
+          setShowTimePicker(false) // Cerrar automáticamente en iOS
+        }
+        setHasChange(true)
+        setSelectedTime(selected)
+      }
+    } else if (event.type === "dismissed") {
+      setShowTimePicker(false)
+    }
+  }
+
+  useEffect(() => {
+    if (isStartButton) {
+      setStartTime(
+        selectedTime.getHours().toString() +
+          ":" +
+          selectedTime.getMinutes().toString()
+      )
+    } else if (isEndButton)
+      setEndTime(
+        selectedTime.getHours().toString() +
+          ":" +
+          selectedTime.getMinutes().toString()
+      )
+  }, [selectedTime])
+  const showTimePickerModal = () => {
+    setShowTimePicker(true)
+  }
+
+  const hideTimePickerModal = () => {
+    setShowTimePicker(false)
+    setShowModal(false)
+  }
+
+  const handleStartTime = () => {
+    setIsEndButton(false)
+    setIsStartButton(true)
+    showTimePickerModal()
+  }
+
+  const handleEndTime = () => {
+    setIsStartButton(false)
+    setIsEndButton(true)
+    showTimePickerModal()
+  }
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -111,6 +167,21 @@ const TimeTrip = ({ startTime, setStartTime, endTime, setEndTime }) => {
             isKeyboardOpen ? styles.overlayContainer_Keyboard : null,
           ]}
         >
+          <Modal
+            visible={showTimePicker}
+            transparent={true}
+            animationType="slide"
+            onRequestClose={() => setShowTimePicker(false)}
+          >
+            <View style={{ flex: 1, justifyContent: "flex-end" }}>
+              <DateTimePicker
+                value={selectedTime}
+                mode="time"
+                display="spinner"
+                onChange={onChange}
+              />
+            </View>
+          </Modal>
           <View
             style={[
               styles.blackContainer,
@@ -126,11 +197,12 @@ const TimeTrip = ({ startTime, setStartTime, endTime, setEndTime }) => {
               >
                 Indique el horario
               </Text>
-              <View
+              <TouchableOpacity
                 style={[
                   styles.textInputRow,
                   isKeyboardOpen ? styles.email_keyboard : null,
                 ]}
+                onPress={handleStartTime}
               >
                 <Icon
                   style={styles.icon}
@@ -139,21 +211,16 @@ const TimeTrip = ({ startTime, setStartTime, endTime, setEndTime }) => {
                   width={15}
                   height={15}
                 />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Hora de salida"
-                  placeholderTextColor="rgba(204, 204, 204, 0.8)"
-                  value={startTime}
-                  onChangeText={handlestartTimeChange}
-                  maxLength={5} // Limitamos el máximo de caracteres a 5 (por ejemplo: "23:59")
-                  keyboardType="numeric"
-                />
-              </View>
-              <View
+                <Text style={styles.input}>
+                  {!startTime ? "Hora de salida" : startTime}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
                 style={[
                   styles.textInputRow,
                   isKeyboardOpen ? styles.email_keyboard : null,
                 ]}
+                onPress={handleEndTime}
               >
                 <Icon
                   style={styles.icon}
@@ -162,16 +229,10 @@ const TimeTrip = ({ startTime, setStartTime, endTime, setEndTime }) => {
                   width={15}
                   height={15}
                 />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Hora de llegada"
-                  placeholderTextColor="rgba(204, 204, 204, 0.8)"
-                  value={endTime}
-                  onChangeText={handleendTimeChange}
-                  maxLength={5}
-                  keyboardType="numeric" // Teclado numérico para facilitar la entrada de horas y minutos
-                />
-              </View>
+                <Text style={styles.input}>
+                  {!endTime ? "Hora de llegada" : endTime}
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
 
@@ -335,6 +396,8 @@ const styles = StyleSheet.create({
     height: 40,
     color: "white",
     fontFamily: "Inter",
+    color: "rgba(204, 204, 204, 0.8)",
+    textAlignVertical: "center",
   },
   email_keyboard: {
     marginBottom: 70,
