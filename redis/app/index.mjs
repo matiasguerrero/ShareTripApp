@@ -36,6 +36,26 @@ function sendMessageToUser(userId, recipient, message) {
   }
 }
 
+function closeConexionsToUser(userId) {
+  console.log("Cerrando conexion a " + userId)
+  const targetConnection = connections.find((c) => c.userId === userId)
+
+  if (targetConnection) {
+    // Encontramos la conexión, enviamos el mensaje
+    targetConnection.close()
+  } else {
+    console.log(`No se encontró una conexión para el usuario ${userId}`)
+    console.log("Va a borrar")
+    redisCentralUsers.del(`user:${userId}:appid`, (err, reply) => {
+      if (err) {
+        console.error("Error deleting user:", err)
+      } else {
+        console.log(`Deleted user from redis:${userId}:appid`)
+      }
+    })
+  }
+}
+
 subscriber.on("subscribe", function (channel, count) {
   console.log(`Server ${APPID} subscribed successfully to channel ${channel}`)
   //publisher.publish("livechat", "a message")
@@ -51,19 +71,27 @@ subscriber.on("message", function (channel, message) {
 
     if (channel === redisSVIdentifier) {
       // Enviar el mensaje a una conexion particular
-      console.log(
-        "Voy a enviar " +
-          messageData.user +
-          " " +
-          messageData.recipient +
-          " " +
+      if ("conexion" in messageData) {
+        // El objeto messageData contiene un campo llamado "conexion"
+        // Puedes realizar las acciones correspondientes aquí
+        if (messageData.conexion === "close") {
+          closeConexionsToUser(messageData.user)
+        }
+      } else {
+        console.log(
+          "Voy a enviar " +
+            messageData.user +
+            " " +
+            messageData.recipient +
+            " " +
+            messageData.message
+        )
+        sendMessageToUser(
+          messageData.user,
+          messageData.recipient,
           messageData.message
-      )
-      sendMessageToUser(
-        messageData.user,
-        messageData.recipient,
-        messageData.message
-      )
+        )
+      }
     } else {
       //connections.forEach((c) => c.send(APPID + ":" + message))
       console.log("El mensaje no era para un usuario de este server")
@@ -96,99 +124,156 @@ function getUserIdFromURL(url) {
   return searchParams.get("userId")
 }
 
-//when a legit websocket request comes listen to it and get the connection .. once you get a connection thats it!
-websocket.on("request", (request) => {
-  const con = request.accept(null, request.origin)
-  const userId = getUserIdFromURL(request.resourceURL) // Extrae userId de la URL
-  con.userId = userId
-  con.on("open", () => console.log("opened"))
-  con.on("close", () => {
-    console.log("CLOSED!!!")
-    if (userId) {
-      redisCentralUsers.del(`user:${userId}:appid`, (err, reply) => {
-        if (err) {
-          console.error("Error deleting user:", err)
-        } else {
-          console.log(`Deleted user:${userId}:appid`)
-        }
-      })
-    }
-    console.log("closed connection")
-  })
-  con.on("message", (message) => {
-    //publish the message to redis
-    console.log(`${APPID} Received message ${message.utf8Data}`)
+function handleWebSocketRequest(request) {
+  return new Promise((resolve, reject) => {
+    const userId = getUserIdFromURL(request.resourceURL)
 
-    const messageData = JSON.parse(message.utf8Data) // Analiza la cadena JSON
-    const user = messageData.user
-    const recipient = messageData.recipient
-    const text = messageData.text
-
-    let userAPPID = null
-
-    console.log("ANTES DE PUBLICAR" + user + " " + recipient + " " + text)
-    // Obtener el APPID asociado al usuario, es ASYNC
-    redisCentralUsers.get(`user:${recipient}:appid`, (err, userAPPID) => {
+    // Consulta Redis para verificar si el usuario ya está conectado
+    redisCentralUsers.get(`user:${userId}:appid`, (err, userAPPID) => {
+      console.log("hace el get si existe")
       if (err) {
         console.error("Error getting user APPID:", err)
+        reject(err) // Rechaza la promesa en caso de error
       } else {
-        if (!userAPPID) {
-          console.log(
-            `No se encontró ningún APPID para el usuario ${recipient}`
+        if (userAPPID) {
+          // El usuario ya está conectado en otro servidor
+          console.log("va a publicar el evento", userAPPID)
+          publisher.publish(
+            userAPPID,
+            JSON.stringify({
+              conexion: "close",
+              user: userId,
+            })
           )
-        } else {
-          console.log(`APPID para el usuario ${recipient}:`, userAPPID)
 
-          // Ahora puedes usar la variable userAPPID según tus necesidades
-          if (userAPPID === APPID) {
-            sendMessageToUser(user, recipient, text)
-          } else {
-            if (userAPPID === null) {
-              console.log("No se encontró un APPID para el usuario")
-            } else {
-              publisher.publish(
-                userAPPID,
-                JSON.stringify({
-                  user: user,
-                  recipient: recipient,
-                  message: text,
-                })
-              )
-            }
-          }
+          // Consulta periódicamente si la otra instancia cerró la conexión
+          const checkInterval = setInterval(() => {
+            redisCentralUsers.get(
+              `user:${userId}:appid`,
+              (err, updatedUserAPPID) => {
+                if (err) {
+                  console.error("Error checking user APPID:", err)
+                } else {
+                  if (!updatedUserAPPID) {
+                    // La otra instancia ha cerrado la conexión, el usuario puede conectarse
+                    clearInterval(checkInterval) // Detiene la consulta periódica
+                    const con = request.accept(null, request.origin)
+                    con.userId = userId
+
+                    // Resto del código...
+                    resolve(con) // Resuelve la promesa con la conexión WebSocket
+                  }
+                }
+              }
+            )
+          }, 1000) // Consulta cada segundo (ajusta el intervalo según tus necesidades)
+        } else {
+          // El usuario no está conectado en otro servidor, continúa con la conexión
+          const con = request.accept(null, request.origin)
+          con.userId = userId
+
+          // Resto del código...
+          resolve(con) // Resuelve la promesa con la conexión WebSocket
         }
       }
     })
-
-    //publisher.publish("livechat", message.utf8Data)
   })
+}
 
-  setTimeout(
-    () =>
-      con.send(
-        JSON.stringify({
-          type: "conexion",
-          message: `Connected successfully to server ${APPID}`,
+//when a legit websocket request comes listen to it and get the connection .. once you get a connection thats it!
+websocket.on("request", (request) => {
+  const userId = getUserIdFromURL(request.resourceURL) // Extrae userId de la URL
+
+  handleWebSocketRequest(request).then((con) => {
+    con.on("open", () => console.log("opened"))
+    con.on("close", () => {
+      console.log("CLOSED!!!")
+      if (userId) {
+        redisCentralUsers.del(`user:${userId}:appid`, (err, reply) => {
+          if (err) {
+            console.error("Error deleting user:", err)
+          } else {
+            console.log(`Deleted user:${userId}:appid`)
+          }
         })
-      ),
-    5000
-  )
-
-  if (userId) {
-    // Almacenar el APPID del servidor en Redis para este usuario
-    redisCentralUsers.set(
-      `user:${userId}:appid`,
-      redisSVIdentifier,
-      (err, reply) => {
-        if (err) {
-          console.error("Error setting user APPID:", err)
-        } else {
-          console.log(`Set user:${userId}:appid to ${redisSVIdentifier}`)
-        }
       }
+      console.log("closed connection")
+    })
+    con.on("message", (message) => {
+      //publish the message to redis
+      console.log(`${APPID} Received message ${message.utf8Data}`)
+
+      const messageData = JSON.parse(message.utf8Data) // Analiza la cadena JSON
+      const user = messageData.user
+      const recipient = messageData.recipient
+      const text = messageData.text
+
+      let userAPPID = null
+
+      console.log("ANTES DE PUBLICAR" + user + " " + recipient + " " + text)
+      // Obtener el APPID asociado al usuario, es ASYNC
+      redisCentralUsers.get(`user:${recipient}:appid`, (err, userAPPID) => {
+        if (err) {
+          console.error("Error getting user APPID:", err)
+        } else {
+          if (!userAPPID) {
+            console.log(
+              `No se encontró ningún APPID para el usuario ${recipient}`
+            )
+          } else {
+            console.log(`APPID para el usuario ${recipient}:`, userAPPID)
+
+            // Ahora puedes usar la variable userAPPID según tus necesidades
+            if (userAPPID === APPID) {
+              sendMessageToUser(user, recipient, text)
+            } else {
+              if (userAPPID === null) {
+                console.log("No se encontró un APPID para el usuario")
+              } else {
+                publisher.publish(
+                  userAPPID,
+                  JSON.stringify({
+                    user: user,
+                    recipient: recipient,
+                    message: text,
+                  })
+                )
+              }
+            }
+          }
+        }
+      })
+
+      //publisher.publish("livechat", message.utf8Data)
+    })
+
+    setTimeout(
+      () =>
+        con.send(
+          JSON.stringify({
+            type: "conexion",
+            message: `Connected successfully to server ${APPID}`,
+          })
+        ),
+      5000
     )
-  }
-  connections.push(con)
+
+    if (userId) {
+      // Almacenar el APPID del servidor en Redis para este usuario
+      redisCentralUsers.set(
+        `user:${userId}:appid`,
+        redisSVIdentifier,
+        (err, reply) => {
+          if (err) {
+            console.error("Error setting user APPID:", err)
+          } else {
+            console.log(`Set user:${userId}:appid to ${redisSVIdentifier}`)
+          }
+        }
+      )
+    }
+    connections.push(con)
+  })
 })
 
 //client code
