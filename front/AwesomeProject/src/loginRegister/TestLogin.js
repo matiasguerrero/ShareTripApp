@@ -11,8 +11,10 @@ import {
   Dimensions,
   Platform,
   UIManager,
+  Animated,
   LayoutAnimation,
 } from "react-native"
+import { KeyboardAvoidingView } from "react-native"
 import { LinearGradient } from "expo-linear-gradient"
 import { Modal } from "react-native"
 import { useNavigation } from "@react-navigation/native"
@@ -885,6 +887,12 @@ const TestLogin = ({ selectedButton, setSelectedButton }) => {
     setPassword_Login(text)
   }
   return (
+    <KeyboardAvoidingView
+      behavior='padding'
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
+      style={ styles.container_keyavoiding}
+    >
+
     <View style={styles.container}>
       <ErrorModal
         visible={errorModalVisible}
@@ -1178,6 +1186,7 @@ const TestLogin = ({ selectedButton, setSelectedButton }) => {
         </View>
       </View>
     </View>
+    </KeyboardAvoidingView>
   )
 }
 const windowHeight = Dimensions.get("window").height
@@ -1185,9 +1194,13 @@ const imageHeight = windowHeight * 0.45 // Altura según el porcentaje deseado
 const imageHeightKeyboard = windowHeight * 0.2 // Altura del contenedor (55% de la altura de la ventana)
 
 const styles = StyleSheet.create({
-  container: {
+  container_keyavoiding: {
     flex: 1,
     backgroundColor: "rgb(27, 26, 22)",
+  },
+  container: {
+    width: '100%',
+    height: '100%',
   },
   headerContainer: {
     height: imageHeight,
