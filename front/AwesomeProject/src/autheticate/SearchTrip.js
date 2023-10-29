@@ -19,6 +19,7 @@ import Icon from "../utils/Icon"
 import { useNavigation } from "@react-navigation/native"
 import { TecladoContext } from "../utils/TecladoContext"
 import { useContext } from "react"
+import { KeyboardAvoidingView } from "react-native"
 
 // Habilitar las animaciones en Android (opcional)
 if (Platform.OS === "android") {
@@ -51,6 +52,11 @@ const SearchTrip = ({ origin, setOrigin, destination, setDestination }) => {
   }
 
   return (
+    <KeyboardAvoidingView
+    behavior='padding'
+    keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
+    style={ styles.container_keyavoiding}
+  >
     <View style={styles.container}>
       <ImageBackground
         source={require("../../assets/fondo.png")} // Ruta de tu imagen de fondo
@@ -125,8 +131,7 @@ const SearchTrip = ({ origin, setOrigin, destination, setDestination }) => {
               </View>
               <View
                 style={[
-                  styles.textInputRow,
-                  isKeyboardOpen ? styles.email_keyboard : null,
+                  styles.textInputRow
                 ]}
               >
                 <Icon
@@ -168,6 +173,7 @@ const SearchTrip = ({ origin, setOrigin, destination, setDestination }) => {
         </View>
       </View>
     </View>
+    </KeyboardAvoidingView>
   )
 }
 
@@ -175,11 +181,15 @@ const windowHeight = Dimensions.get("window").height
 const imageHeightKeyboard = windowHeight * 0.2 // Altura del contenedor (55% de la altura de la ventana)
 
 const styles = StyleSheet.create({
-  container: {
+  container_keyavoiding: {
     flex: 1,
+    backgroundColor: 'black',
+  },
+  container: {
+    width: "100%",
+    height: "100%",
     overflow: "hidden", // Oculta la barra de desplazamiento
     zIndex: 0,
-    backgroundColor: "black",
   },
   container_2: {
     flex: 1,
@@ -224,7 +234,9 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   overlayContainer_Keyboard: {
-    top: "30%",
+    top: "20%",
+    alignItems: null,
+    justifyContent: null,
   },
   blackContainer: {
     width: "90%",
@@ -235,11 +247,11 @@ const styles = StyleSheet.create({
     borderRadius: 40,
   },
   blackContainer_Keyboard: {
+    top: "10%",
     width: "100%",
-    height: "50%",
+    height: '60%',
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
-    flex: 1,
   },
   columnContainer: {
     alignItems: "center",
@@ -252,14 +264,18 @@ const styles = StyleSheet.create({
     top: "15%",
     width: "90%",
     paddingHorizontal: 10,
+    alignItems: "center",
   },
   bottomContainer_keyboard: {
-    top: "0%",
-    width: "50%",
+    top: "10%",
+    width: "100%",
+    height: "15%",
+    backgroundColor: 'black',
     paddingHorizontal: 10,
   },
   button_keyboard: {
     height: 40,
+    width: "50%",
     marginBottom: 10,
   },
   button: {
@@ -292,8 +308,8 @@ const styles = StyleSheet.create({
     fontFamily: "Inter",
   },
   seleccioneText_Keyboard: {
-    marginTop: 40,
-    marginBottom: 50,
+    marginTop: '0%',
+    marginBottom: '10%',
   },
   textInputRow: {
     flexDirection: "row",
@@ -308,7 +324,7 @@ const styles = StyleSheet.create({
     fontFamily: "Inter",
   },
   email_keyboard: {
-    marginBottom: 70,
+    marginBottom: '15%',
   },
 })
 
